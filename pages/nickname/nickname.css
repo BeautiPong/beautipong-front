@@ -1,0 +1,57 @@
+header {
+    display: none;
+}
+
+.nickname-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nickname-container {
+    width: 40vw;
+    height: 60vh;
+    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.nickname-container h1 {
+    color: var(--main-color);
+    font-size: 36px;
+    font-weight: 600;
+    margin-bottom: 30px;
+    text-align: left;
+
+}
+
+.nickname-container form {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.nickname-container input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    right: 0; /* 오른쪽 구석 */
+    bottom: 0; /* 아래 구석 */
+}
+
+.buttons button:hover {
+    background-color: #f0f0f0;
+}
