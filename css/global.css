@@ -1,5 +1,6 @@
 @import "reset.css"; /* 맞나? */
 @import "../pages/login/login.css";
+@import "../pages/nickname/nickname.css";
 
 :root {
     --main-color: #FFFFFF;
