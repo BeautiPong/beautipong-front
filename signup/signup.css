@@ -1,0 +1,63 @@
+/* 전체 페이지 스타일 */
+body {
+    background-image: url('../image/ping-pong.svg'); /* 배경 이미지 경로 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 회원가입 박스 스타일 */
+.signup-container {
+    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
+}
+
+.signup-container h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.signup-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.signup-container label {
+    text-align: left;
+    font-size: 14px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.signup-container input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.signup-container button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #fff;
+    border: 2px solid #000;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.signup-container button:hover {
+    background-color: #f0f0f0;
+}
