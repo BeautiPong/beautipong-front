@@ -1,11 +1,6 @@
 /* 전체 페이지 스타일 */
-body {
-    background-image: url('../image/ping-pong.svg'); /* 배경 이미지 경로 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    padding: 0;
+
+.two-factor {
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -14,37 +9,47 @@ body {
 
 /* 2FA 박스 스타일 */
 .two-fa-container {
-    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
-    padding: 30px;
-    border-radius: 10px;
+    width: 40vw;
+    height: 60vh;
+    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
+    padding: 20px;
+    border-radius: 35px;
     text-align: center;
-    width: 350px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
 }
 
 .two-fa-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    color: var(--main-color);
+    font-size: 40px;
+    font-weight: 600;
+	margin-top: 100px;
+    margin-bottom: 100px;
 }
 
 .two-fa-inputs {
     display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    justify-content: space-around;
+    margin-bottom: 50px;
+}
+
+.input-group {
+    display: flex;
+    gap: 5px;
 }
 
 .two-fa-inputs input {
-    width: 45px;
-    height: 45px;
-    font-size: 24px;
+    width: 100px;
+    height: 100px;
+    font-size: 40px;
     text-align: center;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     border-radius: 5px;
 }
 
 .two-fa-container button {
+	width: 240px;
+    height: 80px;
     padding: 12px;
-    font-size: 16px;
+    font-size: 22px;
     background-color: #fff;
     border: 2px solid #000;
     border-radius: 5px;
