@@ -1,0 +1,11 @@
+@import "reset.css"; /* 맞나? */
+
+:root {
+    --main-color: #FFFFFF;
+    --main-text-color: #555555;
+    --sub-text-color: #ABABAB;
+	--error-message-color: #E93842;
+
+	--accept-button-color: #6ED087;
+	--refuse-button-color: #FF897D;
+}
