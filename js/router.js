@@ -1,65 +1,45 @@
-import Main from '../pages/main.js'
-import Login from '../pages/login.js'
-import Mypage from '../pages/mypage.js'
-import Rank from '../pages/rank.js'
-import Friend from '../pages/friend.js'
-
-
-export class Router{
-    constructor() {
-        this.route = [
-            { path : '/', main:Main},
-            { path : '/login', login:Login},
-            { path: '/mypage', mypage:Mypage},
-            { path : '/rank', rank:Rank},
-            { path : '/friend', friend:Friend},
-        ]
-    }
-    
-    async route() {
-        let match = this.findMatch();
-        if (!match || location.pathname === '/notfound') {
-            match = this.handleNotFound();
-        }
-        await this.handleRouteChange(match);
-    }
-
-    findMatch() {
-    return this.routes
-        .map((route) => ({
-        route,
-        result: location.pathname.match(pathToRegex(route.path)),
-        }))
-        .find((potentialMatch) => potentialMatch.result !== null);
-    }
-
-    async handleRouteChange(match) {
-        switch (match.route.path) {
-            case '/login':
-                await this.handleLoginRoute();
-                break;
-            case '/login_code/':
-                await this.handleAutorhizationCode();
-                break;
-            case '/2fa':
-                await this.handle2FA(match);
-                break;
-            case '/logout':
-                await this.handleLogoutRoute(match);
-                break;
-            case '/profile':
-                await this.handleProfileRoute(match);
-                break;
-            case '/play':
-                await this.handlePlayRoute(match);
-                break;
-            case '/':
-                await this.handleMainRoute(match);
-                break;
-            default:
-                updateBackground('error');
-                await this.render(match);
-                break;
-        }
-    }
-}
+export default () => {
+    const routes = [];
+    let notFound = () => {}; // notFound를 기본적으로 빈 함수로 설정
+  
+    const router = {};
+  
+    const checkRoutes = () => {
+      const currentRoute = routes.find(route => {
+        return route.fragment === window.location.hash;
+      });
+  
+      if (!currentRoute) {
+        notFound(); // notFound 함수 호출
+        return;
+      }
+  
+      currentRoute.component(); // 해당 라우트의 컴포넌트 함수 호출
+    };
+  
+    router.addRoute = (fragment, component) => {
+      routes.push({
+        fragment,
+        component
+      });
+  
+      return router;
+    };
+  
+    router.setNotFound = cb => {
+      notFound = cb || notFound; // 전달된 콜백 함수가 없으면 기존 notFound를 유지
+      return router;
+    };
+  
+    router.start = () => {
+      window.addEventListener('hashchange', checkRoutes);
+  
+      if (!window.location.hash) {
+        window.location.hash = '#/';
+      }
+  
+      checkRoutes();
+    };
+  
+    return router;
+};

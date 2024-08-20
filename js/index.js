@@ -1,16 +1,19 @@
-import { Router } from './router.js';
-import navigateTo from './utility/navigateTo.js';
+import createRouter from './router.js'
+import createPages from './pages.js'
 
-const router = new Router();
-window.addEventListener('popstate', () => router.route());
+const container = document.querySelector('main')
 
-document.addEventListener('DOMContentLoaded', () => {
-  router.route();
-  document.body.addEventListener('click', (e) => {
-    if (e.target.matches('[data-link]')) {
-      e.preventDefault();
-      navigateTo(e.target.href);
-      router.route();
-    }
-  });
-});
+const pages = createPages(container)
+
+const router = createRouter()
+
+router
+.addRoute('#/', pages.home)
+.addRoute('#/mypage', pages.mypage)
+.addRoute('#/friend', pages.friend)
+.addRoute('#/rank', pages.rank)
+.addRoute('#/login', pages.login)
+.setNotFound(() => {
+  container.innerHTML = '<h1>Page Not Found!</h1>';
+})
+.start();
