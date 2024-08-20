@@ -1,4 +1,5 @@
 @import "reset.css"; /* 맞나? */
+@import "../pages/login/login.css";
 
 :root {
     --main-color: #FFFFFF;
@@ -8,4 +9,16 @@
 
 	--accept-button-color: #6ED087;
 	--refuse-button-color: #FF897D;
+
+    overflow: hidden;
+}
+
+body {
+    background-image: url(../assets/images/background.svg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    width: 100vw;
+    height: 100vh;
 }

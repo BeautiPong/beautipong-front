@@ -1,13 +1,8 @@
-/* 전체 페이지 스타일 */
+header {
+    display: none;
+}
+
 body {
-    background-image: url('../image/ping-pong.svg'); /* 배경 이미지 경로 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    /* width: 100vw; 페이지의 너비를 전체 화면으로 설정 */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,17 +10,19 @@ body {
 
 /* 로그인 박스 스타일 */
 .login-container {
-    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+    width: 40vw;
+    height: 60vh;
+    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    width: 300px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
 }
 
 .login-container h1 {
-    font-size: 24px;
-    margin-bottom: 20px;
+    color: var(--main-color);
+    font-size: 40px;
+    font-weight: 600;
+    margin-bottom: 30px;
 }
 
 .login-container form {
@@ -39,6 +36,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
+    color: rgba(255, 255, 255, 0.2);
 }
 
 .buttons {
