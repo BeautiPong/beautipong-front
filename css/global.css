@@ -1,5 +1,7 @@
 @import "reset.css"; /* 맞나? */
 @import "../pages/login/login.css";
+@import "../assets/components/nav/nav.css";
+@import "../pages/main/main.css";
 
 :root {
     --main-color: #FFFFFF;
@@ -21,4 +23,12 @@ body {
 
     width: 100vw;
     height: 100vh;
+
+    display: flex;
+    flex-direction: row;
+}
+
+main {
+    width: 100%;
+    height: 100%;
 }
