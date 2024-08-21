@@ -10,9 +10,7 @@ export default class NicknamePage {
                     <h1>닉네임 설정</h1>
                     <form>
                         <input type="text" placeholder="사용할 닉네임을 입력해주세요" required>
-                        <div class="buttons">
-                            <button type="button">NEXT</button>
-                        </div>
+                        <button type="button">NEXT</button>
                     </form>
                 </div>
             </div>

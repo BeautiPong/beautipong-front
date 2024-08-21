@@ -1,4 +1,4 @@
-@import "reset.css"; /* 맞나? */
+@import "reset.css";
 @import "../pages/login/login.css";
 @import "../pages/nickname/nickname.css";
 
@@ -12,6 +12,7 @@
 	--refuse-button-color: #FF897D;
 
     overflow: hidden;
+    font-family: "Inter", sans-serif;
 }
 
 body {
