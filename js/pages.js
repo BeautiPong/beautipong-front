@@ -35,6 +35,8 @@ export default container => {
 
     const signup = () => {
         const page = new SignupPage();
+        container.innerHTML = page.render();
+    }
       
     const nickname = () => {
         const page = new NicknamePage();
@@ -52,7 +54,7 @@ export default container => {
         mypage,
         rank,
         friend,
-        signup
+        signup,
         nickname,
 	      twoFactor,
     }

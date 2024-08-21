@@ -1,12 +1,6 @@
 /* 전체 페이지 스타일 */
-body.signup {
-    background-image: url('../image/ping-pong.svg'); /* 배경 이미지 경로 */
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
+.signup {
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
