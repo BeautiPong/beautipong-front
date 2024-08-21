@@ -1,6 +1,7 @@
 @import "reset.css";
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Inter:wght@100..900&family=Noto+Sans+KR:wght@100..900&display=swap');
 @import "../pages/login/login.css";
+@import "../pages/signup/signup.css";
 @import "../pages/2fa/2fa.css";
 @import "../assets/components/nav/nav.css";
 @import "../pages/main/main.css";
@@ -35,4 +36,5 @@ main {
     width: 100%;
     height: 100%;
 }
+
 
