@@ -4,72 +4,86 @@ header {
 
 .login {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 100vh;
 }
 
-.login-container {
-    width: 40vw;
-    height: 60vh;
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 20px;
-    border-radius: 10px;
-    
+.login-box {
     display: flex;
+    background-color: var(--main-color);
+    border-radius: 5%;
+    background-color: rgba(255, 255, 255, 0.18);
+    width: 38vw;
+    height: 70vh;
+
     flex-direction: column;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
 }
 
-
-.login-container h1 {
+.login-box h1 {
     color: var(--main-color);
-    font-size: 40px;
-    margin-bottom: 5vh;
+    font-size: 3.2vw;
+    font-weight: 650;
+    margin-bottom: 8vh;
 }
 
-.login-container form {
-    display: flex;
-    flex-direction: column;
-}
-
-.login-container input {
-    background-color: rgba(255, 255, 255, 0.70);
-    border-radius: 10px;
-    width: 28vw;
-    height: 8vh;
+.text-box {
     margin-bottom: 1vh;
 }
 
-.login-container input::placeholder {
+.password-box {
+    margin-bottom: 2vh;
+}
+
+.text-box input {
+    border: none;
+    background-color: rgba(255, 255, 255, 0.70);
+    border-radius: 15px;
+    width: 24vw;
+    height: 7vh;
+    padding: 0 30px;
+}
+
+.text-box input::placeholder {
     color: var(--sub-text-color);
     font-size: 1.2vw;
 }
 
-
-.buttons {
+.button-box {
     display: flex;
     justify-content: space-between;
-    width: 28vw;
+    width: 26.4vw;
+    margin-bottom: 4vh;
 }
 
-.buttons button {
-    width: 13vw;
-    height: 8vh;
-    font-size: 1.2vw;
-    background-color: #fff;
+.btn {
+    background-color: var(--main-color);
     border: none;
-    border-radius: 10px;
+    border-radius: 15px;
+    width: 12.5vw;
+    height: 7vh;
+    font-size: 1.2vw;
+    font-weight: 600;
+    color: var(--main-text-color);
+    cursor: pointer;
 }
 
-.buttons button:hover {
-    background-color: #f0f0f0;
+.start-with {
+    display: flex;
+    align-items: center;
 }
 
+.start-with p {
+    color: var(--main-color);
+    margin: 0;
+    margin-right: 1vw;
+    font-size: 1.2vw;
+    font-weight: 500;
+}
 
-.logo {
-    width: 40px;
+.start-image {
+    width: 3vw;
     height: auto;
-    vertical-align: middle;
 }
