@@ -13,7 +13,7 @@ header {
     width: 38vw;
     height: 70vh;
     background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
-    padding: 20px;
+    /* padding: 20px; */
     border-radius: 5%;
     text-align: center;
 }
