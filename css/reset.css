@@ -17,6 +17,7 @@ time, mark, audio, video, input, button, form {
 	font-size: 100%; 
 	font: inherit;
 	vertical-align: baseline;
+	text-decoration: none;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -40,4 +41,22 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+
+
+/* 방문한 링크 */
+a:visited {
+    color: inherit; /* 방문한 링크의 색상도 기본 색상으로 설정 */
+}
+
+/* 링크에 마우스를 올렸을 때 */
+a:hover {
+    color: inherit; /* 호버 상태에서도 색상 변경 없음 */
+    text-decoration: none; /* 호버 상태에서도 밑줄 제거 */
+}
+
+/* 클릭된 링크 */
+a:active {
+    color: inherit; /* 클릭 상태에서도 색상 변경 없음 */
+    text-decoration: none; /* 클릭 상태에서도 밑줄 제거 */
 }
