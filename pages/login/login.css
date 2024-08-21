@@ -2,27 +2,31 @@ header {
     display: none;
 }
 
-body {
+.login {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.login-container {
+    width: 40vw;
+    height: 60vh;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-/* 로그인 박스 스타일 */
-.login-container {
-    width: 40vw;
-    height: 60vh;
-    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-}
 
 .login-container h1 {
     color: var(--main-color);
     font-size: 40px;
-    font-weight: 600;
-    margin-bottom: 30px;
+    margin-bottom: 5vh;
 }
 
 .login-container form {
@@ -31,34 +35,39 @@ body {
 }
 
 .login-container input {
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.70);
+    border-radius: 10px;
+    width: 28vw;
+    height: 8vh;
+    margin-bottom: 1vh;
 }
+
+.login-container input::placeholder {
+    color: var(--sub-text-color);
+    font-size: 1.2vw;
+}
+
 
 .buttons {
     display: flex;
     justify-content: space-between;
+    width: 28vw;
 }
 
 .buttons button {
-    width: 45%;
-    padding: 10px;
-    font-size: 16px;
+    width: 13vw;
+    height: 8vh;
+    font-size: 1.2vw;
     background-color: #fff;
-    border: 2px solid #000;
-    border-radius: 5px;
-    cursor: pointer;
+    border: none;
+    border-radius: 10px;
 }
 
 .buttons button:hover {
     background-color: #f0f0f0;
 }
 
-/* 로고 스타일 */
+
 .logo {
     width: 40px;
     height: auto;
