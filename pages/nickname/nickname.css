@@ -1,0 +1,78 @@
+header {
+    display: none;
+}
+
+.nickname-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nickname-container {
+    width: 38vw;
+    height: 70vh;
+    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
+    padding: 20px;
+    border-radius: 5%;
+    text-align: center;
+}
+
+.nickname-container h1 {
+    color: var(--main-color);
+    font-size: 300%;
+    margin-left: 9%;
+    margin-bottom: 4%;
+    margin-top: 8%;
+    text-align: left;
+    font-weight: 550;
+}
+
+.nickname-container form {
+    height: 90%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 수직 방향으로 중앙 정렬 */
+    align-items: center; /* 수평 방향으로 중앙 정렬 */
+    justify-content: flex-start; /* 위쪽으로 정렬 */
+}
+
+.nickname-container input {
+    width: 80%;
+    height: 12%;
+    padding-left: 2.5%;
+    /* margin-bottom: 15px; */
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    font-size: 160%;
+    color: var(--main-text-color);
+    font-weight: 550;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.nickname-container input::placeholder {
+    font-size: 80%; /* placeholder 폰트 크기를 줄임 */
+    font-weight: 600;
+    color: var(--main-text-color); /* placeholder 텍스트 색상 */
+    opacity: 0.6; /* placeholder 텍스트 투명도 */
+}
+
+
+button {
+    width: 30%;
+    height: 10%;
+    font-size: 150%;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: var(--main-text-color);
+    cursor: pointer;
+    padding: 1%;
+    border-radius: 15px;
+    margin-top: auto; /* 위쪽 공간을 채우고 버튼을 아래쪽으로 배치 */
+    margin-bottom: 10%; /* 아래 여백 제거 */
+    margin-left: auto;
+    margin-right: 9%;
+}
+
+/* button:hover {
+    background-color: #f0f0f0;
+} */

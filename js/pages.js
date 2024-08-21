@@ -3,6 +3,7 @@ import LoginPage from '../pages/login/login.js'
 import MyPage from '../pages/mypage/mypage.js'
 import RankPage from '../pages/rank/rank.js'
 import FriendPage from '../pages/friend/friend.js'
+import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
 
 export default container => {
@@ -31,6 +32,11 @@ export default container => {
         container.innerHTML = page.render();
     }
 
+    const nickname = () => {
+        const page = new NicknamePage();
+        container.innerHTML = page.render();
+    }
+
     const twoFactor = () => {
         const page = new TwoFactorPage();
         container.innerHTML = page.render();
@@ -42,6 +48,7 @@ export default container => {
         mypage,
         rank,
         friend,
-		twoFactor,
+        nickname,
+	      twoFactor,
     }
   }
