@@ -11,7 +11,7 @@
 .two-fa-container {
     width: 38vw;
     height: 70vh;
-    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
+    background-color: rgba(255, 255, 255, 0.3); /* 반투명 흰색 배경 */
     /* padding: 5%; */
     border-radius: 5%;
     text-align: center;
@@ -47,7 +47,7 @@
     text-align: center;
     border: 2px solid #ccc;
     border-radius: 5px;
-	
+
 }
 
 .two-fa-container button {

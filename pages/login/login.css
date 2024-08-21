@@ -13,7 +13,7 @@ header {
     display: flex;
     background-color: var(--main-color);
     border-radius: 5%;
-    background-color: rgba(255, 255, 255, 0.18);
+    background-color: rgba(255, 255, 255, 0.3);
     width: 38vw;
     height: 70vh;
 

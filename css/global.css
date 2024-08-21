@@ -22,9 +22,9 @@
     box-sizing: border-box;
 }
 body {
-    background-image: url(../assets/images/background.svg);
+    background-image: url(../assets/images/background2.svg);
     background-size: cover;
-    background-position: center;
+    background-position: 50% 80%;
     background-repeat: no-repeat;
 
     width: 100vw;

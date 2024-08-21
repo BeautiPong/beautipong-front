@@ -12,8 +12,7 @@ header {
 .nickname-container {
     width: 38vw;
     height: 70vh;
-    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
-    /* padding: 20px; */
+    background-color: rgba(255, 255, 255, 0.3); /* 반투명 흰색 배경 */
     border-radius: 5%;
     text-align: center;
 }
@@ -43,7 +42,7 @@ header {
     height: 12%;
     padding-left: 2.5%;
     /* margin-bottom: 15px; */
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 15px;
     font-size: 160%;
     color: var(--main-text-color);
