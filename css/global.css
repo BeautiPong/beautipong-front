@@ -8,10 +8,10 @@
     --main-color: #FFFFFF;
     --main-text-color: #555555;
     --sub-text-color: #ABABAB;
-	--error-message-color: #E93842;
+    --error-message-color: #E93842;
 
-	--accept-button-color: #6ED087;
-	--refuse-button-color: #FF897D;
+    --accept-button-color: #6ED087;
+    --refuse-button-color: #FF897D;
 
     overflow: hidden;
     font-family: "Inter", sans-serif;
@@ -25,7 +25,6 @@ body {
 
     width: 100vw;
     height: 100vh;
-
     display: flex;
     flex-direction: row;
 }
@@ -34,3 +33,4 @@ main {
     width: 100%;
     height: 100%;
 }
+
