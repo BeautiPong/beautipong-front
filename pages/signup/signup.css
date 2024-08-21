@@ -1,5 +1,5 @@
 /* 전체 페이지 스타일 */
-body {
+body.signup {
     background-image: url('../image/ping-pong.svg'); /* 배경 이미지 경로 */
     background-size: cover;
     background-position: center;
@@ -14,15 +14,15 @@ body {
 
 /* 회원가입 박스 스타일 */
 .signup-container {
-    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+    background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
     padding: 30px;
     border-radius: 10px;
     text-align: center;
     width: 350px;
-    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
 }
 
 .signup-container h1 {
+    color: var(--main-color);
     font-size: 24px;
     margin-bottom: 20px;
 }
@@ -35,9 +35,9 @@ body {
 
 .signup-container label {
     text-align: left;
-    font-size: 14px;
+    font-size: 15px;
     margin-bottom: 5px;
-    color: #333;
+    color: var(--main-color);
 }
 
 .signup-container input {
@@ -45,7 +45,9 @@ body {
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 24px;
+    background-color: var(--main-color);
+    opacity: 0.71;
 }
 
 .signup-container button {

@@ -3,6 +3,7 @@ import LoginPage from '../pages/login/login.js'
 import MyPage from '../pages/mypage/mypage.js'
 import RankPage from '../pages/rank/rank.js'
 import FriendPage from '../pages/friend/friend.js'
+import SignupPage from '../pages/signup/signup.js'
 
 export default container => {
     const home = () => {
@@ -29,6 +30,11 @@ export default container => {
         const page = new FriendPage();
         container.innerHTML = page.render();
     }
+
+    const signup = () => {
+        const page = new SignupPage();
+        container.innerHTML = page.render();
+    }
   
     return {
         home,
@@ -36,5 +42,6 @@ export default container => {
         mypage,
         rank,
         friend,
+        signup
     }
   }
