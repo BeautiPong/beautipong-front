@@ -45,13 +45,13 @@ export default class TwoFactorPage {
                         <div class="two-fa-inputs">
                             <div class="input-group">
                                 <input type="text" maxlength="1" required>
-                                <input type="text" maxlength="1" required disabled>
-                                <input type="text" maxlength="1" required disabled>
+                                <input type="text" maxlength="1" required>
+                                <input type="text" maxlength="1" required>
                             </div>
                             <div class="input-group">
-                                <input type="text" maxlength="1" required disabled>
-                                <input type="text" maxlength="1" required disabled>
-                                <input type="text" maxlength="1" required disabled>
+                                <input type="text" maxlength="1" required>
+                                <input type="text" maxlength="1" required>
+                                <input type="text" maxlength="1" required>
                             </div>
                         </div>
                         <button type="submit">인증 확인</button>

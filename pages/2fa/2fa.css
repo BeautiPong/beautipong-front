@@ -40,8 +40,8 @@
 
 .two-fa-inputs input {
     width: 100%;
-    height: 120%;
-    font-size: 80px;
+    height: 160%;
+    font-size: 60px;
 	color: var(--main-text-color);
     text-align: center;
     border: 2px solid #ccc;
@@ -57,10 +57,7 @@
 	font-weight: 600;
 	color: var(--main-text-color);
     background-color: #fff;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
-.two-fa-container button:hover {
-    background-color: #f0f0f0;
-}
