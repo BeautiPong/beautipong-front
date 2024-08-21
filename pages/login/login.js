@@ -13,7 +13,7 @@ export default class LoginPage {
                         </div>
                         <div class="button-box">
                             <button type="submit" class="btn">로그인</button>
-                            <button type="button" class="btn">회원가입</button>
+                            <button id="signup-btn" type="button" class="btn">회원가입</button>
                         </div>
                     </form>
                     <div class="start-with">
@@ -24,4 +24,13 @@ export default class LoginPage {
             </div>
         `;
     }
+
+    afterRender() {
+        // 회원가입 버튼에 클릭 이벤트 리스너 추가
+        const signupButton = document.getElementById('signup-btn');
+        signupButton.addEventListener('click', () => {
+            window.location.hash = '#/signup'; // #/signup 페이지로 라우팅
+        });
+    }
 }
+

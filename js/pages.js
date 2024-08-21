@@ -16,6 +16,7 @@ export default container => {
     const login = () => {
         const page = new LoginPage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const mypage = () => {
@@ -36,6 +37,7 @@ export default container => {
     const signup = () => {
         const page = new SignupPage();
         container.innerHTML = page.render();
+        page.addEventListeners();
     }
       
     const nickname = () => {

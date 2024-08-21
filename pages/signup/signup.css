@@ -63,11 +63,10 @@
     margin-bottom: 20px;
     border: none;
     border-radius: 5px;
-    font-size: 24px;
+    font-size: 20px;
     background-color: var(--main-color);
-    opacity: 0.71;
-    color: rgba(255, 255, 255, 0.2);
     height: 50px;
+    color: var(--main-text-color);
 }
 
 .signup-container button {
