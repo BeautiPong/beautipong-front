@@ -13,12 +13,12 @@
 
 .nav-profile {
     text-align: center;
+}
 
-    img {
-        width: 50%;
-        border-radius: 50%;
-        box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, .1);
-    }
+#nav-profile__img {
+    width: 50%;
+    border-radius: 50%;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, .1);
 }
 
 .nav-profile__info {
@@ -27,16 +27,17 @@
     justify-content: center;
     padding-top: 20px;
     gap: 10px;
+}
 
-    img {
-        width: 8%;
-        box-shadow: none;
-    }
-    span {
-        color: var(--main-color);
-        font-size: 27px;
-        font-weight: 800;
-    }
+#nav-profile__info__tier {
+    width: 8%;
+    box-shadow: none;
+}
+
+.nav-profile__info span{
+    color: var(--main-color);
+    font-size: 30px;
+    font-weight: 700;
 }
 
 nav {
@@ -47,9 +48,9 @@ nav {
 }
 
 nav a {
-    border-radius: 10px;
-    width: 20vh;
-    height: 50px;
+    border-radius: 15px;
+    width: 10vw;
+    height: 7vh;
     border: 1px solid var(--main-color);
 
     display: flex;
@@ -60,14 +61,14 @@ nav a {
 .nav__select {
     background-color: var(--main-color);
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, .1);
+}
 
-    span {
-        color: var(--main-text-color);
-    }
+.nav__select span{
+    color: var(--main-text-color);
 }
 
 a span {
     color: var(--main-color);
-    font-size: 16px;
+    font-size: 20px;
     font-weight: 600;
 }

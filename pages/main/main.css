@@ -6,28 +6,28 @@
     height: 100%;
 
     margin-top: 20%;
-    gap: 20px;
+    gap: 4%;
+}
 
-    h1 {
-        color: var(--main-color);
-        font-size: 60px;
-        font-weight: bolder;
-    }
+.main-container h1 {
+    color: var(--main-color);
+    font-size: 60px;
+    font-weight: bolder;
 }
 
 .main-container__btn {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 5%;
+}
 
-    button {
-        width: 200px;
-        height: 75px;
-        border-radius: 20px;
-        background-color: rgba(255, 255, 255, 0.4);
-        color: var(--main-color);
-        font-size: 20px;
-        font-weight: 500;
-        cursor: pointer;
-    }
+.main-container__btn button {
+    width: 13vw;
+    height: 10vh;
+    border-radius: 20px;
+    background-color: rgba(255, 255, 255, 0.4);
+    color: var(--main-color);
+    font-size: 27px;
+    font-weight: 700;
+    cursor: pointer;
 }
