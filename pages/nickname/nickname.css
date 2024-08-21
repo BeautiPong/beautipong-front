@@ -59,7 +59,7 @@ header {
 }
 
 
-button {
+.nickname-container button {
     width: 30%;
     height: 10%;
     font-size: 150%;
