@@ -1,12 +1,6 @@
-header {
+/* header {
     display: none;
-}
-
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+} */
 
 /* 로그인 박스 스타일 */
 .login-container {

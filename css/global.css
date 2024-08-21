@@ -1,5 +1,8 @@
 @import "reset.css"; /* 맞나? */
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Inter:wght@100..900&family=Noto+Sans+KR:wght@100..900&display=swap');
 @import "../pages/login/login.css";
+@import "../assets/components/nav/nav.css";
+@import "../pages/main/main.css";
 
 :root {
     --main-color: #FFFFFF;
@@ -11,6 +14,7 @@
 	--refuse-button-color: #FF897D;
 
     overflow: hidden;
+    font-family: "Inter", sans-serif;
 }
 
 body {
@@ -21,4 +25,12 @@ body {
 
     width: 100vw;
     height: 100vh;
+
+    display: flex;
+    flex-direction: row;
+}
+
+main {
+    width: 100%;
+    height: 100%;
 }
