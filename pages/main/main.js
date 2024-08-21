@@ -1,9 +1,13 @@
-// MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class MainPage {
-    // render 메서드를 정의하여 HTML 콘텐츠를 반환
     render() {
         return `
-            <h1>Main Page</h1>
+        <div class="main-container">
+            <h1>PLAY</h1>
+            <div class="main-container__btn">
+                <button>온라인</button>
+                <button>오프라인</button>
+            </div>
+        </div>
         `;
     }
 }

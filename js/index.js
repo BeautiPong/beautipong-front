@@ -14,6 +14,8 @@ router
 .addRoute('#/rank', pages.rank)
 .addRoute('#/login', pages.login)
 .addRoute('#/signup', pages.signup)
+.addRoute('#/nickname', pages.nickname)
+.addRoute('#/2fa', pages.twoFactor)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })
