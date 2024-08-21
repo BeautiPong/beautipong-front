@@ -9,49 +9,54 @@
 
 /* 2FA 박스 스타일 */
 .two-fa-container {
-    width: 40vw;
-    height: 60vh;
+    width: 38vw;
+    height: 70vh;
     background-color: rgba(255, 255, 255, 0.2); /* 반투명 흰색 배경 */
-    padding: 20px;
-    border-radius: 35px;
+    padding: 5%;
+    border-radius: 5%;
     text-align: center;
 }
 
 .two-fa-container h1 {
     color: var(--main-color);
-    font-size: 40px;
+    font-size: 500%;
     font-weight: 600;
-	margin-top: 100px;
-    margin-bottom: 100px;
+	margin-top: 12vh;
+    margin-bottom: 12vh;
 }
 
 .two-fa-inputs {
     display: flex;
-    justify-content: space-around;
-    margin-bottom: 50px;
+    justify-content: space-between;
+    margin-bottom: 10vh;
 }
 
 .input-group {
     display: flex;
-    gap: 5px;
+    gap: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 
 .two-fa-inputs input {
-    width: 100px;
-    height: 100px;
-    font-size: 40px;
+    width: 100%;
+    height: 120%;
+    font-size: 80px;
+	color: var(--main-text-color);
     text-align: center;
     border: 2px solid #ccc;
     border-radius: 5px;
+	
 }
 
 .two-fa-container button {
-	width: 240px;
-    height: 80px;
+	width: 12vw;
+    height: 8vh;
     padding: 12px;
-    font-size: 22px;
+    font-size: 32px;
+	font-weight: 600;
+	color: var(--main-text-color);
     background-color: #fff;
-    border: 2px solid #000;
     border-radius: 5px;
     cursor: pointer;
 }

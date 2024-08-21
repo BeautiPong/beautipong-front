@@ -1,19 +1,23 @@
+
 @import "reset.css"; /* 맞나? */
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Inter:wght@100..900&family=Noto+Sans+KR:wght@100..900&display=swap');
 @import "../pages/login/login.css";
 @import "../pages/2fa/2fa.css";
+@import "../assets/components/nav/nav.css";
+@import "../pages/main/main.css";
 
 :root {
     --main-color: #FFFFFF;
     --main-text-color: #555555;
     --sub-text-color: #ABABAB;
-	--error-message-color: #E93842;
+    --error-message-color: #E93842;
 
-	--accept-button-color: #6ED087;
-	--refuse-button-color: #FF897D;
+    --accept-button-color: #6ED087;
+    --refuse-button-color: #FF897D;
 
     overflow: hidden;
+    font-family: "Inter", sans-serif;
 }
-
 body {
     background-image: url(../assets/images/background.svg);
     background-size: cover;
