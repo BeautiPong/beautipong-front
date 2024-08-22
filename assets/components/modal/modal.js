@@ -4,7 +4,7 @@ export function createModal(message, buttonMsg) {
         <div class="modal">
             <div class="modal-box">
                 <span class="close">&times;</span>
-                <img src="../../assets/icon/invite.svg" alt="회원가입완료" class="signup-image">
+                <img src="../../assets/icons/invite.svg" alt="회원가입완료" class="signup-image">
                 <p class="message">${message}</p>
                 <button class="modal-confirm-btn">${buttonMsg}</button>
             </div>

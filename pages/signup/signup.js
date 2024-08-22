@@ -1,4 +1,4 @@
-import {createModal} from '../../components/modal/modal.js';
+import {createModal} from '../../assets/components/modal/modal.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class SignupPage {
