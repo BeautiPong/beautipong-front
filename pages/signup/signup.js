@@ -20,11 +20,50 @@ export default class SignupPage {
                             <label for="nickname">닉네임을 입력해주세요</label>
                             <input type="text" id="nickname" placeholder="닉네임" required>
 
-                            <button type="submit">완료</button>
+                            <button id="signup-submit-btn" type="submit">완료</button>
                         </form>
                     </div>
                 </div>
                 </div>
         `;
+    }
+
+    async handleFormBtn(event) {
+        event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
+
+        // 폼 데이터를 수집합니다.
+        const formData = {
+            userID: document.getElementById('username').value,
+            password: document.getElementById('password').value,
+            email: document.getElementById('email').value,
+            nickname: document.getElementById('nickname').value
+        };
+
+        try {
+            // 백엔드로 POST 요청을 보냅니다.
+            const response = await fetch('http://localhost:8000/api/user/account/join/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            // 응답 처리
+            if (response.ok) {
+                const data = await response.json();
+                console.log('회원가입 성공:', data);
+            } else {
+                console.error('회원가입 실패:', response.status);
+            }
+        } catch (error) {
+            console.error('회원가입 요청 중 오류 발생:', error);
+        }
+
+    }
+
+    addEventListeners() {
+        const formButton = document.getElementById('signup-submit-btn');
+        formButton.addEventListener('click', this.handleFormBtn);
     }
 }
