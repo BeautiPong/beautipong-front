@@ -8,17 +8,17 @@ export default class SignupPage {
                     <div class="signup-contents">
                         <h1>회원 가입</h1>
                         <form>
-                            <label for="username">로그인에 사용할 아이디를 입력해주세요</label>
-                            <input type="text" id="username" placeholder="아이디" required>
-
-                            <label for="password">로그인에 사용할 비밀번호를 입력해주세요</label>
-                            <input type="password" id="password" placeholder="비밀번호" required>
+                            <label for="nickname">닉네임을 입력해주세요</label>
+                            <input type="text" id="nickname" placeholder="닉네임" required>
 
                             <label for="email">이메일을 입력해주세요</label>
                             <input type="email" id="email" placeholder="이메일" required>
 
-                            <label for="nickname">닉네임을 입력해주세요</label>
-                            <input type="text" id="nickname" placeholder="닉네임" required>
+                            <label for="username">로그인에 사용할 아이디를 입력해주세요</label>
+                            <input type="text" id="username" placeholder="아이디" required>
+
+                            <label for="password">비밀번호는 대문자, 소문자, 숫자 및 특수 문자를 포함해야 합니다.</label>
+                            <input type="password" id="password" placeholder="비밀번호" required>
 
                             <button id="signup-submit-btn" type="submit">완료</button>
                         </form>
@@ -52,9 +52,12 @@ export default class SignupPage {
             // 응답 처리
             if (response.ok) {
                 const data = await response.json();
-                console.log('회원가입 성공:', data);
+                console.log('회원가입 성공!');
+                window.location.hash = '#/login';
             } else {
-                console.error('회원가입 실패:', response.status);
+                const errorData = await response.json();
+                console.error('회원가입 실패:', errorData);
+            
             }
         } catch (error) {
             console.error('회원가입 요청 중 오류 발생:', error);
