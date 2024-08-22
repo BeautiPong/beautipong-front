@@ -3,9 +3,11 @@
 @import "../pages/login/login.css";
 @import "../pages/signup/signup.css";
 @import "../pages/2fa/2fa.css";
-@import "../assets/components/nav/nav.css";
 @import "../pages/main/main.css";
 @import "../pages/nickname/nickname.css";
+
+@import "../assets/components/nav/nav.css";
+@import "../assets/components/modal/modal.css";
 
 
 :root {

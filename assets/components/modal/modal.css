@@ -1,0 +1,73 @@
+.modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.modal-box {
+    background-color: var(--main-color);
+    border: none;
+    width: 30vw;
+    height: 30vh;
+    border-radius: 20px;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.signup-image {
+    margin-top: 3vh;
+    margin-bottom: 3vh;
+}
+
+.message {
+    color: var(--main-text-color);
+    font-weight: 800;
+    margin-bottom: 2vh;
+}
+
+.close {
+    position: absolute;
+    top: 1vh;
+    right: 0.8vw;
+
+    color: var(--sub-text-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: var(--main-text-color);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-confirm-btn {
+    background-color: var(--main-color);
+    color: var(--refuse-button-color);
+    border: none;
+    border-radius: 15px;
+    padding: 1.5vh 5vw;
+    font-size: 16px;
+    cursor: pointer;
+    border: 2px solid var(--refuse-button-color);
+}
+
+.modal-confirm-btn:hover,
+.modal-confirm-btn:focus {
+    background-color: var(--refuse-button-color);
+    color: var(--main-color);
+    outline: none;
+}
