@@ -34,12 +34,11 @@
 .input-group {
     display: flex;
     gap: 10px;
-	padding-left: 20px;
-	padding-right: 20px;
+	justify-content: center;
 }
 
 .two-fa-inputs input {
-    width: 5.3vw;
+    width: 25%;
     margin-right: 2%;
     height: 9vh;
     font-size: 60px;
@@ -60,5 +59,9 @@
     background-color: #fff;
     border-radius: 10px;
     cursor: pointer;
+
+}
+.two-fa-container button:hover {
+	border: 3px solid var(--main-text-color);
 }
 
