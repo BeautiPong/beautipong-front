@@ -48,6 +48,7 @@ export default container => {
     const twoFactor = () => {
         const page = new TwoFactorPage();
         container.innerHTML = page.render();
+		page.afterRender();
     }
   
     return {

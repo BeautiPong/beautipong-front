@@ -9,10 +9,10 @@ export default class LoginPage {
                             <input type="text" id="userId" placeholder="아이디" name="username" required>
                         </div>
                         <div class="text-box password-box">
-                            <input type="text" id="password" placeholder="패스워드" name="password" required>
+                            <input type="text" id="pw" placeholder="패스워드" name="password" required>
                         </div>
                         <div class="button-box">
-                            <button id="signIn-btn" type="submit" class="btn">로그인</button>
+                            <button id="signIn-btn" type="button" class="btn">로그인</button>
                             <button id="signup-btn" type="button" class="btn">회원가입</button>
                         </div>
                     </form>
@@ -26,11 +26,16 @@ export default class LoginPage {
     }
 
     afterRender() {
+		document.querySelector('.nav-container').style.display = 'none';
+
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
             window.location.hash = '#/signup'; // #/signup 페이지로 라우팅
         });
+
+		const formButton = document.getElementById('signIn-btn');
+		formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
     }
 
 
@@ -39,13 +44,13 @@ export default class LoginPage {
 
         // 폼 데이터를 수집합니다.
         const formData = {
-            userID: document.getElementById('username').value,
-            password: document.getElementById('password').value,
+            userID: document.getElementById('userId').value,
+            password: document.getElementById('pw').value,
         };
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/login/', {
+            const response = await fetch('http://localhost:8000/api/user/account/pre-login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,9 +73,6 @@ export default class LoginPage {
 
     }
 
-    addEventListeners() {
-    const formButton = document.getElementById('signIn-btn');
-    formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
-}
+
 }
 
