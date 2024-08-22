@@ -1,3 +1,5 @@
+import {createModal} from '../../components/modal/modal.js';
+
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class SignupPage {
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
@@ -28,6 +30,36 @@ export default class SignupPage {
         `;
     }
 
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createModal(message, buttonMsg);
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function(event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
+
     async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
 
@@ -53,12 +85,15 @@ export default class SignupPage {
             if (response.ok) {
                 const data = await response.json();
                 console.log('회원가입 성공!');
+
                 window.location.hash = '#/login';
+                this.showModal('회원가입이 성공적으로 완료되었습니다!', '확인');
+
             } else {
                 const errorData = await response.json();
                 console.error('회원가입 실패:', errorData);
-            
             }
+
         } catch (error) {
             console.error('회원가입 요청 중 오류 발생:', error);
         }
@@ -67,6 +102,7 @@ export default class SignupPage {
 
     addEventListeners() {
         const formButton = document.getElementById('signup-submit-btn');
-        formButton.addEventListener('click', this.handleFormBtn);
+        // formButton.addEventListener('click', this.handleFormBtn);
+        formButton.addEventListener('click', this.handleFormBtn.bind(this));
     }
 }

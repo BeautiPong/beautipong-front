@@ -6,6 +6,7 @@
 @import "../assets/components/nav/nav.css";
 @import "../pages/main/main.css";
 @import "../pages/nickname/nickname.css";
+@import "../components/modal/modal.css";
 
 
 :root {
