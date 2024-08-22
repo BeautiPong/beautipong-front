@@ -6,13 +6,13 @@ export default class LoginPage {
                     <h1>PING PONG</h1>
                     <form>
                         <div class="text-box">
-                            <input type="text" placeholder="아이디" name="username" required>
+                            <input type="text" id="userId" placeholder="아이디" name="username" required>
                         </div>
                         <div class="text-box password-box">
-                            <input type="text" placeholder="패스워드" name="password" required>
+                            <input type="text" id="password" placeholder="패스워드" name="password" required>
                         </div>
                         <div class="button-box">
-                            <button type="submit" class="btn">로그인</button>
+                            <button id="signIn-btn" type="submit" class="btn">로그인</button>
                             <button id="signup-btn" type="button" class="btn">회원가입</button>
                         </div>
                     </form>
@@ -41,13 +41,11 @@ export default class LoginPage {
         const formData = {
             userID: document.getElementById('username').value,
             password: document.getElementById('password').value,
-            email: document.getElementById('email').value,
-            nickname: document.getElementById('nickname').value
         };
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/join/', {
+            const response = await fetch('http://localhost:8000/api/user/account/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,19 +56,21 @@ export default class LoginPage {
             // 응답 처리
             if (response.ok) {
                 const data = await response.json();
-                console.log('회원가입 성공:', data);
+                console.log('로그인 성공:', data);
+                localStorage.setItem('temp_token', data.temp_token);
+                window.location.hash = '#/2fa';
             } else {
-                console.error('회원가입 실패:', response.status);
+                console.error('로그인 실패:', response.status);
             }
         } catch (error) {
-            console.error('회원가입 요청 중 오류 발생:', error);
+            console.error('로그인 요청 중 오류 발생:', error);
         }
 
     }
 
     addEventListeners() {
-        const formButton = document.getElementById('signup-submit-btn');
-        formButton.addEventListener('click', this.handleFormBtn);
-    }
+    const formButton = document.getElementById('signIn-btn');
+    formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
+}
 }
 
