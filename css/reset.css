@@ -60,3 +60,15 @@ a:active {
     color: inherit; /* 클릭 상태에서도 색상 변경 없음 */
     text-decoration: none; /* 클릭 상태에서도 밑줄 제거 */
 }
+
+input:valid, input:invalid, input:focus {
+    border-color: initial; /* 입력이 유효하거나 유효하지 않을 때도 테두리 색상 유지 */
+    box-shadow: none; /* 그림자 제거 */
+}
+
+/* 기본 스타일 리셋 */
+input {
+    border: none; /* 기본 테두리 제거 */
+    outline: none; /* 기본 테두리 제거 */
+    box-shadow: none; /* 기본 그림자 제거 */
+}
