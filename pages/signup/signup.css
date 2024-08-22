@@ -58,7 +58,7 @@
     border: none;
     border-radius: 10px;
     font-size: 20px;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(255, 255, 255, 0.7) !important;
     height: 50px;
     color: var(--main-text-color);
     padding-left: 25px;
@@ -77,4 +77,12 @@
     color: var(--main-text-color);
     font-size: 24px;
     font-weight: 600;
+}
+
+.form-error {
+    border: 1px solid var(--error-message-color) !important;
+}
+
+.form-error-label {
+    color: var(--error-message-color) !important;
 }
