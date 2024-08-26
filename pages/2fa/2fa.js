@@ -1,3 +1,5 @@
+import {createModal} from '../../assets/components/modal/modal.js';
+
 export default class TwoFactorPage {
     render() {
         return `
@@ -5,17 +7,22 @@ export default class TwoFactorPage {
                 <div class="two-fa-container">
                     <h1>2FA 인증</h1>
                     <form id="two-fa-form">
-                        <div class="two-fa-inputs">
-                            <div class="input-group">
-                                <input type="text" maxlength="1" required>
-                                <input type="text" maxlength="1" required>
-                                <input type="text" maxlength="1" required>
+                        <div class="input-wrapper">
+                            <div class="two-fa-inputs">
+                                <div class="input-group">
+                                    <input type="text" maxlength="1" required>
+                                    <input type="text" maxlength="1" required>
+                                    <input type="text" maxlength="1" required>
+                                </div>
+                                <div class="input-group">
+                                    <input type="text" maxlength="1" required>
+                                    <input type="text" maxlength="1" required>
+                                    <input type="text" maxlength="1" required>
+                                </div>
                             </div>
-                            <div class="input-group">
-                                <input type="text" maxlength="1" required>
-                                <input type="text" maxlength="1" required>
-                                <input type="text" maxlength="1" required>
-                            </div>
+                        </div>
+                        <div class="error-message-container">
+                            <div class="error-message" id="error-message">default</div>
                         </div>
                         <button id="generate-btn" type="button">코드 (재)전송</button>
                         <button id="verify-btn" type="submit">인증 확인</button>
@@ -23,6 +30,36 @@ export default class TwoFactorPage {
                 </div>
             </div>
         `;
+    }
+
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createModal(message, buttonMsg);
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function(event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
     }
 
     async afterRender() {
@@ -94,7 +131,7 @@ export default class TwoFactorPage {
                 console.error('2FA 이메일 전송 실패:', response.status);
             } else {
                 console.log('2FA 이메일 전송 성공');
-				alert("전송되었습니다. 30초 후 재전송 가능합니다.")
+                this.showModal('전송되었습니다. 30초 후 재전송 가능합니다.', '확인');
             }
         } catch (error) {
             console.error('2FA 이메일 요청 중 오류 발생:', error);
@@ -136,9 +173,27 @@ export default class TwoFactorPage {
                 window.location.hash = '#/';
             } else {
                 console.error('2FA 인증 실패:', response.status);
+                const errorData = await response.json();
+                this.handle2FAError(errorData);
             }
         } catch (error) {
             console.error('2FA 요청 중 오류 발생:', error);
         }
+    }
+
+    handle2FAError(errorData) {
+        // 에러 메시지 div 선택
+        const errorDiv = document.querySelector('.error-message');
+        
+        // 에러 메시지 보이게
+        errorDiv.innerText = '코드가 틀렸습니다. 다시 시도해주세요.';
+        // 에러 메시지 보이게 설정
+        errorDiv.classList.add('show');
+    
+        // 모든 입력 박스에 에러 스타일 추가
+        const inputs = document.querySelectorAll('.two-fa-inputs input');
+        inputs.forEach(input => {
+            input.classList.add('input-error');
+        });
     }
 }
