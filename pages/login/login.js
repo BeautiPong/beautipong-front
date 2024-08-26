@@ -9,7 +9,7 @@ export default class LoginPage {
                             <input type="text" id="userId" placeholder="아이디" name="username" required>
                         </div>
                         <div class="text-box password-box">
-                            <input type="text" id="pw" placeholder="패스워드" name="password" required>
+                            <input type="password" id="pw" placeholder="패스워드" name="password" required>
                         </div>
                         <div class="button-box">
                             <button id="signIn-btn" type="button" class="btn">로그인</button>
