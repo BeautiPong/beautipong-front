@@ -7,11 +7,11 @@ export default class LoginPage {
                     <form>
                         <div class="text-box">
                             <input type="text" id="userId" placeholder="아이디" name="username" required>
-                            <div class="id-error-message" id="id-error-message">defaule</div>
+                            <div class="id-error-message" id="id-error-message">default</div>
                         </div>
                         <div class="text-box password-box">
                             <input type="text" id="pw" placeholder="패스워드" name="password" required>
-                            <div class="pw-error-message" id="pw-error-message">defaule</div>
+                            <div class="pw-error-message" id="pw-error-message">default</div>
                         </div>
                         <div class="button-box">
                             <button id="signIn-btn" type="button" class="btn">로그인</button>
@@ -87,6 +87,12 @@ export default class LoginPage {
 
                 const idInput = document.querySelector('#userId');
                 idInput.classList.add('input-error');
+
+                // 사용자 입력 시 에러 상태 리셋
+                idInput.addEventListener('input', function () {
+                idErrorDiv.innerText = 'default';
+                idErrorDiv.classList.remove('show');
+                idInput.classList.remove('input-error');});
                 
                 break ;
             case "비밀번호가 틀렸습니다." :
@@ -96,6 +102,12 @@ export default class LoginPage {
 
                 const pwInput = document.querySelector('#pw');
                 pwInput.classList.add('input-error');
+
+                // 사용자 입력 시 에러 상태 리셋
+                pwInput.addEventListener('input', function () {
+                pwErrorDiv.innerText = 'default';
+                pwErrorDiv.classList.remove('show');
+                pwInput.classList.remove('input-error');});
                 
                 break ;
         }
