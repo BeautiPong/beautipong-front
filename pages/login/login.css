@@ -87,3 +87,15 @@ header {
     width: 3vw;
     height: auto;
 }
+
+.form-error {
+    border: 1px solid var(--error-message-color) !important;
+}
+
+.form-error-label {
+    color: var(--error-message-color) !important;
+    font-size: 15px;
+    margin-top: 0.5vh;
+    margin-left: 0.5vw;
+    display: block;
+}
