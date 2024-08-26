@@ -30,7 +30,9 @@
 }
 
 .text-box {
-    margin-bottom: 1vh;
+    margin-bottom: 0.5vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .password-box {
@@ -86,4 +88,44 @@
 .start-image {
     width: 3vw;
     height: auto;
+}
+
+
+/* .form-error {
+    border: 1px solid var(--error-message-color) !important;
+}
+
+.form-error-label {
+    color: var(--error-message-color) !important;
+    font-size: 15px;
+    margin-top: 0.5vh;
+    margin-left: 0.5vw;
+    display: block;
+} */
+
+
+.id-error-message {
+    visibility: hidden;
+    color: var(--error-message-color);
+    font-size: 15px;
+    margin-left: 0.5vw;
+}
+
+.id-error-message.show {
+    visibility: visible;
+}
+
+.pw-error-message {
+    visibility: hidden;
+    color: var(--error-message-color);
+    font-size: 15px;
+    margin-left: 0.5vw;
+}
+
+.pw-error-message.show {
+    visibility: visible;
+}
+
+.input-error {
+    box-shadow: inset 0 0 0 2px var(--error-message-color) !important;
 }
