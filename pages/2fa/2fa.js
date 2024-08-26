@@ -194,6 +194,19 @@ export default class TwoFactorPage {
         const inputs = document.querySelectorAll('.two-fa-inputs input');
         inputs.forEach(input => {
             input.classList.add('input-error');
+
+
+            // 입력 시 에러 상태 리셋
+            input.addEventListener('input', function () {
+                // 에러 메시지 숨기기
+                errorDiv.innerText = '';
+                errorDiv.classList.remove('show');
+                
+                // 모든 입력 박스에서 에러 스타일 제거
+                inputs.forEach(input => {
+                    input.classList.remove('input-error');
+                });
+            });
         });
     }
 }
