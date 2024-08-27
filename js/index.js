@@ -32,6 +32,7 @@ router
 .addRoute('#/signup', pages.signup)
 .addRoute('#/nickname', pages.nickname)
 .addRoute('#/2fa', pages.twoFactor)
+.addRoute('#/waitgame', pages.game)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })

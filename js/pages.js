@@ -6,6 +6,7 @@ import FriendPage from '../pages/friend/friend.js'
 import SignupPage from '../pages/signup/signup.js'
 import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
+import WaitGamePage from '../pages/game/game.js'
 
 export default container => {
     const home = () => {
@@ -59,6 +60,7 @@ export default container => {
         friend,
         signup,
         nickname,
-	      twoFactor,
+	    twoFactor,
+        WaitGamePage,
     }
-  }
+}
