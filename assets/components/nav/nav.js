@@ -2,6 +2,72 @@ import { createModal } from '../modal/modal.js';
 import { refreshAccessToken } from '../../../js/token.js';
 
 const logoutBtn = document.getElementById('nav__logout');
+const profileImg = document.getElementById('nav-profile__img');
+const profileTier = document.getElementById('nav-profile__info__tier');
+const profileNickname = document.getElementById('nav-profile__info__nickname');
+
+// 프로필 정보 가져오기 함수
+async function loadProfile() {
+    try {
+        let response = await fetch('http://localhost:8000/api/user/profile/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+            },
+        });
+
+        // 액세스 토큰이 만료되어 401 오류가 발생했을 때
+        if (response.status === 401) {
+            const newAccessToken = await refreshAccessToken();
+
+            // 새 액세스 토큰으로 다시 요청
+            response = await fetch('http://localhost:8000/api/user/profile/', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${newAccessToken}`,
+                },
+            });
+        }
+
+        // 응답 처리
+        if (response.ok) {
+            const profileData = await response.json();
+			console.log(profileData);
+
+            // DOM 요소에 프로필 정보 설정
+			if (profileData.img) {
+            	profileImg.src = profileData.img;
+			} else {
+				profileImg.src = "assets/images/profile.svg";
+			}
+
+			if (profileData.score <= 1000) {
+				profileTier.src = `assets/icons/bronz.svg`;
+			}
+			else if (profileData.score <= 1200) {
+				profileTier.src = `assets/icons/silver.svg`;
+			}
+			else if (profileData.score <= 1500) {
+				profileTier.src = `assets/icons/gold.svg`;
+			}
+			else if (profileData.score <= 2000) {
+				profileTier.src = `assets/icons/platinum.svg`;
+			}
+			else {
+				profileTier.src = `assets/icons/dia.svg`;
+			}
+	
+            profileNickname.textContent = profileData.nickname;
+        } else {
+            console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
+        }
+    } catch (error) {
+        console.error('프로필 정보 로딩 중 오류 발생:', error);
+    }
+}
+
+// 페이지 로드 시 프로필 정보 가져오기
+document.addEventListener('DOMContentLoaded', loadProfile);
 
 // 모달 창 생성 및 표시 함수
 function showModal(message, buttonMsg) {
