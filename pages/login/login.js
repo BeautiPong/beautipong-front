@@ -56,6 +56,11 @@ export default class LoginPage {
             password: document.getElementById('pw').value,
         };
 
+        if (!formData.userID || !formData.password) {
+            this.handleLoginError({ message: "모든 필드를 입력해주세요." });
+            return;
+        }
+
         try {
             // 백엔드로 POST 요청을 보냅니다.
             const response = await fetch('http://localhost:8000/api/user/account/pre-login/', {
@@ -84,14 +89,42 @@ export default class LoginPage {
 
     handleLoginError(errorData) {
 
+        const idInput = document.querySelector('#userId');
+        const pwInput = document.querySelector('#pw');
+        const idErrorDiv = document.querySelector('.id-error-message');
+        const pwErrorDiv = document.querySelector('.pw-error-message');
+
         // 에러 메시지에 따른 처리
         switch (errorData.message) {
+            case "모든 필드를 입력해주세요." :
+                if (!document.getElementById('userId').value) {
+                    idErrorDiv.innerText = "id를 입력해주세요.";
+                    idErrorDiv.classList.add('show');
+                    idInput.classList.add('input-error');
+
+                    // 사용자 입력 시 에러 상태 리셋
+                    idInput.addEventListener('input', function () {
+                    idErrorDiv.innerText = 'default';
+                    idErrorDiv.classList.remove('show');
+                    idInput.classList.remove('input-error');});
+                }
+                if (!document.getElementById('pw').value) {
+                    pwErrorDiv.innerText = "비밀번호를 입력해주세요.";
+                    pwErrorDiv.classList.add('show');
+                    pwInput.classList.add('input-error');
+
+                    // 사용자 입력 시 에러 상태 리셋
+                    pwInput.addEventListener('input', function () {
+                    pwErrorDiv.innerText = 'default';
+                    pwErrorDiv.classList.remove('show');
+                    pwInput.classList.remove('input-error');});
+                }
+                break ;
+
             case "존재하지 않는 아이디입니다." :
-                const idErrorDiv = document.querySelector('.id-error-message');
                 idErrorDiv.innerText = `${errorData.message}`;
                 idErrorDiv.classList.add('show');
-
-                const idInput = document.querySelector('#userId');
+            
                 idInput.classList.add('input-error');
 
                 // 사용자 입력 시 에러 상태 리셋
@@ -102,11 +135,9 @@ export default class LoginPage {
                 
                 break ;
             case "비밀번호가 틀렸습니다." :
-                const pwErrorDiv = document.querySelector('.pw-error-message');
                 pwErrorDiv.innerText = `${errorData.message}`;
                 pwErrorDiv.classList.add('show');
 
-                const pwInput = document.querySelector('#pw');
                 pwInput.classList.add('input-error');
 
                 // 사용자 입력 시 에러 상태 리셋
