@@ -42,7 +42,7 @@ window.addEventListener('hashchange', () => {
   checkLoginStatus(); // 로그인 상태 확인
 
   const currentHash = window.location.hash;
-  if (currentHash === '#/login' || currentHash === '#/signup') {
+  if (currentHash === '#/login' || currentHash === '#/signup' || currentHash === '#/2fa' || currentHash === '#/nickname' ) {
     navContainer.style.display = 'none'; // 로그인 또는 회원가입 페이지에서 nav 바 숨기기
   } else {
     navContainer.style.display = 'block'; // 다른 페이지에서는 nav 바 표시
@@ -52,7 +52,7 @@ window.addEventListener('hashchange', () => {
 // 페이지 로드 시 처음에 로그인 상태와 nav 바 표시 여부를 설정
 checkLoginStatus();
 const initialHash = window.location.hash;
-if (initialHash === '#/login' || initialHash === '#/signup') {
+if (initialHash === '#/login' || initialHash === '#/signup' || initialHash === '#/2fa' || initialHash === '#/nickname') {
   navContainer.style.display = 'none';
 } else {
   navContainer.style.display = 'block';
