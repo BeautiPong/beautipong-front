@@ -93,6 +93,12 @@ export default class TwoFactorPage {
 
         const verifyButton = document.getElementById("verify-btn");
         verifyButton.addEventListener("click", (event) => this.handleSubmit(event));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.handleSubmit(event);
+            }
+        });
     }
 
     async handleGenerateButtonClick(event) {

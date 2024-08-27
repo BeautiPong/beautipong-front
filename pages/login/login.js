@@ -10,7 +10,7 @@ export default class LoginPage {
                             <div class="id-error-message" id="id-error-message">default</div>
                         </div>
                         <div class="text-box password-box">
-                            <input type="text" id="pw" placeholder="패스워드" name="password" required>
+                            <input type="password" id="pw" placeholder="패스워드" name="password" required>
                             <div class="pw-error-message" id="pw-error-message">default</div>
                         </div>
                         <div class="button-box">
@@ -33,11 +33,17 @@ export default class LoginPage {
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
-            window.location.hash = '#/signup'; // #/signup 페이지로 라우팅
+            window.location.hash = '#/signup';
         });
 
 		const formButton = document.getElementById('signIn-btn');
-		formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
+		formButton.addEventListener('click', (event) => this.handleFormBtn(event));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.handleFormBtn(event);
+            }
+        });
     }
 
 
