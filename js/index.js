@@ -32,6 +32,7 @@ router
 .addRoute('#/signup', pages.signup)
 .addRoute('#/nickname', pages.nickname)
 .addRoute('#/2fa', pages.twoFactor)
+.addRoute('#/42oath-redirect', pages.oath)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })
