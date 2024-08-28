@@ -9,7 +9,7 @@ function checkLoginStatus() {
   if (!token && window.location.hash !== '#/login' && window.location.hash !== '#/signup') {
 
     // 처음 로그인해서 임시토큰을 발급받은 상태면 2fa로 넘어갈 수 있도록 
-    if (tmpToken)
+    if (tmpToken && window.location.hash === '#/2fa')
       retrun ;
 
     // 토큰이 없고, 현재 해시가 로그인 페이지나 회원가입 페이지가 아니면 로그인 페이지로 리다이렉트
