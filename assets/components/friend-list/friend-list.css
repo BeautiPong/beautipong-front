@@ -9,6 +9,8 @@
     width: 35vw;
     height: 8vh;
     border-radius: 20px;
+
+    margin-bottom: 1vh;
 }
 
 .list-box {
@@ -18,7 +20,7 @@
     align-items: center;
 
     width: 90%;
-    height: 70%;
+    height: 70%;    margin-bottom: 1vh;
 }
 
 .list-profile-image {
