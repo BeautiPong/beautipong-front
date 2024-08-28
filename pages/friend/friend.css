@@ -78,7 +78,7 @@
     margin-bottom: 3vh;
 }
 
-.friend-list-box {
+/* .friend-list-box {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,7 +87,7 @@
     background-color: rgba(0,0,0, 0.2);
     color: var(--main-text-color);
     border-radius: 20px;
-}
+} */
 
 .chat-container {
     width: 40vw;

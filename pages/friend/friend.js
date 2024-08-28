@@ -1,4 +1,5 @@
 import {createFriendRequest} from '../../assets/components/friend-request/friend-request.js';
+import {createFriendList} from '../../assets/components/friend-list/friend-list.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -14,13 +15,13 @@ export default class FriendPage {
                                 <img class="friend-search-icon" src="../../assets/icons/userSearch.svg" alt="친구찾기">
                             </div>
                             <div class="friend-request-box">
-                                ${createFriendRequest("", "seojchoi")}
+                                ${createFriendRequest("../../assets/images/profile.svg", "seojchoi")}
                             </div>
                         </div>
                         <div class="friend-list">
                             <p class="friend-list-text">친구목록</p>
                             <div class="friend-list-box">
-                                <p>친구가 없습니다..</p>
+                                ${createFriendList("../../assets/images/profile.svg", "seojchoi")}
                             </div>
                         </div>
                     </div>
@@ -35,4 +36,6 @@ export default class FriendPage {
     }
 
     // <p>새로운 친구요청이 없습니다</p>
+    // <p>친구가 없습니다..</p>
+    // ${createFriendList("../../assets/images/profile.svg", "seojchoi")}
 }
