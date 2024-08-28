@@ -53,18 +53,25 @@ export default class FriendPage {
                 // 친구가 있으면 친구 정보 표시
                 friendListBox.innerHTML = '';
                 friendListBox.classList.remove('friend-list-box');
+            
                 data.friends.forEach(friend => {
                     const nickname = friend.nickname;
                     const image = friend.image || '../../assets/images/profile.svg';
+                    
+                    // 친구 요소를 생성
                     const friendComponent = createFriendList(image, nickname);
-                    friendListBox.innerHTML += friendComponent;
-
-                    // 이벤트 리스너 추가
-                    const friendElements = friendListBox.querySelectorAll('.list-container');
-                    friendElements.forEach(element => {
-                        element.addEventListener('click', () => {
-                            this.updateChatBox(nickname);
-                        });
+            
+                    // 새 친구 요소를 DOM에 추가
+                    const tempElement = document.createElement('div');
+                    tempElement.innerHTML = friendComponent;
+            
+                    // 생성된 친구 요소를 DOM에 추가
+                    const newFriendElement = tempElement.firstElementChild;
+                    friendListBox.appendChild(newFriendElement);
+            
+                    // 이벤트 리스너를 직접 추가
+                    newFriendElement.addEventListener('click', () => {
+                        this.updateChatBox(nickname);
                     });
                 });
             } else {
