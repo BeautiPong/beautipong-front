@@ -130,10 +130,13 @@ export default class FriendPage {
     
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
-                console.log('Received data:', data);
+                const myName = data.user;
                 const chatLog = document.querySelector('#chat-log');
                 if (chatLog) {
-                    chatLog.innerHTML += `${data.message}<br>`;
+                    const type = myName === data.sender ? 'my-message' : 'other-user';
+                    const messageHTML = createMessage(type, data.sender, data.message);
+                    chatLog.innerHTML += messageHTML;
+                    chatLog.scrollTop = chatLog.scrollHeight;
                 }
             };
     
@@ -155,7 +158,6 @@ export default class FriendPage {
             };
     
             function sendMessage() {
-                console.log("sendMessage");
                 const messageInputDom = document.querySelector('#chat-message-input');
                 const message = messageInputDom.value;
     
@@ -187,15 +189,16 @@ export default class FriendPage {
             }
     
             const data = await response.json();
+            const myName = data.user;
 
             const chatLog = document.querySelector('#chat-log');
             chatLog.innerHTML = '';
             data.messages.forEach(message => {
-                // chatLog.innerHTML += `${message.sender} [${message.created_at}]: ${message.content}<br>`;
-                chatLog.innerHTML += createMessage(message.sender, message.content);
+                const type = myName === message.sender ? 'my-message' : 'other-user';
+                chatLog.innerHTML += createMessage(type, message.sender, message.content);
             });
 
-            // Scroll to the bottom of the chat log
+            // 하단으로 스크롤
             chatLog.scrollTop = chatLog.scrollHeight;
     
         } catch (error) {

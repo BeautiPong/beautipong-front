@@ -1,13 +1,25 @@
-.chat-message-box {
+.chat-message-box{
     display: flex;
     display: block;
     flex-direction: column;
-    margin-bottom: 1vh;
+    margin-bottom: 1.5vh;
 
     max-width: 80%;
     word-wrap: break-word;
 
     /* border: 3px solid var(--accept-button-color); */
+}
+
+/* 다른 사용자의 메시지 (왼쪽 정렬) */
+.chat-message-box.other-user {
+    margin-right: auto;
+    align-self: flex-start;
+}
+
+/* 현재 사용자의 메시지 (오른쪽 정렬) */
+.chat-message-box.my-message {
+    margin-left: auto;
+    align-self: flex-end;
 }
 
 .message-nickname {
@@ -16,13 +28,24 @@
     margin-bottom: 0.5vh;
 }
 
+.message-nickname.my-message{
+    display: none;
+}
+
 .message-content {
     background-color: var(--main-color);
     border-radius: 20px;
 
     font-size: 1vw;
-    padding: 0.5vw 0.5vw;
+    padding: 0.5vw 1vw 0.5vw 1vw;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 
+    /* border: 3px solid var(--main-text-color); */
+}
 
-    border: 3px solid var(--main-text-color);
+.message-content.my-message {
+    /* background-color: rgb(252, 254, 216); */
+    background-color: rgb(255, 212, 220);
+    color: var(--main-text-color);
+    /* border: 3px solid var(--main-text-color); */
 }
