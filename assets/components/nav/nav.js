@@ -145,10 +145,30 @@ function showModal(message, buttonMsg) {
     };
 }
 
+function setActiveNavButton(activeButton) {
+    const buttons = [navMain, navMypage, navFriend, navRank];
+    buttons.forEach(button => {
+        button.classList.remove('nav__select');
+    });
+    activeButton.classList.add('nav__select');
+}
+
 const router = getRouter();
 
 logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
-navMain.addEventListener('click', () => router.navigate('/'));
-navMypage.addEventListener('click', () => router.navigate('/mypage'));
-navFriend.addEventListener('click', () => router.navigate('/friend'));
-navRank.addEventListener('click', () => router.navigate('/rank'));
+navMain.addEventListener('click', () => {
+    router.navigate('/');
+    setActiveNavButton(navMain);
+});
+navMypage.addEventListener('click', () => {
+    router.navigate('/mypage');
+    setActiveNavButton(navMypage);
+});
+navFriend.addEventListener('click', () => {
+    router.navigate('/friend');
+    setActiveNavButton(navFriend);
+});
+navRank.addEventListener('click', () => {
+    router.navigate('/rank');
+    setActiveNavButton(navRank);
+});

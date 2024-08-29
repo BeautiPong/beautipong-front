@@ -39,12 +39,12 @@ router
 
 // 해시가 변경될 때마다 로그인 상태 확인 및 nav 바 표시 여부 결정
 window.addEventListener('popstate', () => {
-  checkLoginStatus();
+  // checkLoginStatus();
   updateNavVisibility();
 });
 
 // 페이지 로드 시 초기 상태 설정
-checkLoginStatus();
+// checkLoginStatus();
 updateNavVisibility();
 
 function updateNavVisibility() {
