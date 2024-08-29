@@ -1,3 +1,5 @@
+import { getRouter } from '../../js/router.js';
+
 export default class LoginPage {
     render() {
         return `
@@ -30,10 +32,12 @@ export default class LoginPage {
     afterRender() {
 		document.querySelector('.nav-container').style.display = 'none';
 
+        const router = getRouter(); // router 객체 가져오기
+
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
-            window.location.hash = '#/signup';
+            router.navigate('/signup'); // /signup 페이지로 라우팅
         });
 
 		const formButton = document.getElementById('signIn-btn');
@@ -99,7 +103,8 @@ export default class LoginPage {
                 const data = await response.json();
                 console.log('로그인 성공:', data);
                 localStorage.setItem('temp_token', data.temp_token);
-                window.location.hash = '#/2fa';
+                const router = getRouter(); // router 객체 가져오기
+                router.navigate('/2fa'); // 로그인 성공 후 /2fa 페이지로 라우팅
             } else {
                 console.error('로그인 실패:', response.status);
                 const errorData = await response.json();
