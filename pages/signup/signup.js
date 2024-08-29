@@ -1,4 +1,5 @@
 import {createModal} from '../../assets/components/modal/modal.js';
+import { getRouter } from '../../js/router.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class SignupPage {
@@ -113,7 +114,8 @@ export default class SignupPage {
                 const data = await response.json();
                 console.log('회원가입 성공!');
 
-                window.location.hash = '#/login';
+                const router = getRouter();
+                router.navigate('/login');
                 this.showModal('회원가입이 성공적으로 완료되었습니다!', '확인');
 
             } else {

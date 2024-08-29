@@ -1,5 +1,5 @@
 import { createRouter } from './router.js';
-import createPages from './pages.js';
+import createPages from './pages.js'
 
 // 로그인 상태 확인 함수
 function checkLoginStatus() {
@@ -7,7 +7,11 @@ function checkLoginStatus() {
   const tmpToken = localStorage.getItem('temp_token');
 
   if (!token && window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
-    if (tmpToken) return;
+    
+    // 처음 로그인해서 임시토큰을 발급받은 상태면 2fa로 넘어갈 수 있도록 
+    if (tmpToken && window.location.hash === '#/2fa')
+      retrun ;
+
     router.navigate('/login');
   }
 }
@@ -19,18 +23,19 @@ const pages = createPages(container);
 const router = createRouter();
 
 router
-  .addRoute('/', pages.home)
-  .addRoute('/mypage', pages.mypage)
-  .addRoute('/friend', pages.friend)
-  .addRoute('/rank', pages.rank)
-  .addRoute('/login', pages.login)
-  .addRoute('/signup', pages.signup)
-  .addRoute('/nickname', pages.nickname)
-  .addRoute('/2fa', pages.twoFactor)
-  .setNotFound(() => {
-    container.innerHTML = '<h1>Page Not Found!</h1>';
-  })
-  .start();
+.addRoute('/', pages.home)
+.addRoute('/mypage', pages.mypage)
+.addRoute('/friend', pages.friend)
+.addRoute('/rank', pages.rank)
+.addRoute('/login', pages.login)
+.addRoute('/signup', pages.signup)
+.addRoute('/nickname', pages.nickname)
+.addRoute('/2fa', pages.twoFactor)
+.addRoute('/42oath-redirect', pages.oath)
+.setNotFound(() => {
+  container.innerHTML = '<h1>Page Not Found!</h1>';
+})
+.start();
 
 // 해시가 변경될 때마다 로그인 상태 확인 및 nav 바 표시 여부 결정
 window.addEventListener('popstate', () => {
