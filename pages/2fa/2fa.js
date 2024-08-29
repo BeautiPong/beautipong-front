@@ -1,4 +1,5 @@
 import {createModal} from '../../assets/components/modal/modal.js';
+import { getRouter } from '../../js/router.js';
 
 export default class TwoFactorPage {
     render() {
@@ -176,6 +177,8 @@ export default class TwoFactorPage {
 
                 // 대시보드 페이지로 이동
 				document.querySelector('.nav-container').style.display = 'block';
+                const router = getRouter();
+                router.navigate('/');
                 window.location.hash = '#/';
             } else {
                 console.error('2FA 인증 실패:', response.status);

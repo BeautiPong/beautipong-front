@@ -107,6 +107,22 @@ function showModal(message, buttonMsg) {
 				},
 				body: JSON.stringify(formData),
 			});
+
+			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
+			if (response.status === 401) {
+				const newAccessToken = await refreshAccessToken();
+				formData.refresh_token = newAccessToken;
+	
+				// 새 액세스 토큰으로 다시 요청
+				response = await fetch('http://localhost:8000/api/user/account/logout/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${newAccessToken}`,
+					},
+					body: JSON.stringify(formData),
+				});
+			}
 	
 			// 응답 처리
 			if (response.ok) {

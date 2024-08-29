@@ -4,7 +4,8 @@ const getRefreshToken = () => localStorage.getItem('refresh_token');
 export async function refreshAccessToken() {
   try {
     const refreshToken = getRefreshToken();
-    const response = await fetch('http://localhost:8000/api/user/token/reissue/', {
+    console.log(refreshToken);
+    const response = await fetch('http://localhost:8000/api/user/token/reissue', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,11 +19,13 @@ export async function refreshAccessToken() {
 
     const data = await response.json();
     const newAccessToken = data.access;
+    const newRefreshToken = data.refresh;
     localStorage.setItem('access_token', newAccessToken);
+    localStorage.setItem('refresh_token', newRefreshToken);
 
     return newAccessToken;
   } catch (error) {
-    console.error('Error refreshing access token:', error);
+      console.error('Error refreshing access token:', error);
     throw error;
   }
 };

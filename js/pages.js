@@ -23,6 +23,7 @@ export default container => {
     const mypage = () => {
         const page = new MyPage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const rank = () => {
