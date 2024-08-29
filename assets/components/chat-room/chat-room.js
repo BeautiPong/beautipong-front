@@ -9,7 +9,11 @@ export function createChatRoom(image, nickname, win) {
         </div>
     </div>
     <div class="chat-box-down">
-        <p> 채팅 내용 </p>
+        <div id="chat-log"></div>
+        <div class="chat-input-bar">
+            <input id="chat-message-input" type="text" placeholder="메시지를 입력해주세요"><br>
+            <input id="chat-message-submit" type="button" value="Send">
+        </div>
     </div>
     `;
 }

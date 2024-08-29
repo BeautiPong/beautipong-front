@@ -98,14 +98,14 @@ export default class FriendPage {
             .then(response => response.json())
             .then(data => {
                 // window.location.href = `/api/chat/room/${data.room_name}/?token=${token}`;
-                this.loadChatRoom(data.room_name, token, friendNickname);
+                this.loadChatRoom(data.room_name, data.sender, token, friendNickname);
             });
         } catch (error) {
             console.error('채팅 내용을 불러오는 중 오류 발생:', error);
         }
     }
 
-    async loadChatRoom(roomName, token, friendNickname) {
+    async loadChatRoom(roomName, myname, token, friendNickname) {
         try {
             const chatContainer = document.querySelector('.chat-box');
     
@@ -115,46 +115,57 @@ export default class FriendPage {
             `;
     
             // 기존 대화 내용 불러오기
-            // await this.loadMessages(roomName, token);
+            await this.loadMessages(roomName, token);
     
             // 웹소켓 연결 설정
             const chatSocket = new WebSocket(
-                `ws://${window.location.host}/ws/chat/${roomName}/?token=${token}`
+                `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
             );
+            
+
+            chatSocket.onopen = function(e) {
+                console.log('WebSocket connection established.');
+            };
     
-            // chatSocket.onmessage = function(e) {
-            //     const data = JSON.parse(e.data);
-            //     document.querySelector('#chat-log').value += `${data.message}\n`;
-            // };
+            chatSocket.onmessage = function(e) {
+                const data = JSON.parse(e.data);
+                console.log('Received data:', data);
+                const chatLog = document.querySelector('#chat-log');
+                if (chatLog) {
+                    chatLog.innerHTML += `${data.message}<br>`;
+                }
+            };
     
-            // chatSocket.onclose = function(e) {
-            //     console.error('Chat socket closed unexpectedly');
-            // };
+            chatSocket.onclose = function(e) {
+                console.error('Chat socket closed unexpectedly');
+            };
     
-            // document.querySelector('#chat-message-input').focus();
+            document.querySelector('#chat-message-input').focus();
     
-            // document.querySelector('#chat-message-input').onkeydown = function(e) {
-            //     if (e.isComposing || e.keyCode === 229) return;
-            //     if (e.key === 'Enter') {
-            //         sendMessage();
-            //     }
-            // };
+            document.querySelector('#chat-message-input').onkeydown = function(e) {
+                if (e.isComposing || e.keyCode === 229) return;
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            };
     
-            // document.querySelector('#chat-message-submit').onclick = function(e) {
-            //     sendMessage();
-            // };
+            document.querySelector('#chat-message-submit').onclick = function(e) {
+                sendMessage();
+            };
     
-            // function sendMessage() {
-            //     const messageInputDom = document.querySelector('#chat-message-input');
-            //     const message = messageInputDom.value;
+            function sendMessage() {
+                console.log("sendMessage");
+                const messageInputDom = document.querySelector('#chat-message-input');
+                const message = messageInputDom.value;
     
-            //     // 소켓으로 메시지 보내기
-            //     chatSocket.send(JSON.stringify({
-            //         'message': message,
-            //         'roomName': roomName
-            //     }));
-            //     messageInputDom.value = '';
-            // }
+                // 소켓으로 메시지 보내기
+                chatSocket.send(JSON.stringify({
+                    'message': message,
+                    'sender' : myname,
+                    'roomName': roomName
+                }));
+                messageInputDom.value = '';
+            }
     
         } catch (error) {
             console.error('채팅 방을 불러오는 중 오류 발생:', error);
@@ -170,16 +181,22 @@ export default class FriendPage {
                 }
             });
     
-            // if (!response.ok) {
-            //     throw new Error(`HTTP error! status: ${response.status}`);
-            // }
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
     
-            // const data = await response.json();
-            // const chatLog = document.querySelector('#chat-log');
-    
-            // data.messages.forEach(message => {
-            //     chatLog.value += `${message.sender} [${message.created_at}]: ${message.content}\n`;
-            // });
+            const data = await response.json();
+
+            const chatLog = document.querySelector('#chat-log');
+
+            chatLog.innerHTML = '';
+
+            data.messages.forEach(message => {
+                chatLog.innerHTML += `${message.sender} [${message.created_at}]: ${message.content}<br>`;
+            });
+
+            // Scroll to the bottom of the chat log
+            chatLog.scrollTop = chatLog.scrollHeight;
     
         } catch (error) {
             console.error('메시지를 불러오는 중 오류 발생:', error);
