@@ -1,6 +1,7 @@
 import {createFriendRequest} from '../../assets/components/friend-request/friend-request.js';
 import {createFriendList} from '../../assets/components/friend-list/friend-list.js';
 import {createChatRoom} from '../../assets/components/chat-room/chat-room.js';
+import {createMessage} from '../../assets/components/message/message.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -16,7 +17,7 @@ export default class FriendPage {
                                 <img class="friend-search-icon" src="../../assets/icons/userSearch.svg" alt="친구찾기">
                             </div>
                             <div class="friend-request-box">
-                                //
+                                ${createFriendRequest("../../assets/images/profile.svg", "seojchoi")}
                             </div>
                         </div>
                         <div class="friend-list">
@@ -174,7 +175,7 @@ export default class FriendPage {
     
     async loadMessages(roomName, token) {
         try {
-            const response = await fetch(`http://localhost:8000/api/chat/room/${roomName}/`, {
+            const response = await fetch(`http://localhost:8000/api/chat/pre_message/${roomName}/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -188,11 +189,10 @@ export default class FriendPage {
             const data = await response.json();
 
             const chatLog = document.querySelector('#chat-log');
-
             chatLog.innerHTML = '';
-
             data.messages.forEach(message => {
-                chatLog.innerHTML += `${message.sender} [${message.created_at}]: ${message.content}<br>`;
+                // chatLog.innerHTML += `${message.sender} [${message.created_at}]: ${message.content}<br>`;
+                chatLog.innerHTML += createMessage(message.sender, message.content);
             });
 
             // Scroll to the bottom of the chat log

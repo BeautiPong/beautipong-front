@@ -12,6 +12,7 @@
 @import "../assets/components/friend-request/friend-request.css";
 @import "../assets/components/friend-list/friend-list.css";
 @import "../assets/components/chat-room/chat-room.css";
+@import "../assets/components/message/message.css";
 
 
 :root {

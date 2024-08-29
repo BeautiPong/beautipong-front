@@ -1,0 +1,28 @@
+.chat-message-box {
+    display: flex;
+    display: block;
+    flex-direction: column;
+    margin-bottom: 1vh;
+
+    max-width: 80%;
+    word-wrap: break-word;
+
+    /* border: 3px solid var(--accept-button-color); */
+}
+
+.message-nickname {
+    color: var(--main-text-color);
+    margin-left: 0.5vw;
+    margin-bottom: 0.5vh;
+}
+
+.message-content {
+    background-color: var(--main-color);
+    border-radius: 20px;
+
+    font-size: 1vw;
+    padding: 0.5vw 0.5vw;
+
+
+    border: 3px solid var(--main-text-color);
+}
