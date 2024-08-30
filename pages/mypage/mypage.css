@@ -1,0 +1,146 @@
+.mypage-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+}
+
+.mypage--background {
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+
+    height: 90%;
+    width: 90%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mypage__contents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+
+    height: 80%;
+    width: 70%;
+}
+
+.mypage__top {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 50%;
+    gap: 5%;
+}
+
+.mypage__top__profile-info {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.mypage__top__profile-info__nicknameEdit {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    padding-top: 5%;
+    gap: 1%;
+}
+
+.mypage__top__profile-info__imgEdit {
+    position: relative; /* 자식 요소들의 절대 위치 기준이 됨 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 45%; /* 이미지 컨테이너 크기 설정 */
+
+    padding-left: 25%;
+}
+
+#mypage__top__profile-info__img {
+    width: 90%;
+    height: auto;
+    border-radius: 50%;
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+#mypage__top__profile-info__edit {
+    position: absolute; /* 부모 요소를 기준으로 절대 위치 설정 */
+    width: 10%; /* 아이콘 크기 설정 */
+    right: 10px; /* 부모 요소의 우측 끝에 위치 */
+    bottom: 10px; /* 부모 요소의 하단 끝에 위치 */
+
+    cursor: pointer;
+}
+
+#mypage__top__profile-info__nickname {
+    color: var(--main-color);
+    font-size: 40px;
+    font-weight: 600;
+}
+
+#mypage__top__profile-info__nickname__edit {
+    width: 7%;
+
+    cursor: pointer;
+}
+
+.mypage__top__game-info {
+    border: 1.5px solid var(--main-color);
+    border-radius: 20px;
+
+    width: 35%;
+    height: 70%;
+    margin-right: 5%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--main-color);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.mypage__game-info__title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    width: 100%;
+    height: 100%;
+}
+
+.mypage__game-info__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10%;
+    width: 100%;
+    height: 100%;
+
+    padding-left: 10%;
+    box-sizing: border-box;
+}
+
+#mypage__game-info__tier {
+    width: 15%;
+}
+
+.mypage__bottom {
+    border: solid;
+
+    width: 100%;
+    height: 50%;
+}

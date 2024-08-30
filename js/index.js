@@ -16,7 +16,6 @@ function checkLoginStatus() {
   }
 }
 
-
 const container = document.querySelector('main');
 const navContainer = document.querySelector('.nav-container');
 

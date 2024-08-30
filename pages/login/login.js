@@ -34,16 +34,15 @@ export default class LoginPage {
 
         const router = getRouter(); // router 객체 가져오기
 
-        const router = getRouter(); // router 객체 가져오기
-
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
+            const router = getRouter(); // router 객체 가져오기
             router.navigate('/signup'); // /signup 페이지로 라우팅
         });
 
 		const formButton = document.getElementById('signIn-btn');
-		formButton.addEventListener('click', (event) => this.handleFormBtn(event));
+		formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Enter') {

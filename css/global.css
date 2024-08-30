@@ -5,6 +5,7 @@
 @import "../pages/2fa/2fa.css";
 @import "../pages/main/main.css";
 @import "../pages/nickname/nickname.css";
+@import "../pages/mypage/mypage.css";
 @import "../pages/waitgame/waitgame.css";
 @import "../pages/friend/friend.css";
 
@@ -31,7 +32,7 @@
     box-sizing: border-box;
 }
 body {
-    background-image: url(../assets/images/background2.svg);
+    background-image: url(../assets/images/background.svg);
     background-size: cover;
     background-position: 50% 80%;
     background-repeat: no-repeat;
