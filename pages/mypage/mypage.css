@@ -27,7 +27,6 @@
 
     height: 80%;
     width: 70%;
-    border: solid;
 }
 
 .mypage__top {
@@ -54,7 +53,7 @@
     align-items: flex-end;
 
     padding-top: 5%;
-    gap: 2%;
+    gap: 1%;
 }
 
 .mypage__top__profile-info__imgEdit {
@@ -68,7 +67,7 @@
 }
 
 #mypage__top__profile-info__img {
-    width: 100%;
+    width: 90%;
     height: auto;
     border-radius: 50%;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.1);
@@ -76,9 +75,9 @@
 
 #mypage__top__profile-info__edit {
     position: absolute; /* 부모 요소를 기준으로 절대 위치 설정 */
-    width: 15%; /* 아이콘 크기 설정 */
-    right: 0; /* 부모 요소의 우측 끝에 위치 */
-    bottom: 0; /* 부모 요소의 하단 끝에 위치 */
+    width: 10%; /* 아이콘 크기 설정 */
+    right: 10px; /* 부모 요소의 우측 끝에 위치 */
+    bottom: 10px; /* 부모 요소의 하단 끝에 위치 */
 
     cursor: pointer;
 }
@@ -90,15 +89,53 @@
 }
 
 #mypage__top__profile-info__nickname__edit {
-    width: 8%;
+    width: 7%;
 
     cursor: pointer;
 }
 
 .mypage__top__game-info {
-    border: solid;
+    border: 1.5px solid var(--main-color);
+    border-radius: 20px;
 
-    width: 50%;
+    width: 35%;
+    height: 70%;
+    margin-right: 5%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    color: var(--main-color);
+    font-size: 26px;
+    font-weight: 700;
+}
+
+.mypage__game-info__title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10%;
+    width: 100%;
+    height: 100%;
+}
+
+.mypage__game-info__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10%;
+    width: 100%;
+    height: 100%;
+
+    padding-left: 10%;
+    box-sizing: border-box;
+}
+
+#mypage__game-info__tier {
+    width: 15%;
 }
 
 .mypage__bottom {
