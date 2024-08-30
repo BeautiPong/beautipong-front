@@ -1,4 +1,5 @@
 import { refreshAccessToken } from '../../js/token.js';
+import { renderGameRecord } from '../../assets/components/recent-game/recent-game.js'
 
 export default class MyPage {
 
@@ -38,7 +39,9 @@ export default class MyPage {
                         </div>
                     </section>
                     <section class="mypage__bottom">
-                        bottom
+                        <p id="mypage__bottom__title">최근 경기 기록</p>
+                        <div id="mypage__bottom__content">
+                        </div>
                     </section>
                 </div>
             </div>
@@ -48,6 +51,7 @@ export default class MyPage {
 
     afterRender() {
         this.loadProfile();
+        this.loadRecentGame();
     }
 
     async loadProfile() {
@@ -118,4 +122,63 @@ export default class MyPage {
             console.error('프로필 정보 로딩 중 오류 발생:', error);
         }
     }
+
+    async loadRecentGame() {
+        try {
+            const profileNickname = localStorage.getItem('nickname');
+            const recentGameDataContainer = document.getElementById('mypage__bottom__content');
+            console.log('nickname: ', profileNickname);
+    
+            let response = await fetch(`http://localhost:8000/api/game/info/${profileNickname}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+    
+            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
+                response = await fetch(`http://localhost:8000/api/game/info/${profileNickname}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
+            }
+    
+            // 응답 처리
+            if (response.ok) {
+                const recentGameData = await response.json();
+                console.log(recentGameData);
+    
+                // 최근 경기 기록이 없을 경우
+                if (recentGameData.length === 0) {
+                    recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
+                    return;
+                }
+    
+                // DOM 요소에 최근 경기 기록 추가
+                // const testData = {
+                //     user1: {
+                //         // profile_img: "​",
+                //         nickname: "User1"
+                //     },
+                //     user2: {
+                //         // profile_img: "​",
+                //         nickname: "User2"
+                //     },
+                //     score: "1:2",
+                //     win: "승리"
+                // }
+                // recentGameDataContainer.innerHTML = renderGameRecord(testData);
+                // recentGameDataContainer.innerHTML = recentGameData.map(game => renderGameRecord(game)).join('');
+    
+            } else {
+                console.error('최근 경기 기록을 가져오지 못했습니다:', response.statusText);
+            }
+        } catch (error) {
+            console.error('최근 경기 기록 로딩 중 오류 발생:', error);
+        }
+    }    
 }

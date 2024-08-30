@@ -58,6 +58,7 @@ export async function loadProfile() {
 			}
 	
             profileNickname.textContent = profileData.nickname;
+			localStorage.setItem('nickname', profileData.nickname);
         } else {
             console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
         }
