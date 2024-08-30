@@ -2,15 +2,9 @@ import {createModal} from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
 
-const logoutBtn = document.getElementById('nav__logout');
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
-
-const navMain = document.getElementById('nav__main');
-const navMypage = document.getElementById('nav__mypage');
-const navFriend = document.getElementById('nav__friend');
-const navRank = document.getElementById('nav__rank');
 
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
@@ -74,6 +68,34 @@ export async function loadProfile() {
 
 // 페이지 로드 시 프로필 정보 가져오기
 document.addEventListener('DOMContentLoaded', loadProfile);
+document.addEventListener('DOMContentLoaded', () => {
+    const logoutBtn = document.getElementById('nav__logout');
+    const navMain = document.getElementById('nav__main');
+    const navMypage = document.getElementById('nav__mypage');
+    const navFriend = document.getElementById('nav__friend');
+    const navRank = document.getElementById('nav__rank');
+
+    const router = getRouter();
+
+    logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
+    navMain.addEventListener('click', () => {
+        router.navigate('/');
+        setActiveNavButton(navMain);
+    });
+    navMypage.addEventListener('click', () => {
+        router.navigate('/mypage');
+        setActiveNavButton(navMypage);
+    });
+    navFriend.addEventListener('click', () => {
+        router.navigate('/friend');
+        setActiveNavButton(navFriend);
+    });
+    navRank.addEventListener('click', () => {
+        router.navigate('/rank');
+        setActiveNavButton(navRank);
+    });
+});
+
 
 // 모달 창 생성 및 표시 함수
 function showModal(message, buttonMsg) {
@@ -146,25 +168,4 @@ function showModal(message, buttonMsg) {
 			console.error('로그아웃 요청 중 오류 발생:', error);
 		}
 	};
-	
 }
-
-const router = getRouter();
-
-logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
-navMain.addEventListener('click', () => {
-    router.navigate('/');
-    setActiveNavButton(navMain);
-});
-navMypage.addEventListener('click', () => {
-    router.navigate('/mypage');
-    setActiveNavButton(navMypage);
-});
-navFriend.addEventListener('click', () => {
-    router.navigate('/friend');
-    setActiveNavButton(navFriend);
-});
-navRank.addEventListener('click', () => {
-    router.navigate('/rank');
-    setActiveNavButton(navRank);
-});

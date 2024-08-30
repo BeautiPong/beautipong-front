@@ -34,11 +34,12 @@ export default class WaitGamePage {
     }
 
     afterRender() {
+        const accessToken = localStorage.getItem("access_token");
         this.socket = new WebSocket(
             'ws://'
             + 'localhost:8000'
             + '/ws/user/'
-            + '?token=' + access_token
+            + '?token=' + accessToken
             );
             
         this.socket.onopen = () => {
