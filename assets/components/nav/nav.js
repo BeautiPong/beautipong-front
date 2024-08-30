@@ -1,4 +1,10 @@
 import {createModal} from '../modal/modal.js';
+import { getRouter } from '../../../js/router.js';
+
+const navMain = document.getElementById('nav__main');
+const navMypage = document.getElementById('nav__mypage');
+const navFriend = document.getElementById('nav__friend');
+const navRank = document.getElementById('nav__rank');
 
 const logoutBtn = document.getElementById('nav__logout');
 
@@ -59,4 +65,10 @@ function showModal(message, buttonMsg) {
 	
 }
 
+const router = getRouter();
+
 logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
+navMain.addEventListener('click', () => router.navigate('/'));
+navMypage.addEventListener('click', () => router.navigate('/mypage'));
+navFriend.addEventListener('click', () => router.navigate('/friend'));
+navRank.addEventListener('click', () => router.navigate('/rank'));

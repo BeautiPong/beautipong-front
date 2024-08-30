@@ -33,6 +33,7 @@ export default container => {
     const friend = () => {
         const page = new FriendPage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const signup = () => {

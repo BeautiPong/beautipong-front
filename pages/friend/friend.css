@@ -1,0 +1,114 @@
+.friend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.friend-container {
+    display: flex;
+    justify-content: space-around;
+
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 75vw;
+    height: 90vh;
+    border-radius: 40px;
+}
+
+.friend-list-container {
+    display: flex;
+    flex-direction: column;
+
+    width: 40vw;
+    /* border: 1px solid var(--error-message-color); */
+    border-radius: 40px;
+}
+
+.friend-request {
+    display: flex;
+    flex-direction: column;
+
+    height: 20vh;
+    /* border: 1px solid var(--main-text-color); */
+    padding: 3vw 3vh;
+}
+
+.friend-request-search {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5vh;
+}
+
+.friend-request-text {
+    color: var(--main-text-color);
+    font-size: 1.2vw;
+    font-weight: 600;
+}
+
+.friend-search-icon {
+    cursor: pointer;
+    color: var(--main-text-color);
+}
+
+/* 친구 요청 수락 박스 */
+.friend-request-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 8vh;
+    background-color: rgba(0,0,0, 0.2);
+    color: var(--main-text-color);
+    border-radius: 20px;
+}
+
+.friend-list {
+    display: flex;
+    flex-direction: column;
+
+    height: 80vh;
+    /* border: 1px solid var(--main-text-color); */
+    padding: 3vw 3vh;
+}
+
+.friend-list-text {
+    color: var(--main-text-color);
+    font-size: 1.2vw;
+    font-weight: 600;
+    margin-bottom: 3vh;
+}
+
+.friend-list-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 8vh;
+    background-color: rgba(0,0,0, 0.2);
+    color: var(--main-text-color);
+    border-radius: 20px;
+}
+
+.chat-container {
+    width: 40vw;
+    /* border: 1px solid var(--error-message-color); */
+    border-radius: 40px;
+    padding: 3vw 3vh;
+}
+
+.chat-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: rgba(255,255,255, 0.6);
+}
+
+.chat-box-text {
+    color: var(--sub-text-color);
+    font-size: 1vw;
+}
