@@ -1,5 +1,6 @@
 import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
+import {loadProfile} from '../../assets/components/nav/nav.js';
 
 export default class TwoFactorPage {
     render() {
@@ -179,7 +180,7 @@ export default class TwoFactorPage {
 				document.querySelector('.nav-container').style.display = 'block';
                 const router = getRouter();
                 router.navigate('/');
-                window.location.hash = '#/';
+                loadProfile();
             } else {
                 console.error('2FA 인증 실패:', response.status);
                 const errorData = await response.json();

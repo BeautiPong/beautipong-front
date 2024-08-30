@@ -6,13 +6,14 @@ import FriendPage from '../pages/friend/friend.js'
 import SignupPage from '../pages/signup/signup.js'
 import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
-import OathRedirectPage from '../pages/42oath/42oath.js'
+import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
 
 export default container => {
     const home = () => {
         const page = new MainPage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const login = () => {
@@ -55,8 +56,8 @@ export default container => {
 		page.afterRender();
     }
 
-    const oath = () => {
-        const page = new OathRedirectPage();
+    const oauth = () => {
+        const page = new OauthRedirectPage();
         container.innerHTML = page.render();
         page.handleRedirectCode();
     }
@@ -78,7 +79,7 @@ export default container => {
         signup,
         nickname,
 	    twoFactor,
-        oath,
+        oauth,
         waitgame,
     }
 }

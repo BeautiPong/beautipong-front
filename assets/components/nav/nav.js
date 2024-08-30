@@ -13,7 +13,7 @@ const navFriend = document.getElementById('nav__friend');
 const navRank = document.getElementById('nav__rank');
 
 // 프로필 정보 가져오기 함수
-async function loadProfile() {
+export async function loadProfile() {
     try {
         let response = await fetch('http://localhost:8000/api/user/profile/', {
             method: 'GET',
@@ -135,7 +135,8 @@ function showModal(message, buttonMsg) {
 				localStorage.removeItem('refresh_token');
 	
 				// 로그인 페이지로 리다이렉트
-				window.location.hash = '#/login';
+				const router = getRouter();
+				router.navigate('/login');
 			} else {
 				const errorData = await response.json();  // 에러 응답도 await 추가
 				console.error('로그아웃 실패:', errorData);

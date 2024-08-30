@@ -37,7 +37,6 @@ export default class LoginPage {
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
-            const router = getRouter(); // router 객체 가져오기
             router.navigate('/signup'); // /signup 페이지로 라우팅
         });
 
@@ -65,7 +64,7 @@ export default class LoginPage {
             //     if (response.ok) {
             //         const data = await response.json();
             //         console.log('42 로그인 요청 성공:', data);
-            //         window.location.hash = '#/42oath-redirect';
+            //         router.navigate('/2oauth-redirect');
             //     } else {
             //         console.error('42 로그인 요청 실패:', response.status);
             //     }

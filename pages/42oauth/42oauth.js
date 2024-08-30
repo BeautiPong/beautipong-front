@@ -1,9 +1,9 @@
 import { createModal } from '../../assets/components/modal/modal.js';
 
-export default class OathRedirectPage {
+export default class OauthRedirectPage {
     render() {
         return `
-            <h1>42 oath redirect Page</h1>
+            <h1>42 oauth redirect Page</h1>
         `;
     }
 
