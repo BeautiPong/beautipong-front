@@ -12,7 +12,7 @@ export default class LoginPage {
                             <div class="id-error-message" id="id-error-message">default</div>
                         </div>
                         <div class="text-box password-box">
-                            <input type="text" id="pw" placeholder="패스워드" name="password" required>
+                            <input type="password" id="pw" placeholder="패스워드" name="password" required>
                             <div class="pw-error-message" id="pw-error-message">default</div>
                         </div>
                         <div class="button-box">
@@ -22,7 +22,7 @@ export default class LoginPage {
                     </form>
                     <div class="start-with">
                         <p>or start with</p>
-                        <img src="../../assets/images/42_logo.svg" alt="42OAuth로그인" class="start-image">
+                        <img src="../../assets/images/42_logo.svg" alt="42OAuth로그인" id="start-with__42logo">
                     </div>
                 </div>
             </div>
@@ -34,15 +34,48 @@ export default class LoginPage {
 
         const router = getRouter(); // router 객체 가져오기
 
+        const router = getRouter(); // router 객체 가져오기
+
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
         signupButton.addEventListener('click', () => {
             router.navigate('/signup'); // /signup 페이지로 라우팅
         });
 
-        const formButton = document.getElementById('signIn-btn');
-        formButton.addEventListener('click', (event) => this.handleFormBtn(event));
+		const formButton = document.getElementById('signIn-btn');
+		formButton.addEventListener('click', (event) => this.handleFormBtn(event));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.handleFormBtn(event);
+            }
+        });
+
+        // 42 OAuth 로그인 버튼에 클릭 이벤트 리스너 추가
+        const login42Button = document.getElementById('start-with__42logo');
+        login42Button.addEventListener('click', async () => {
+            window.location.href = 'http://localhost:8000/api/user/login/';
+            // console.log("42로고 클릭!");
+            // try {
+            //     const response = await fetch('http://localhost:8000/api/user/login/', {
+            //         method: 'GET',
+            //         mode: 'cors',
+            //         credentials: 'include',
+            //     });
+
+            //     if (response.ok) {
+            //         const data = await response.json();
+            //         console.log('42 로그인 요청 성공:', data);
+            //         window.location.hash = '#/42oath-redirect';
+            //     } else {
+            //         console.error('42 로그인 요청 실패:', response.status);
+            //     }
+            // } catch (error) {
+            //     console.error('42 로그인 요청 중 오류 발생:', error);
+            // }
+        });
     }
+
 
     async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
@@ -52,6 +85,11 @@ export default class LoginPage {
             userID: document.getElementById('userId').value,
             password: document.getElementById('pw').value,
         };
+
+        if (!formData.userID || !formData.password) {
+            this.handleLoginError({ message: "모든 필드를 입력해주세요." });
+            return;
+        }
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
@@ -81,13 +119,43 @@ export default class LoginPage {
     }
 
     handleLoginError(errorData) {
+
+        const idInput = document.querySelector('#userId');
+        const pwInput = document.querySelector('#pw');
+        const idErrorDiv = document.querySelector('.id-error-message');
+        const pwErrorDiv = document.querySelector('.pw-error-message');
+
+        // 에러 메시지에 따른 처리
         switch (errorData.message) {
+            case "모든 필드를 입력해주세요." :
+                if (!document.getElementById('userId').value) {
+                    idErrorDiv.innerText = "id를 입력해주세요.";
+                    idErrorDiv.classList.add('show');
+                    idInput.classList.add('input-error');
+
+                    // 사용자 입력 시 에러 상태 리셋
+                    idInput.addEventListener('input', function () {
+                    idErrorDiv.innerText = 'default';
+                    idErrorDiv.classList.remove('show');
+                    idInput.classList.remove('input-error');});
+                }
+                if (!document.getElementById('pw').value) {
+                    pwErrorDiv.innerText = "비밀번호를 입력해주세요.";
+                    pwErrorDiv.classList.add('show');
+                    pwInput.classList.add('input-error');
+
+                    // 사용자 입력 시 에러 상태 리셋
+                    pwInput.addEventListener('input', function () {
+                    pwErrorDiv.innerText = 'default';
+                    pwErrorDiv.classList.remove('show');
+                    pwInput.classList.remove('input-error');});
+                }
+                break ;
+
             case "존재하지 않는 아이디입니다." :
-                const idErrorDiv = document.querySelector('.id-error-message');
                 idErrorDiv.innerText = `${errorData.message}`;
                 idErrorDiv.classList.add('show');
-
-                const idInput = document.querySelector('#userId');
+            
                 idInput.classList.add('input-error');
 
                 idInput.addEventListener('input', function () {
@@ -98,11 +166,9 @@ export default class LoginPage {
                 
                 break;
             case "비밀번호가 틀렸습니다." :
-                const pwErrorDiv = document.querySelector('.pw-error-message');
                 pwErrorDiv.innerText = `${errorData.message}`;
                 pwErrorDiv.classList.add('show');
 
-                const pwInput = document.querySelector('#pw');
                 pwInput.classList.add('input-error');
 
                 pwInput.addEventListener('input', function () {
