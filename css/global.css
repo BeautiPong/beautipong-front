@@ -5,9 +5,16 @@
 @import "../pages/2fa/2fa.css";
 @import "../pages/main/main.css";
 @import "../pages/nickname/nickname.css";
+@import "../pages/waitgame/waitgame.css";
+@import "../pages/friend/friend.css";
 
 @import "../assets/components/nav/nav.css";
 @import "../assets/components/modal/modal.css";
+@import "../assets/components/friend-request/friend-request.css";
+@import "../assets/components/friend-list/friend-list.css";
+@import "../assets/components/chat-room/chat-room.css";
+@import "../assets/components/message/message.css";
+
 
 
 :root {

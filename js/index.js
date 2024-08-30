@@ -1,7 +1,7 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js'
 
-// 로그인 상태 확인 함수
+로그인 상태 확인 함수
 function checkLoginStatus() {
   const token = localStorage.getItem('access_token');
   const tmpToken = localStorage.getItem('temp_token');
@@ -16,11 +16,12 @@ function checkLoginStatus() {
   }
 }
 
-const container = document.querySelector('main')
+
+const container = document.querySelector('main');
 const navContainer = document.querySelector('.nav-container');
 
-const pages = createPages(container)
-const router = createRouter()
+const pages = createPages(container);
+const router = createRouter();
 
 router
 .addRoute('/', pages.home)
@@ -37,14 +38,15 @@ router
 })
 .start();
 
+
 // 해시가 변경될 때마다 로그인 상태 확인 및 nav 바 표시 여부 결정
 window.addEventListener('popstate', () => {
-  // checkLoginStatus();
+  checkLoginStatus();
   updateNavVisibility();
 });
 
 // 페이지 로드 시 초기 상태 설정
-// checkLoginStatus();
+checkLoginStatus();
 updateNavVisibility();
 
 function updateNavVisibility() {

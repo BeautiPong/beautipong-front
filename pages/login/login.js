@@ -30,7 +30,9 @@ export default class LoginPage {
     }
 
     afterRender() {
-		document.querySelector('.nav-container').style.display = 'none';
+        document.querySelector('.nav-container').style.display = 'none';
+
+        const router = getRouter(); // router 객체 가져오기
 
         const router = getRouter(); // router 객체 가져오기
 
@@ -74,7 +76,8 @@ export default class LoginPage {
         });
     }
 
-	async handleFormBtn(event) {
+
+    async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
 
         // 폼 데이터를 수집합니다.
@@ -155,27 +158,26 @@ export default class LoginPage {
             
                 idInput.classList.add('input-error');
 
-                // 사용자 입력 시 에러 상태 리셋
                 idInput.addEventListener('input', function () {
-                idErrorDiv.innerText = 'default';
-                idErrorDiv.classList.remove('show');
-                idInput.classList.remove('input-error');});
+                    idErrorDiv.innerText = 'default';
+                    idErrorDiv.classList.remove('show');
+                    idInput.classList.remove('input-error');
+                });
                 
-                break ;
+                break;
             case "비밀번호가 틀렸습니다." :
                 pwErrorDiv.innerText = `${errorData.message}`;
                 pwErrorDiv.classList.add('show');
 
                 pwInput.classList.add('input-error');
 
-                // 사용자 입력 시 에러 상태 리셋
                 pwInput.addEventListener('input', function () {
-                pwErrorDiv.innerText = 'default';
-                pwErrorDiv.classList.remove('show');
-                pwInput.classList.remove('input-error');});
+                    pwErrorDiv.innerText = 'default';
+                    pwErrorDiv.classList.remove('show');
+                    pwInput.classList.remove('input-error');
+                });
                 
-                break ;
+                break;
         }
     }
 }
-
