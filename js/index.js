@@ -1,7 +1,7 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js';
 
-// 로그인 상태 확인 함수
+로그인 상태 확인 함수
 function checkLoginStatus() {
   const token = localStorage.getItem('access_token');
   const tmpToken = localStorage.getItem('temp_token');
@@ -11,6 +11,7 @@ function checkLoginStatus() {
     router.navigate('/login');
   }
 }
+
 
 const container = document.querySelector('main');
 const navContainer = document.querySelector('.nav-container');
