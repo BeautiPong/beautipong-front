@@ -55,7 +55,7 @@ export default container => {
     const waitgame = () => {
         const page = new WaitGamePage();
         container.innerHTML = page.render();
-		// page.afterRender();
+		page.afterRender();
         page.bindEvents();
     }
   

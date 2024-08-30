@@ -33,6 +33,19 @@ export default class WaitGamePage {
         `;
     }
 
+    afterRender() {
+        this.socket = new WebSocket(
+            'ws://'
+            + 'localhost:8000'
+            + '/ws/user/'
+            + '?token=' + access_token
+            );
+            
+        this.socket.onopen = () => {
+            console.log('WebSocket 연결됨');
+        }
+    }
+
     // 모달 열기
     openModal() {
         document.getElementById('friendModal').classList.add('active');
@@ -72,16 +85,17 @@ export default class WaitGamePage {
                 throw new Error('친구 목록을 불러오는 데 실패했습니다.');
             }
 
+            console.log(accessToken);
             const data = await response.json(); // 서버에서 받은 데이터를 파싱
             const friends = data.friends || []; // friends 배열 추출
-            this.renderFriendList(friends);
+            this.renderFriendList(friends, accessToken);
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류가 발생했습니다:', error);
         }
     }
 
     // 친구 목록을 렌더링하는 메서드
-    renderFriendList(friends) {
+    renderFriendList(friends, access_token) {
         const friendList = document.getElementById('friendList');
         friendList.innerHTML = ''; // 기존 목록을 초기화
 
@@ -94,7 +108,8 @@ export default class WaitGamePage {
                 const li = document.createElement('li');
                 li.textContent = friend.nickname; // 친구의 닉네임을 표시
                 li.addEventListener('click', () => {
-                    this.sendInvite(friend.nickname); // 친구에게 초대 전송
+                    console.log("친구 클릭");
+                    this.sendInvite(friend.nickname, access_token); // 친구에게 초대 전송
                     this.closeModal(); // 초대 후 모달 닫기
                 });
                 friendList.appendChild(li);
@@ -103,23 +118,34 @@ export default class WaitGamePage {
     }
 
     // 친구에게 초대 메시지 전송
-    async sendInvite(friendNickname) {
+    async sendInvite(friendNickname, access_token) {
         const message = `${friendNickname}님이 게임에 초대했습니다.`;
-
+    
         // WebSocket 연결 설정
-        this.socket = new WebSocket('ws://localhost:8000/ws/notifications/'); // WebSocket URL
+        // this.socket = new WebSocket('ws://localhost:8000/ws/notifications/'); 
 
-        this.socket.onopen = () => {
-            console.log('WebSocket 연결됨');
+        // this.socket = new WebSocket(
+        //     'ws://'
+        //     + 'localhost:8000'
+        //     + '/ws/user/'
+        //     + '?token=' + access_token
+        //     );
+            
+        // this.socket.onopen = () => {
+        //     console.log('WebSocket 연결됨');
 
             // 초대 메시지 전송
-            this.socket.send(JSON.stringify({
-                type: 'invite_game', // 초대 메시지 유형
-                sender: '나의닉네임', // 실제 닉네임으로 변경
-                message: message
-            }));
-            alert(`${friendNickname}에게 초대장을 보냈습니다.`);
-            this.socket.close(); // 초대 전송 후 WebSocket 연결 종료
+        this.socket.send(JSON.stringify({
+            type: 'invite_game', // 초대 메시지 유형
+            sender: '나의닉네임', // 실제 닉네임으로 변경
+            message: message
+        }));
+        alert(`${friendNickname}에게 초대장을 보냈습니다.`);
+            // this.socket.close(); // 초대 전송 후 WebSocket 연결 종료
+        // };
+
+        this.socket.onerror = (error) => {
+            console.error('WebSocket 오류:', error);
         };
 
         this.socket.onmessage = (event) => {
