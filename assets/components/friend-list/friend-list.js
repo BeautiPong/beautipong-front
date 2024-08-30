@@ -4,8 +4,10 @@ export function createFriendList(image, nickname) {
         <div class="list-container">
             <div class="list-box">
                 <img class="list-profile-image" src=${image} alt="프로필사진">
-                <p class="list-nickname">${nickname}</p>
-                <p class="list-online-status"></p>
+                <div class="name-status">
+                    <p class="list-nickname">${nickname}</p>
+                    <p class="list-online-status"></p>
+                </div>
                 <img class="menu-icon" src="../../assets/icons/Menu.svg" alt="메뉴">
             </div>
         </div>
