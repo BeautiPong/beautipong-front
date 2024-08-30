@@ -30,7 +30,9 @@ export default class LoginPage {
     }
 
     afterRender() {
-		document.querySelector('.nav-container').style.display = 'none';
+        document.querySelector('.nav-container').style.display = 'none';
+
+        const router = getRouter(); // router 객체 가져오기
 
         // 회원가입 버튼에 클릭 이벤트 리스너 추가
         const signupButton = document.getElementById('signup-btn');
@@ -73,7 +75,8 @@ export default class LoginPage {
         });
     }
 
-	async handleFormBtn(event) {
+
+    async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
 
         // 폼 데이터를 수집합니다.

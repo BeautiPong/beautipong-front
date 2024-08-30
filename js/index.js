@@ -1,7 +1,7 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js'
 
-// 로그인 상태 확인 함수
+로그인 상태 확인 함수
 function checkLoginStatus() {
   const token = localStorage.getItem('access_token');
   const tmpToken = localStorage.getItem('temp_token');
@@ -36,6 +36,7 @@ router
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })
 .start();
+
 
 // 해시가 변경될 때마다 로그인 상태 확인 및 nav 바 표시 여부 결정
 window.addEventListener('popstate', () => {

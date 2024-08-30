@@ -1,0 +1,64 @@
+
+.list-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* background-color: var(--main-color); */
+    background-color: rgba(255,255,255, 0.6);
+    width: 35vw;
+    height: 8vh;
+    border-radius: 20px;
+
+    margin-bottom: 1vh;
+}
+
+.list-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 90%;
+    height: 70%;    margin-bottom: 1vh;
+}
+
+.list-profile-image {
+    border-radius: 50%;
+
+    width: 55px;
+    height: 55px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    
+    margin-right: 1vw;
+}
+
+.name-status {
+    display: flex;
+    flex-direction: row;
+
+    width: 70%;
+}
+
+.list-nickname {
+    color: var(--main-text-color);
+    font-weight: 500;
+    font-size: 1.2vw;
+
+    margin-right: 1vw;
+    cursor: pointer;
+}
+
+.list-online-status {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: var(--accept-button-color);
+
+    /* margin-right: 17vw; */
+}
+
+.menu-icon {
+    cursor: pointer;
+}
