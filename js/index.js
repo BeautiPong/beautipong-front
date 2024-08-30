@@ -1,7 +1,7 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js'
 
-로그인 상태 확인 함수
+// 로그인 상태 확인 함수
 function checkLoginStatus() {
   const token = localStorage.getItem('access_token');
   const tmpToken = localStorage.getItem('temp_token');
@@ -9,8 +9,8 @@ function checkLoginStatus() {
   if (!token && window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
     
     // 처음 로그인해서 임시토큰을 발급받은 상태면 2fa로 넘어갈 수 있도록 
-    if (tmpToken && window.location.hash === '#/2fa')
-      retrun ;
+    if (tmpToken && window.location.pathname !== '/2fa')
+      return ;
 
     router.navigate('/login');
   }

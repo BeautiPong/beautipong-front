@@ -59,6 +59,7 @@ export default container => {
         const page = new OathRedirectPage();
         container.innerHTML = page.render();
         page.handleRedirectCode();
+    }
 
     const waitgame = () => {
         const page = new WaitGamePage();
@@ -76,7 +77,7 @@ export default container => {
         friend,
         signup,
         nickname,
-	      twoFactor,
+	    twoFactor,
         oath,
         waitgame,
     }
