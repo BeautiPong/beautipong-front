@@ -72,7 +72,7 @@
 
 #chat-message-input {
     height: 100%;
-    width: 80%;
+    width: 100%;
     background-color: var(--main-color);
     border-radius: 20px;
 
@@ -81,15 +81,4 @@
 
 #chat-message-input::placeholder {
     color: var(--sub-text-color);
-}
-
-#chat-message-submit {
-    height: 100%;
-    width: 20%;
-    background-color: var(--sub-text-color);
-    border-radius: 20px;
-    cursor: pointer;
-
-    color: var(--main-color);
-    font-weight: 500;
 }
