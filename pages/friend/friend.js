@@ -56,8 +56,16 @@ export default class FriendPage {
                 friendListBox.classList.remove('friend-list-box');
             
                 data.friends.forEach(friend => {
+
+                    console.log(friend);
+
                     const nickname = friend.nickname;
                     const image = friend.image || '../../assets/images/profile.svg';
+                    const match_cnt = friend.match_cnt;
+                    const win_cnt = friend.win_cnt;
+                    const is_active = friend.is_active;
+                    const score = friend.score;
+
                     
                     // 친구 요소를 생성
                     const friendComponent = createFriendList(image, nickname);
