@@ -17,7 +17,7 @@ export default class FriendPage {
                                 <img class="friend-search-icon" src="../../assets/icons/userSearch.svg" alt="친구찾기">
                             </div>
                             <div class="friend-request-box">
-                                ${createFriendRequest("../../assets/images/profile.svg", "seojchoi")}
+                                <p>새로운 친구 요청이 없습니다..</p>
                             </div>
                         </div>
                         <div class="friend-list">
@@ -211,7 +211,74 @@ export default class FriendPage {
         }
     }
 
+    async clickUserSearchButton() {
+
+        const token = localStorage.getItem('access_token');
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchIconElement = document.querySelector('.friend-search-icon');
+        
+            if (searchIconElement) {
+                searchIconElement.addEventListener('click', async () => {
+                    try {
+                        const response = await fetch(`http://localhost:8000/api/friend/add/seoji/`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+        
+                    } catch (error) {
+                        console.error('Fetch error:', error);
+                    }
+                });
+            } else {
+                console.error('friend-search-icon 요소를 찾을 수 없습니다.');
+            }
+        });
+
+        // document.getElementById('friend-search-icon').addEventListener('click', () => {
+
+        //     const response = fetch(`http://localhost:8000/api/chat/add/choiseoji/`, {
+        //         method: 'POST',
+        //         headers: {
+        //             'Authorization': `Bearer ${token}`
+        //         }
+        //     });
+        //     if (!response.ok) {
+        //         throw new Error(`HTTP error! status: ${response.status}`);
+        //     }
+        // });
+
+        // 웹소켓 연결 설정
+        const notificationSocket = new WebSocket(
+            `ws://localhost:8000/ws/user/?token=${token}`
+        );
+
+
+        notificationSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+
+            console.log("친구 알림 옴");
+            
+            const friendReq = document.querySelector('.friend-request-box');
+            friendReq.innerHTML = '';
+
+            if (friendReq) {
+
+                const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
+                friendReq.innerHTML += requestHTML;
+            }
+        };
+    }
+    
+
     afterRender() {
         this.fetchAndDisplayFriendList();
+        this.clickUserSearchButton();
     }
 }
