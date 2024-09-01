@@ -241,19 +241,6 @@ export default class FriendPage {
             }
         });
 
-        // document.getElementById('friend-search-icon').addEventListener('click', () => {
-
-        //     const response = fetch(`http://localhost:8000/api/chat/add/choiseoji/`, {
-        //         method: 'POST',
-        //         headers: {
-        //             'Authorization': `Bearer ${token}`
-        //         }
-        //     });
-        //     if (!response.ok) {
-        //         throw new Error(`HTTP error! status: ${response.status}`);
-        //     }
-        // });
-
         // 웹소켓 연결 설정
         const notificationSocket = new WebSocket(
             `ws://localhost:8000/ws/user/?token=${token}`
@@ -272,6 +259,27 @@ export default class FriendPage {
 
                 const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
                 friendReq.innerHTML += requestHTML;
+
+                // 수락 버튼에 이벤트 리스너 추가
+                const acceptButton = friendReq.querySelector('.request-accept-btn');
+                if (acceptButton) {
+                    acceptButton.addEventListener('click', function() {
+                        console.log(`${data.sender}의 친구 요청을 수락합니다.`);
+                        const response = fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+        
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        // 친구 요청 컴포넌트 제거
+                        friendReq.innerHTML = '';
+                    });
+                }
             }
         };
     }
