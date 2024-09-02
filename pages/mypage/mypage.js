@@ -153,25 +153,38 @@ export default class MyPage {
                 console.log(recentGameData);
     
                 // 최근 경기 기록이 없을 경우
-                if (recentGameData.length === 0) {
-                    recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
-                    return;
-                }
+                // if (recentGameData.length === 0) {
+                //     recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
+                //     return;
+                // }
     
                 // DOM 요소에 최근 경기 기록 추가
-                // const testData = {
-                //     user1: {
-                //         // profile_img: "​",
-                //         nickname: "User1"
-                //     },
-                //     user2: {
-                //         // profile_img: "​",
-                //         nickname: "User2"
-                //     },
-                //     score: "1:2",
-                //     win: "승리"
-                // }
-                // recentGameDataContainer.innerHTML = renderGameRecord(testData);
+                const testData = {
+                    user1: {
+                        profile_img: "​",
+                        nickname: "User1"
+                    },
+                    user2: {
+                        profile_img: "​",
+                        nickname: "User2"
+                    },
+                    score: "1 : 2",
+                    win: "승리"
+                }
+                const testData2 = {
+                    user1: {
+                        profile_img: "​",
+                        nickname: "User1"
+                    },
+                    user2: {
+                        profile_img: "​",
+                        nickname: "User222"
+                    },
+                    score: "1 : 2",
+                    win: "패배"
+                }
+                const testGameData = [testData, testData2, testData, testData2];
+                recentGameDataContainer.innerHTML = testGameData.map(game => renderGameRecord(game)).join('');
                 // recentGameDataContainer.innerHTML = recentGameData.map(game => renderGameRecord(game)).join('');
     
             } else {

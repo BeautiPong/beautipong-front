@@ -1,0 +1,66 @@
+.recent-game-record {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+
+	color: var(--main-text-color);
+}
+
+.recent-game-record__img {
+	width: 30%;
+	border-radius: 50%;
+}
+
+.recent-game-record__user-info {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 15%;
+	width: 30%;
+	margin-left: 3%;
+
+	font-size: 20px;
+	font-weight: 500;
+}
+
+.recent-game-record__score-info {
+	width: 20%;
+	text-align: center;
+
+	font-size: 25px;
+	font-weight: 650;
+	margin: 0 4%;
+}
+
+.recent-game-record__win-info {
+	width: 20%;
+	height: 100%;
+	text-align: center;
+	
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.recent-game-record__btn {
+	width: 60%;
+	height: 70%;
+
+	border-radius: 18px;
+	background-color: var(--accept-button-color);
+	color: var(--main-color);
+	font-size: 18px;
+	font-weight: 500;
+}
+
+.recent-game-record__btn--lose {
+	width: 60%;
+	height: 70%;
+
+	border-radius: 18px;
+	background-color: var(--refuse-button-color);
+	color: var(--main-color);
+	font-size: 18px;
+	font-weight: 500;
+}
