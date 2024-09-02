@@ -1,5 +1,6 @@
 import { refreshAccessToken } from '../../js/token.js';
 import { renderGameRecord } from '../../assets/components/recent-game/recent-game.js'
+import { getRouter } from '../../js/router.js'; 
 
 export default class MyPage {
 
@@ -16,7 +17,12 @@ export default class MyPage {
                         <div class="mypage__top__profile-info">
                             <div class="mypage__top__profile-info__imgEdit">
                                 <img id="mypage__top__profile-info__img" src="" alt="profile_img"/>
-                                <img id="mypage__top__profile-info__edit" src="../../assets/images/camera.svg" alt="profile_img_editBtn"/>
+                                <div class="mypage__top__profile-info__imgEdit__button">
+                                    <input type="file" id="profileImageInput" style="display: none;" />
+                                    <label for="profileImageInput">
+                                        <img id="mypage__top__profile-info__edit" src="../../assets/images/camera.svg" alt="profile_img_editBtn"/>
+                                    </label>
+                                </div>
                             </div>
                             <div class="mypage__top__profile-info__nicknameEdit">
                                 <span id="mypage__top__profile-info__nickname"></span>
@@ -52,6 +58,12 @@ export default class MyPage {
     afterRender() {
         this.loadProfile();
         this.loadRecentGame();
+
+        const imgEditButton = document.getElementById('profileImageInput');
+        const nicknameEditButton = document.getElementById('mypage__top__profile-info__nickname__edit');
+
+        imgEditButton.addEventListener('change', (event) => this.handleImgEditBtn(event));
+        nicknameEditButton.addEventListener('click', (event) => this.handleNicknameEditBtn(event));
     }
 
     async loadProfile() {
@@ -193,5 +205,80 @@ export default class MyPage {
         } catch (error) {
             console.error('최근 경기 기록 로딩 중 오류 발생:', error);
         }
-    }    
+    }
+
+    async handleImgEditBtn(e) {
+        console.log(e.target.files);
+        const router = getRouter();
+    
+        const newProfileImg = e.target.files[0]; // 선택된 파일
+        if (!newProfileImg) {
+            alert('이미지를 선택해주세요.');
+            return;
+        }
+    
+        const formData = new FormData();
+        formData.append('img', newProfileImg);
+    
+        try {
+            const response = await fetch('http://localhost:8000/api/user/profile/update/', {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    // 'Content-Type' 헤더는 설정하지 않음, 자동으로 multipart/form-data로 설정됨
+                },
+                body: formData
+            });
+    
+            if (response.ok) {
+                const updatedData = await response.json();
+                console.log(updatedData);
+                // document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
+                router.navigate('/mypage');
+                alert('프로필 이미지가 성공적으로 변경되었습니다.');
+            } else {
+                const errorData = await response.json();
+                console.error('프로필 이미지 변경 실패:', errorData);
+                alert('프로필 이미지 변경에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('프로필 이미지 변경 중 오류 발생:', error);
+            alert('프로필 이미지 변경 중 오류가 발생했습니다.');
+        }
+    }
+      
+    
+    async handleNicknameImgEditBtn(event) {
+
+        const newNickname = prompt('새로운 닉네임을 입력하세요:', '새로운 닉네임');
+        const router = getRouter();
+
+        if (newNickname) {
+            // 닉네임이 변경된 경우 서버에 요청
+            try {
+                const response = await fetch('http://localhost:8000/api/user/profile/update/', {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nickname: newNickname })
+                });
+
+                if (response.ok) {
+                    const updatedData = await response.json();
+                    document.getElementById('mypage__top__profile-info__nickname').textContent = updatedData.nickname;
+                    alert('닉네임이 성공적으로 변경되었습니다.');
+                } else {
+                    const errorData = await response.json();
+                    console.error('닉네임 변경 실패:', errorData);
+                    alert('닉네임 변경에 실패했습니다.');
+                }
+            } catch (error) {
+                console.error('닉네임 변경 중 오류 발생:', error);
+                alert('닉네임 변경 중 오류가 발생했습니다.');
+            }
+        }
+    }
+     
 }
