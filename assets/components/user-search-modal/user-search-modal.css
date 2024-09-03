@@ -1,0 +1,25 @@
+
+.user-search-box {
+    display: flex;
+    flex-direction: row;
+
+    width: 80%;
+    height: 20%;
+
+    margin-bottom: 2vh;
+}
+
+#friend-name-search-input {
+    
+    border: 2px solid var(--sub-text-color);
+    border-radius: 50px;
+    width: 100%;
+    padding-left: 1vw;
+}
+
+.user-find-box {
+    /* border: 2px solid var(--sub-text-color); */
+    width: 80%;
+    height: 20%;
+    border-radius: 50px;
+}

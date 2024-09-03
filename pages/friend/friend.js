@@ -2,6 +2,7 @@ import {createFriendRequest} from '../../assets/components/friend-request/friend
 import {createFriendList} from '../../assets/components/friend-list/friend-list.js';
 import {createChatRoom} from '../../assets/components/chat-room/chat-room.js';
 import {createMessage} from '../../assets/components/message/message.js';
+import {createUserSearchModal} from '../../assets/components/user-search-modal/user-search-modal.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -211,6 +212,30 @@ export default class FriendPage {
         }
     }
 
+    // 친구 검색 모달창
+    showUserSearchModal() {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createUserSearchModal();
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function(event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
+
     async clickUserSearchButton() {
 
         const token = localStorage.getItem('access_token');
@@ -220,28 +245,29 @@ export default class FriendPage {
         
             if (searchIconElement) {
                 searchIconElement.addEventListener('click', async () => {
-                    try {
-                        const response = await fetch(`http://localhost:8000/api/friend/add/seoji/`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
-                            }
-                        });
+                    this.showUserSearchModal();
+                    // try {
+                    //     const response = await fetch(`http://localhost:8000/api/friend/add/seoji/`, {
+                    //         method: 'POST',
+                    //         headers: {
+                    //             'Authorization': `Bearer ${token}`
+                    //         }
+                    //     });
         
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
+                    //     if (!response.ok) {
+                    //         throw new Error(`HTTP error! status: ${response.status}`);
+                    //     }
         
-                    } catch (error) {
-                        console.error('Fetch error:', error);
-                    }
+                    // } catch (error) {
+                    //     console.error('Fetch error:', error);
+                    // }
                 });
             } else {
                 console.error('friend-search-icon 요소를 찾을 수 없습니다.');
             }
         });
 
-        // 웹소켓 연결 설정
+        // 웹소켓 연결 설정 
         const notificationSocket = new WebSocket(
             `ws://localhost:8000/ws/user/?token=${token}`
         );
