@@ -16,33 +16,6 @@
     text-align: center;
 }
 
-.player-info, .opponent-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 20vw;
-    height: 50vh;
-    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
-    border-radius: 5%;
-    text-align: center;
-    justify-content: center;
-}
-
-.player-info {
-    margin-left: 7%;
-}
-
-.opponent-info {
-    margin-right: 7%;
-}
-
-.profile-img {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
-    margin-bottom: 10%;
-}
-
 .vs-text {
     display: flex;
     align-items: center;
@@ -50,23 +23,6 @@
     width: 5vw;
     font-size: 4rem; /* VS 텍스트 크기 조정 */
     font-weight: bold;
-}
-
-.nickname, .score, .vs-text p {
-    margin: 5% 0;
-    font-size: 30px;
-    color: var(--main-text-color);
-    font-weight: bold;
-}
-.icon-nickname{
-    display: flex;
-    justify-content: space-around;
-
-}
-.player-icon {
-    width: 3vw;
-    height: 3vh;
-    border-radius: 50%;
 }
 
 .invite-btn, .random-btn {
@@ -87,7 +43,6 @@
     background-color: rgba(0, 0, 0, 0.1);;
     /* color: var(--sub-text-color); */
 }
-
 
 .opponent-info {
     display: flex;
@@ -119,11 +74,9 @@
     text-align: center; /* 텍스트 중앙 정렬 */
 }
 
-
 .friend-modal.active {
     display: block; /* 모달이 활성화되면 보이도록 설정 */
 }
-
 
 .friend-list {
     list-style: none;

@@ -1,6 +1,9 @@
+import PlayerInfo from '../../assets/components/player-info/player-info.js'; // PlayerInfo 클래스 임포트
+
 export default class WaitGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
+        this.playerInfoComponent = new PlayerInfo(); // PlayerInfo 컴포넌트 생성
     }
 
     // 페이지 렌더링
@@ -8,14 +11,7 @@ export default class WaitGamePage {
         return `
             <div class="game-div">
                 <div class="game-container">
-                    <div class="player-info">
-                        <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img">
-                        <div class="icon-nickname">
-                            <img src="assets/icons/bronz.svg" class="player-icon"></img>
-                            <p class="nickname">nickname</p>
-                        </div>
-                        <p class="score">10전 10승 0패</p>
-                    </div>
+                    ${this.playerInfoComponent.render()} <!-- PlayerInfo 컴포넌트를 렌더링 -->
                     <div class="vs-text">
                         <p>VS</p>
                     </div>
@@ -33,18 +29,24 @@ export default class WaitGamePage {
         `;
     }
 
-    afterRender() {
+    async afterRender() {
         const accessToken = localStorage.getItem("access_token");
+
+        // 플레이어 데이터를 로드
+        // await this.playerInfoComponent.fetchPlayerData(localStorage.getItem("user_name"));
+        await this.playerInfoComponent.fetchPlayerData("jonhan");
+
+        // WebSocket 연결 설정
         this.socket = new WebSocket(
             'ws://'
             + 'localhost:8000'
             + '/ws/user/'
             + '?token=' + accessToken
-            );
-            
+        );
+
         this.socket.onopen = () => {
             console.log('WebSocket 연결됨');
-        }
+        };
     }
 
     // 모달 열기
@@ -121,29 +123,13 @@ export default class WaitGamePage {
     // 친구에게 초대 메시지 전송
     async sendInvite(friendNickname, access_token) {
         const message = `${friendNickname}님이 게임에 초대했습니다.`;
-    
-        // WebSocket 연결 설정
-        // this.socket = new WebSocket('ws://localhost:8000/ws/notifications/'); 
 
-        // this.socket = new WebSocket(
-        //     'ws://'
-        //     + 'localhost:8000'
-        //     + '/ws/user/'
-        //     + '?token=' + access_token
-        //     );
-            
-        // this.socket.onopen = () => {
-        //     console.log('WebSocket 연결됨');
-
-            // 초대 메시지 전송
         this.socket.send(JSON.stringify({
             type: 'invite_game', // 초대 메시지 유형
             sender: '나의닉네임', // 실제 닉네임으로 변경
             message: message
         }));
         alert(`${friendNickname}에게 초대장을 보냈습니다.`);
-            // this.socket.close(); // 초대 전송 후 WebSocket 연결 종료
-        // };
 
         this.socket.onerror = (error) => {
             console.error('WebSocket 오류:', error);
