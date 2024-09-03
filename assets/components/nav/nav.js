@@ -33,7 +33,6 @@ export async function loadProfile() {
         if (response.ok) {
             const profileData = await response.json();
 			console.log(profileData);
-
             // DOM 요소에 프로필 정보 설정
 			if (profileData.img) {
             	profileImg.src = profileData.img;
