@@ -17,6 +17,7 @@ export default class FriendPage {
                                 <p class="friend-request-text">친구요청</p>
                                 <img class="friend-search-icon" src="../../assets/icons/userSearch.svg" alt="친구찾기">
                             </div>
+                            <p class="friend-request-noti">새로운 친구 요청이 도착했어요!</p>
                             <div class="friend-request-box">
                                 <p>새로운 친구 요청이 없습니다..</p>
                             </div>
@@ -35,9 +36,9 @@ export default class FriendPage {
             </div>
         `;
     }
-    // ${createFriendRequest("../../assets/images/profile.svg", "seojchoi")}
 
     async fetchAndDisplayFriendList() {
+
         try {
             const token = localStorage.getItem('access_token');
             const response = await fetch('http://localhost:8000/api/chat/friend_list/', {
@@ -57,8 +58,6 @@ export default class FriendPage {
                 friendListBox.classList.remove('friend-list-box');
             
                 data.friends.forEach(friend => {
-
-                    console.log(friend);
 
                     const nickname = friend.nickname;
                     const image = friend.image || '../../assets/images/profile.svg';
@@ -214,6 +213,8 @@ export default class FriendPage {
 
     // 친구 검색 모달창
     showUserSearchModal() {
+        const token = localStorage.getItem('access_token');
+
         // 모달 컴포넌트 불러오기
         const modalHTML = createUserSearchModal();
 
@@ -234,6 +235,79 @@ export default class FriendPage {
                 modalDiv.remove();
             }
         };
+
+        // 친구 요청 보내기
+        async function sendFriendRequest(token, name, userFindBox) {
+            const requestBtn = userFindBox.querySelector('.request-btn');
+
+            requestBtn.addEventListener('click', async function() {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/friend/add/${name}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    userFindBox.innerHTML = '';
+
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                }
+            });
+        };
+
+        // 검색 입력 필드에 이벤트 리스너 추가
+        const searchInput = modalDiv.querySelector('#friend-name-search-input');
+        searchInput.addEventListener('keydown', function(event) {
+
+            if (event.key === 'Enter') {
+                const friend_nickname = searchInput.value.trim();
+
+                if (friend_nickname.length > 0) {
+                    // 친구 검색
+                    fetch(`http://localhost:8000/api/friend/search/${friend_nickname}/`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("회원 찾음");
+                        const userFindBox = modalDiv.querySelector('.user-find-box');
+                        userFindBox.innerHTML = '';
+                        
+                        if (data) {
+                            // 친구 정보를 보여주는 로직 추가
+                            userFindBox.innerHTML = `
+                                <div class="user-find-box-detail">
+                                    <img class="find-friend-image" src="${data.image}">
+                                    <p class="find-friend-name">${data.name}</p>
+                                    <button class="request-btn">
+                                        <p class="request-btn-text">친구요청</p>
+                                    </button>
+                                </div>
+                            `;
+
+                            sendFriendRequest(token, data.name, userFindBox);
+                        } else {
+                            userFindBox.innerHTML = '<p>해당 닉네임의 친구를 찾을 수 없습니다.</p>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching friend:', error);
+                    });
+                } else {
+                    const userFindBox = modalDiv.querySelector('.user-find-box');
+                    userFindBox.innerHTML = '<p>검색어를 입력해주세요.</p>';
+                }
+            }
+        });
     }
 
     async clickUserSearchButton() {
@@ -246,21 +320,6 @@ export default class FriendPage {
             if (searchIconElement) {
                 searchIconElement.addEventListener('click', async () => {
                     this.showUserSearchModal();
-                    // try {
-                    //     const response = await fetch(`http://localhost:8000/api/friend/add/seoji/`, {
-                    //         method: 'POST',
-                    //         headers: {
-                    //             'Authorization': `Bearer ${token}`
-                    //         }
-                    //     });
-        
-                    //     if (!response.ok) {
-                    //         throw new Error(`HTTP error! status: ${response.status}`);
-                    //     }
-        
-                    // } catch (error) {
-                    //     console.error('Fetch error:', error);
-                    // }
                 });
             } else {
                 console.error('friend-search-icon 요소를 찾을 수 없습니다.');
@@ -275,38 +334,42 @@ export default class FriendPage {
 
         notificationSocket.onmessage = function(e) {
             const data = JSON.parse(e.data);
-
-            console.log("친구 알림 옴");
             
             const friendReq = document.querySelector('.friend-request-box');
             friendReq.innerHTML = '';
 
-            if (friendReq) {
-
+            if (data.tag === 'request' && friendReq) {
                 const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
                 friendReq.innerHTML += requestHTML;
+
+                const reqNotMsg = document.querySelector('.friend-request-noti');
+                reqNotMsg.classList.add('show');
 
                 // 수락 버튼에 이벤트 리스너 추가
                 const acceptButton = friendReq.querySelector('.request-accept-btn');
                 if (acceptButton) {
-                    acceptButton.addEventListener('click', function() {
-                        console.log(`${data.sender}의 친구 요청을 수락합니다.`);
-                        const response = fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
-                            method: 'POST',
-                            headers: {
-                                'Authorization': `Bearer ${token}`
+                    acceptButton.addEventListener('click', async function() {
+                        try {
+                            const response = await fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                        });
-        
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
+                            friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
+                            reqNotMsg.classList.remove('show');
+                        } catch (error) {
+                            console.error('Fetch error:', error);
                         }
-
-                        // 친구 요청 컴포넌트 제거
-                        friendReq.innerHTML = '';
                     });
                 }
             }
+            
+            if (data.tag === 'accept')
+                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
         };
     }
     

@@ -36,13 +36,26 @@
 .friend-request-search {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1.5vh;
+    margin-bottom: 0.5vh;
 }
 
 .friend-request-text {
     color: var(--main-text-color);
     font-size: 1.2vw;
     font-weight: 600;
+}
+
+.friend-request-noti {
+    color: var(--refuse-button-color);
+    font-weight: 600;
+    margin-bottom: 0.5vh;
+    margin-left: 1vw;
+
+    visibility: hidden;
+}
+
+.friend-request-noti.show {
+    visibility: visible;
 }
 
 .friend-search-icon {
