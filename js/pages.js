@@ -8,6 +8,7 @@ import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
 import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
+import OfflineWaitGame from '../pages/offlinewaitgame/offlinewaitgame.js'
 
 export default container => {
     const home = () => {
@@ -69,6 +70,12 @@ export default container => {
         page.bindEvents();
 
     }
+
+    const offlineWaitGame = () => {
+        const offlineWaitGame = new OfflineWaitGame();
+        container.innerHTML = offlineWaitGame.render();  // HTML 구조를 렌더링
+        offlineWaitGame.addPlayers();  // 플레이어 정보 추가
+    }
   
     return {
         home,
@@ -81,5 +88,6 @@ export default container => {
 	    twoFactor,
         oauth,
         waitgame,
+        offlineWaitGame
     }
 }

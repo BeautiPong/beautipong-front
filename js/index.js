@@ -33,6 +33,7 @@ router
 .addRoute('/2fa', pages.twoFactor)
 .addRoute('/42oauth-redirect', pages.oauth)
 .addRoute('/waitgame', pages.waitgame)
+.addRoute('/offlinewaitgame', pages.offlineWaitGame)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })

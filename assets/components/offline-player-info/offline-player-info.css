@@ -1,0 +1,18 @@
+/* .offline-game-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+} */
+
+.offline-player-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 17vw;
+    height: 50vh;
+    background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
+    border-radius: 5%;
+    text-align: center;
+    justify-content: center;
+}
