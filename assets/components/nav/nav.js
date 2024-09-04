@@ -1,4 +1,4 @@
-import {createModal} from '../modal/modal.js';
+import { createModal } from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
 
@@ -32,7 +32,7 @@ export async function loadProfile() {
         // 응답 처리
         if (response.ok) {
             const profileData = await response.json();
-			console.log(profileData);
+			// console.log(profileData);
             // DOM 요소에 프로필 정보 설정
 			if (profileData.img) {
             	profileImg.src = profileData.img;
@@ -57,7 +57,13 @@ export async function loadProfile() {
 			}
 	
             profileNickname.textContent = profileData.nickname;
+
 			localStorage.setItem('nickname', profileData.nickname);
+			localStorage.setItem('score', profileData.score);
+			localStorage.setItem('match_cnt', profileData.match_cnt);
+			localStorage.setItem('win_cnt', profileData.win_cnt);
+			localStorage.setItem('win_rate', profileData.win_rate);
+			localStorage.setItem('img', profileData.image);
         } else {
             console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
         }
@@ -76,6 +82,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const navRank = document.getElementById('nav__rank');
 
     const router = getRouter();
+
+	// 네비게이션 버튼 클릭 시 active 클래스 적용 및 다른 버튼에서 제거하는 함수
+	function setActiveNavButton(activeButton) {
+		const buttons = [navMain, navMypage, navFriend, navRank];
+		buttons.forEach(button => {
+			button.classList.remove('nav__select');
+		});
+		activeButton.classList.add('nav__select');
+	}
 
     logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
     navMain.addEventListener('click', () => {

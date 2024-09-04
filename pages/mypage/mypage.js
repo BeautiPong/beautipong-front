@@ -74,72 +74,48 @@ export default class MyPage {
             const profileGameCnt = document.getElementById('mypage__game-info__gamecnt');
             const profileWinRate = document.getElementById('mypage__game-info__winrate');
             const profileScore = document.getElementById('mypage__game-info__score');
-
-            let response = await fetch('http://localhost:8000/api/user/profile/', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                },
-            });
-
-            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
-            if (response.status === 401) {
-                const newAccessToken = await refreshAccessToken();
-                response = await fetch('http://localhost:8000/api/user/profile/', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${newAccessToken}`,
-                    },
-                });
-            }
-
-            // 응답 처리
-            if (response.ok) {
-                const profileData = await response.json();
-                console.log(profileData);
-
-                // DOM 요소에 프로필 정보 설정
-                if (profileData.img) {
-                    profileImg.src = profileData.img;
-                } else {
-                    profileImg.src = "assets/images/profile.svg";
-                }
-
-                profileNickname.textContent = profileData.nickname;
-
-                if (profileData.score <= 1000) {
-                    profileTier.src = `assets/icons/bronz.svg`;
-                }
-                else if (profileData.score <= 1200) {
-                    profileTier.src = `assets/icons/silver.svg`;
-                }
-                else if (profileData.score <= 1500) {
-                    profileTier.src = `assets/icons/gold.svg`;
-                }
-                else if (profileData.score <= 2000) {
-                    profileTier.src = `assets/icons/platinum.svg`;
-                }
-                else {
-                    profileTier.src = `assets/icons/dia.svg`;
-                }
-
-                profileGameCnt.textContent = profileData.match_cnt;
-                profileWinRate.textContent = profileData.win_rate;
-                profileScore.textContent = profileData.score;
-
+    
+            // 로컬스토리지에서 프로필 정보 가져오기
+            const nickname = localStorage.getItem('nickname');
+            const score = localStorage.getItem('score');
+            const matchCnt = localStorage.getItem('match_cnt');
+            const winRate = localStorage.getItem('win_rate');
+            const img = localStorage.getItem('img');
+    
+            // DOM 요소에 프로필 정보 설정
+            if (img === "null") {
+                profileImg.src = "assets/images/profile.svg";
             } else {
-                console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
+                profileImg.src = img;
             }
+    
+            profileNickname.textContent = nickname;
+    
+            if (score <= 1000) {
+                profileTier.src = `assets/icons/bronz.svg`;
+            } else if (score <= 1200) {
+                profileTier.src = `assets/icons/silver.svg`;
+            } else if (score <= 1500) {
+                profileTier.src = `assets/icons/gold.svg`;
+            } else if (score <= 2000) {
+                profileTier.src = `assets/icons/platinum.svg`;
+            } else {
+                profileTier.src = `assets/icons/dia.svg`;
+            }
+    
+            profileGameCnt.textContent = matchCnt ? matchCnt : '-';
+            profileWinRate.textContent = winRate ? winRate : '-';
+            profileScore.textContent = score;
+    
         } catch (error) {
             console.error('프로필 정보 로딩 중 오류 발생:', error);
         }
-    }
+    }    
 
     async loadRecentGame() {
         try {
             const profileNickname = localStorage.getItem('nickname');
             const recentGameDataContainer = document.getElementById('mypage__bottom__content');
-            console.log('nickname: ', profileNickname);
     
             let response = await fetch(`http://localhost:8000/api/game/info/${profileNickname}`, {
                 method: 'GET',
@@ -162,7 +138,6 @@ export default class MyPage {
             // 응답 처리
             if (response.ok) {
                 const recentGameData = await response.json();
-                console.log(recentGameData);
     
                 // 최근 경기 기록이 없을 경우
                 if (recentGameData.length === 0) {
