@@ -24,7 +24,7 @@ export default class MainPage {
         });
 
         offlineBtn.addEventListener('click', () => {
-            router.navigate('/waitgame');
+            router.navigate('/offline_game');
         });
     }
 }

@@ -8,6 +8,7 @@ import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
 import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
+import OfflineGamePage from '../pages/offline_game/offline_game.js'
 
 export default container => {
     const home = () => {
@@ -69,6 +70,12 @@ export default container => {
         page.bindEvents();
 
     }
+
+    const offline_game = () => {
+        const page = new OfflineGamePage();
+        container.innerHTML = page.render();
+        page.afterRender();
+    }
   
     return {
         home,
@@ -81,5 +88,6 @@ export default container => {
 	    twoFactor,
         oauth,
         waitgame,
+        offline_game
     }
 }
