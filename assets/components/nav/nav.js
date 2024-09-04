@@ -167,9 +167,7 @@ function showModal(message, buttonMsg) {
 				console.log('로그아웃 성공:', data.message);
 				modalDiv.remove();
 	
-				// 토큰 제거
-				localStorage.removeItem('access_token');
-				localStorage.removeItem('refresh_token');
+				localStorage.clear();
 	
 				// 로그인 페이지로 리다이렉트
 				const router = getRouter();

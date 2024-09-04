@@ -19,12 +19,7 @@ export default class OauthRedirectPage {
             // 'code'가 존재하는 경우, 서버로 POST 요청을 보내어 액세스 토큰을 요청합니다.
             try {
                 const response = await fetch(`http://localhost:8000/api/user/get-token/?code=${code}`, {
-                    method: 'POST',
-                    // mode: 'cors',
-                    // credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    method: 'GET',
                 });
                 if (response.ok) {
                     const data = await response.json();
@@ -32,8 +27,8 @@ export default class OauthRedirectPage {
                     console.log(data);
 
                     if (data.message === "42user 회원가입 성공!") {
-                        router.navigate('/login');
-                        this.showModal('회원가입이 성공적으로 완료되었습니다!', '확인');
+                        this.showModal('환영합니다! 닉네임을 설정해주세요.', '확인');
+                        router.navigate('/nickname');
                     } else if (data.message === "로그인 성공.") {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);

@@ -53,24 +53,6 @@ export default class LoginPage {
         const login42Button = document.getElementById('start-with__42logo');
         login42Button.addEventListener('click', async () => {
             window.location.href = 'http://localhost:8000/api/user/login/';
-            // console.log("42로고 클릭!");
-            // try {
-            //     const response = await fetch('http://localhost:8000/api/user/login/', {
-            //         method: 'GET',
-            //         mode: 'cors',
-            //         credentials: 'include',
-            //     });
-
-            //     if (response.ok) {
-            //         const data = await response.json();
-            //         console.log('42 로그인 요청 성공:', data);
-            //         router.navigate('/2oauth-redirect');
-            //     } else {
-            //         console.error('42 로그인 요청 실패:', response.status);
-            //     }
-            // } catch (error) {
-            //     console.error('42 로그인 요청 중 오류 발생:', error);
-            // }
         });
     }
 

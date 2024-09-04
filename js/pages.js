@@ -48,6 +48,7 @@ export default container => {
     const nickname = () => {
         const page = new NicknamePage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const twoFactor = () => {
