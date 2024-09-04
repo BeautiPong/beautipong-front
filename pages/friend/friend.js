@@ -366,6 +366,28 @@ export default class FriendPage {
                         }
                     });
                 }
+                // 거절 버튼에 이벤트 리스너 추가
+                const refuseButton = friendReq.querySelector('.request-refuse-btn');
+                if (refuseButton) {
+                    refuseButton.addEventListener('click', async function() {
+                        // 거절하면 친구 관계 삭제하는 api 호출
+                        try {
+                            const response = await fetch(`http://localhost:8000/api/friend/delete/${data.sender}/`, {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            });
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
+                            reqNotMsg.classList.remove('show');
+                        } catch (error) {
+                            console.error('Fetch error:', error);
+                        }
+                    });
+                }
             }
             
             if (data.tag === 'accept')
