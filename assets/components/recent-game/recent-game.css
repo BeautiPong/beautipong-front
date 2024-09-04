@@ -41,13 +41,14 @@
 	display: flex;
 	justify-content: flex-end;
 	align-items: center;
+	margin-left: 2%;
 }
 
 .recent-game-record__btn {
 	width: 60%;
 	height: 70%;
 
-	border-radius: 18px;
+	border-radius: 15px;
 	background-color: var(--accept-button-color);
 	color: var(--main-color);
 	font-size: 18px;
@@ -58,7 +59,7 @@
 	width: 60%;
 	height: 70%;
 
-	border-radius: 18px;
+	border-radius: 15px;
 	background-color: var(--refuse-button-color);
 	color: var(--main-color);
 	font-size: 18px;

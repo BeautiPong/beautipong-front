@@ -165,39 +165,12 @@ export default class MyPage {
                 console.log(recentGameData);
     
                 // 최근 경기 기록이 없을 경우
-                // if (recentGameData.length === 0) {
-                //     recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
-                //     return;
-                // }
+                if (recentGameData.length === 0) {
+                    recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
+                    return;
+                }
     
-                // DOM 요소에 최근 경기 기록 추가
-                const testData = {
-                    user1: {
-                        profile_img: "​",
-                        nickname: "User1"
-                    },
-                    user2: {
-                        profile_img: "​",
-                        nickname: "User2"
-                    },
-                    score: "1 : 2",
-                    win: "승리"
-                }
-                const testData2 = {
-                    user1: {
-                        profile_img: "​",
-                        nickname: "User1"
-                    },
-                    user2: {
-                        profile_img: "​",
-                        nickname: "User222"
-                    },
-                    score: "1 : 2",
-                    win: "패배"
-                }
-                const testGameData = [testData, testData2, testData, testData2];
-                recentGameDataContainer.innerHTML = testGameData.map(game => renderGameRecord(game)).join('');
-                // recentGameDataContainer.innerHTML = recentGameData.map(game => renderGameRecord(game)).join('');
+                recentGameDataContainer.innerHTML = recentGameData.map(game => renderGameRecord(game)).join('');
     
             } else {
                 console.error('최근 경기 기록을 가져오지 못했습니다:', response.statusText);
@@ -207,25 +180,60 @@ export default class MyPage {
         }
     }
 
+    // async handleImgEditBtn(e) {
+    //     console.log(e.target.files);
+    //     const router = getRouter();
+    
+    //     const newProfileImg = e.target.files[0]; // 선택된 파일
+    //     if (!newProfileImg) {
+    //         alert('이미지를 선택해주세요.');
+    //         return;
+    //     }
+    
+    //     const formData = new FormData();
+    //     formData.append('img', newProfileImg);
+    
+    //     try {
+    //         const response = await fetch('http://localhost:8000/api/user/profile/update/', {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+    //                 // 'Content-Type' 헤더는 설정하지 않음, 자동으로 multipart/form-data로 설정됨
+    //             },
+    //             body: formData
+    //         });
+    
+    //         if (response.ok) {
+    //             const updatedData = await response.json();
+    //             console.log(updatedData);
+    //             // document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
+    //             router.navigate('/mypage');
+    //             alert('프로필 이미지가 성공적으로 변경되었습니다.');
+    //         } else {
+    //             const errorData = await response.json();
+    //             console.error('프로필 이미지 변경 실패:', errorData);
+    //             alert('프로필 이미지 변경에 실패했습니다.');
+    //         }
+    //     } catch (error) {
+    //         console.error('프로필 이미지 변경 중 오류 발생:', error);
+    //         alert('프로필 이미지 변경 중 오류가 발생했습니다.');
+    //     }
+    // }
+
     async handleImgEditBtn(e) {
         console.log(e.target.files);
         const router = getRouter();
     
-        const newProfileImg = e.target.files[0]; // 선택된 파일
-        if (!newProfileImg) {
-            alert('이미지를 선택해주세요.');
-            return;
-        }
-    
-        const formData = new FormData();
+        var newProfileImg = e.target.files[0]; // 선택된 파일
+        var formData = new FormData();
         formData.append('img', newProfileImg);
     
         try {
             const response = await fetch('http://localhost:8000/api/user/profile/update/', {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                    // 'Content-Type' 헤더는 설정하지 않음, 자동으로 multipart/form-data로 설정됨
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    // 'Content-Type' 헤더는 FormData 사용 시 자동으로 설정됩니다.
                 },
                 body: formData
             });
@@ -233,7 +241,7 @@ export default class MyPage {
             if (response.ok) {
                 const updatedData = await response.json();
                 console.log(updatedData);
-                // document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
+                document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
                 router.navigate('/mypage');
                 alert('프로필 이미지가 성공적으로 변경되었습니다.');
             } else {
@@ -245,8 +253,7 @@ export default class MyPage {
             console.error('프로필 이미지 변경 중 오류 발생:', error);
             alert('프로필 이미지 변경 중 오류가 발생했습니다.');
         }
-    }
-      
+    }     
     
     async handleNicknameImgEditBtn(event) {
 
