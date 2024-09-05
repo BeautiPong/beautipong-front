@@ -51,7 +51,7 @@ export default class NicknamePage {
 
         // 폼 데이터를 수집합니다.
         const formData = {
-            nickname: document.getElementById('nicknameInput').value,
+            nickname: document.getElementById('nickname_set_input').value,
         };
 
         if (!formData.nickname) {
@@ -65,6 +65,7 @@ export default class NicknamePage {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
                 body: JSON.stringify(formData)
             });
@@ -79,6 +80,7 @@ export default class NicknamePage {
             } else {
                 console.error('회원가입 실패:', response.status);
                 const errorData = await response.json();
+                console.log(errorData);
                 this.handleNicknameError(errorData);
             }
         } catch (error) {
@@ -87,11 +89,10 @@ export default class NicknamePage {
     }
 
     handleNicknameError(errorData) {
-
-        const nicknameInput = document.querySelector('#nickname_set_input').value;
+        const nicknameInput = document.querySelector('#nickname_set_input');
         const nicknameErrorDiv = document.querySelector('#nickname-error-message');
 
-        nicknameInput.classList.remove('input-error');
+        nicknameInput.classList.remove('set-nickname__error');
         nicknameErrorDiv.innerText = '';
 
         // 에러 메시지에 따른 처리
@@ -100,20 +101,20 @@ export default class NicknamePage {
                 if (!document.querySelector('#nickname_set_input').value) {
                     nicknameErrorDiv.innerText = `${errorData.message}`;
                     nicknameErrorDiv.classList.add('show');
-                    nicknameInput.classList.add('input-error');
+                    nicknameInput.classList.add('set-nickname__error');
 
                     // 사용자 입력 시 에러 상태 리셋
                     nicknameInput.addEventListener('input', function () {
                     nicknameErrorDiv.innerText = '';
                     nicknameErrorDiv.classList.remove('show');
-                    nicknameInput.classList.remove('input-error');});
+                    nicknameInput.classList.remove('set-nickname__error');});
                 }
                 break ;
 
-            case "이미 존재하는 닉네임입니다." :
+            case "이미 사용 중인 닉네임입니다." :
                 nicknameErrorDiv.innerText = `${errorData.message}`;
                 nicknameErrorDiv.classList.add('show');
-                nicknameInput.classList.add('input-error');
+                nicknameInput.classList.add('set-nickname__error');
                 break;
         }
     }

@@ -69,6 +69,13 @@
     margin-right: 9%;
 }
 
-/* button:hover {
-    background-color: #f0f0f0;
-} */
+.set-nickname__error {
+    border: 1px solid var(--error-message-color) !important;
+}
+
+#nickname-error-message {
+    color: var(--error-message-color) !important;
+    text-align: left; /* 좌측 정렬 */
+    width: 80%; /* input 필드와 동일한 너비 */
+    margin-top: 1%; /* input 필드와의 간격 */
+}

@@ -27,12 +27,13 @@ export default class OauthRedirectPage {
                     console.log(data);
 
                     if (data.message === "42user 회원가입 성공!") {
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
                         this.showModal('환영합니다! 닉네임을 설정해주세요.', '확인');
                         router.navigate('/nickname');
                     } else if (data.message === "로그인 성공.") {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
-
                         document.querySelector('.nav-container').style.display = 'block';
                         const router = getRouter();
                         router.navigate('/');
