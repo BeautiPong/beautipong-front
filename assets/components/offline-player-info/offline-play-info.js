@@ -8,10 +8,11 @@ export default class OfflinePlayerInfo {
     render() {
         return `
             <div id="offline-player-info-${this.playerNumber}" class="offline-player-info">
-                <img src="${this.playerData.img || 'assets/images/profile.svg'}" alt="프로필 사진" class="profile-img">
+                <img src="${this.playerData.img || 'assets/images/profile.svg'}" alt="프로필 사진" class="offline-player-img">
                 <div class="icon-nickname">
                     <p class="player-info-nickname">${this.playerData.nickname}</p>
                 </div>
+                <input id="plyaer${this.playerNumber}-nickname" class="offline-player-nickname" placeholder="닉네임을 입력해주세요"></input>
             </div>
         `;
     }
