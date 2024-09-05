@@ -26,8 +26,10 @@ export default class TwoFactorPage {
                         <div class="error-message-container">
                             <div class="error-message" id="error-message">default</div>
                         </div>
-                        <button id="generate-btn" type="button">코드 (재)전송</button>
-                        <button id="verify-btn" type="submit">인증 확인</button>
+                        <div class="two-fa-btn">
+                            <button id="generate-btn" type="button">코드 (재)전송</button>
+                            <button id="verify-btn" type="submit">인증 확인</button>
+                        </div>
                     </form>
                 </div>
             </div>

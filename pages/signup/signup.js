@@ -10,7 +10,7 @@ export default class SignupPage {
                 <div class="signup-container">
                     <div class="signup-contents">
                         <h1>회원 가입</h1>
-                        <form>
+                        <form id="signup-form">
                             <label for="nickname" id="form-nickname-label">닉네임을 입력해주세요</label>
                             <input type="text" id="form-nickname-input" placeholder="닉네임" required>
 
@@ -203,5 +203,8 @@ export default class SignupPage {
     addEventListeners() {
         const formButton = document.getElementById('signup-submit-btn');
         formButton.addEventListener('click', this.handleFormBtn.bind(this));
+
+        const signupForm = document.getElementById('signup-form');
+        signupForm.addEventListener('submit', this.handleFormBtn.bind(this));
     }
 }
