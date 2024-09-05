@@ -61,11 +61,11 @@ export default class NicknamePage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/set-nickname/', {
+            const response = await fetch('http://localhost:8000/api/user/account/nickname/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('temp_token')}`,
                 },
                 body: JSON.stringify(formData)
             });
@@ -74,6 +74,9 @@ export default class NicknamePage {
             if (response.ok) {
                 const data = await response.json();
                 console.log('회원가입 성공:', data);
+
+                localStorage.removeItem('temp_token');
+
                 const router = getRouter();
                 router.navigate('/login');
                 showModal('회원가입이 완료되었습니다!', '확인');
