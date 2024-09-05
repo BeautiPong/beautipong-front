@@ -1,3 +1,5 @@
+import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
+
 export default class offlineGamePage {
     render() {
         return `
@@ -6,32 +8,71 @@ export default class offlineGamePage {
                     <div id="scoreboard">
                         <div id="player1_score"></div>
                         <div id="player2_score"></div>
-                    </div>            
+                    </div>
                 </div>
             </div>
         `;
     }
 
 
-    afterRender() {
+    async afterRender() {
 
     console.log("offline_game.js");
     // Django 템플릿에서 전달된 정보를 JavaScript로 가져오기
     const token = localStorage.getItem("access_token");
-    const user1 = JSON.parse(document.getElementById('user1').textContent);
+    console.log("token: ", token);
+    const user1="user1";
+    const user2="user2";
+    let matchType = "";
+    await fetchUserInfo();
+
+    // const user1 = JSON.parse(document.getElementById('user1').textContent);
     // const user2 = JSON.parse(document.getElementById('user2').textContent);
     // const user3 = JSON.parse(document.getElementById('user3').textContent);
     // const user4 = JSON.parse(document.getElementById('user4').textContent);
-    const matchType = "{{ match_type }}";
-    console.log("matchType: ", matchType);
+    async function fetchUserInfo() {
+        console.log("in fetchUserInfo");
+        const formData = {
+            "user1" : user1,
+            "user2" : user2,
+        };
+    try {
+        console.log("in try");
+        // 백엔드로 POST 요청을 보냅니다.
+        const response = await fetch('http://localhost:8000/api/game/offline/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        // 응답 처리
+        if (response.ok) {
+            const data = await response.json();
+            matchType = data.match_type;
+            console.log("matchType: ", matchType);
+            console.log('POST 요청 성공!');
+        } else {
+            const errorData = await response.json();
+            console.error('response 오류 발생:', errorData);
+        }
+    } catch (error) {
+        console.error('POST 요청 중 오류 발생:', error);
+    }
+}
     let socketUrl;
+    console.log("matchType: ", matchType);
     if (matchType === '1v1') {
-        socketUrl = 'ws://' + window.location.host + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
+        console.log(user1,user2)
+        socketUrl = 'ws://' + 'localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
-        socketUrl = 'ws://' + window.location.host + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
+        socketUrl = 'ws://localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
     let socket = new WebSocket(socketUrl);
+
 
     // 서버로부터 받아온 테이블, 패들 정보
     const tableWidth = 100;
