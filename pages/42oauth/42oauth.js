@@ -5,7 +5,7 @@ import { loadProfile } from '../../assets/components/nav/nav.js';
 export default class OauthRedirectPage {
     render() {
         return `
-            <h1>42 oauth redirect Page</h1>
+            <h1></h1>
         `;
     }
 
@@ -13,7 +13,6 @@ export default class OauthRedirectPage {
         // URL에서 'code' 파라미터 추출
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        console.log(code);
 
         if (code) {
             // 'code'가 존재하는 경우, 서버로 POST 요청을 보내어 액세스 토큰을 요청합니다.
@@ -24,7 +23,6 @@ export default class OauthRedirectPage {
                 if (response.ok) {
                     const data = await response.json();
                     const router = getRouter();
-                    console.log(data);
 
                     if (data.message === "42user 회원가입 성공!") {
                         localStorage.setItem('access_token', data.access_token);
