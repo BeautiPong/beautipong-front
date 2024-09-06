@@ -1,6 +1,10 @@
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
 
 export default class offlineGamePage {
+    constructor() {
+        this.socket = null; // WebSocket 연결을 위한 속성
+        this.animationFrameId = null; // 애니메이션 프레임 ID를 위한 속성
+    }
     render() {
         return `
             <div class="offline_game">
@@ -71,7 +75,7 @@ export default class offlineGamePage {
         socketUrl = 'ws://localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
-    let socket = new WebSocket(socketUrl);
+    this.socket = new WebSocket(socketUrl);
 
 
     // 서버로부터 받아온 테이블, 패들 정보
@@ -127,13 +131,14 @@ export default class offlineGamePage {
 
     // 애니메이션 렌더링
     function animate() {
+        // this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
         requestAnimationFrame(animate);
         renderer.render(scene, camera);
     }
 
     animate();
 
-    socket.onmessage = function(event) {
+    this.socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (data.type === 'game_loop') {
             const ball_position = data.state.ball_pos;
@@ -157,6 +162,42 @@ export default class offlineGamePage {
             alert('Game Over - ' + data.winner + ' wins!');
         }
     };
+
+    // 페이지를 떠날 때 정리 작업 추가
+    // window.addEventListener('beforeunload', () => cleanUp());
+    window.addEventListener('beforeunload', () => 
+    {
+        console.log("in before");
+    });
+
+    // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
+    // window.addEventListener('popstate', () => cleanUp());
+    window.addEventListener('popstate', () => 
+    {
+        console.log("in pop");
+        
+        // WebSocket 연결 닫기
+        if (this.socket) {
+            this.socket.close();
+            console.log("WebSocket 연결 닫힘");
+        }
+
+        // 애니메이션 루프 중단
+        if (this.animationFrameId) {
+            cancelAnimationFrame(this.animationFrameId);
+            console.log("애니메이션 루프 중단");
+        }
+
+        // Three.js 렌더러를 DOM에서 제거
+        const rendererDom = document.querySelector('canvas');
+        if (rendererDom) {
+            rendererDom.remove();
+            console.log("Three.js 캔버스 제거");
+        }
+        
+    });
+    
+    
 
     socket.onopen = function() {
         console.log("WebSocket connection opened");
