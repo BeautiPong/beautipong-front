@@ -1,4 +1,6 @@
 import {createModal} from '../../assets/components/modal/modal.js';
+import { getRouter } from '../../js/router.js';
+import {loadProfile} from '../../assets/components/nav/nav.js';
 
 export default class TwoFactorPage {
     render() {
@@ -24,8 +26,10 @@ export default class TwoFactorPage {
                         <div class="error-message-container">
                             <div class="error-message" id="error-message">default</div>
                         </div>
-                        <button id="generate-btn" type="button">코드 (재)전송</button>
-                        <button id="verify-btn" type="submit">인증 확인</button>
+                        <div class="two-fa-btn">
+                            <button id="generate-btn" type="button">코드 (재)전송</button>
+                            <button id="verify-btn" type="submit">인증 확인</button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -93,6 +97,12 @@ export default class TwoFactorPage {
 
         const verifyButton = document.getElementById("verify-btn");
         verifyButton.addEventListener("click", (event) => this.handleSubmit(event));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                this.handleSubmit(event);
+            }
+        });
     }
 
     async handleGenerateButtonClick(event) {
@@ -170,7 +180,9 @@ export default class TwoFactorPage {
 
                 // 대시보드 페이지로 이동
 				document.querySelector('.nav-container').style.display = 'block';
-                window.location.hash = '#/';
+                const router = getRouter();
+                router.navigate('/');
+                loadProfile();
             } else {
                 console.error('2FA 인증 실패:', response.status);
                 const errorData = await response.json();

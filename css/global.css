@@ -5,14 +5,18 @@
 @import "../pages/2fa/2fa.css";
 @import "../pages/main/main.css";
 @import "../pages/nickname/nickname.css";
+@import "../pages/mypage/mypage.css";
+@import "../pages/waitgame/waitgame.css";
 @import "../pages/friend/friend.css";
 
 @import "../assets/components/nav/nav.css";
+@import "../assets/components/player-info/player-info.css";
 @import "../assets/components/modal/modal.css";
 @import "../assets/components/friend-request/friend-request.css";
 @import "../assets/components/friend-list/friend-list.css";
 @import "../assets/components/chat-room/chat-room.css";
 @import "../assets/components/message/message.css";
+@import "../assets/components/recent-game/recent-game.css";
 @import "../assets/components/user-search-modal/user-search-modal.css";
 
 
@@ -30,7 +34,7 @@
     box-sizing: border-box;
 }
 body {
-    background-image: url(../assets/images/background2.svg);
+    background-image: url(../assets/images/background.svg);
     background-size: cover;
     background-position: 50% 80%;
     background-repeat: no-repeat;

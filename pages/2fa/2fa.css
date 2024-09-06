@@ -45,23 +45,32 @@
 	color: var(--main-text-color);
     text-align: center;
     border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.two-fa-btn {
+    display: flex;
+    justify-content: center;
+    gap: 3%;
 }
 
 .two-fa-container button {
-	width: 12vw;
+	width: 11vw;
     height: 8vh;
-    padding: 12px;
-    font-size: 32px;
+
+    font-size: 28px;
 	font-weight: 600;
-	color: var(--main-text-color);
+	
+    color: var(--main-text-color);
     background-color: #fff;
-    border-radius: 10px;
+    border-radius: 15px;
     cursor: pointer;
     margin-top: 8vh;
 }
-.two-fa-container button:hover {
+
+/* .two-fa-container button:hover {
 	border: 3px solid var(--main-text-color);
-}
+} */
 
 .error-message {
     visibility: hidden;

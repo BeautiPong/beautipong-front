@@ -85,9 +85,10 @@
     font-weight: 500;
 }
 
-.start-image {
+#start-with__42logo {
     width: 3vw;
     height: auto;
+    cursor: pointer;
 }
 
 
