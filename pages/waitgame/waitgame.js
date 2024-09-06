@@ -37,16 +37,16 @@ export default class WaitGamePage {
 
     afterRender() {
         const accessToken = localStorage.getItem("access_token");
-        this.socket = new WebSocket(
-            'ws://'
-            + 'localhost:8000'
-            + '/ws/user/'
-            + '?token=' + accessToken
-            );
+        // this.socket = new WebSocket(
+        //     'ws://'
+        //     + 'localhost:8000'
+        //     + '/ws/user/'
+        //     + '?token=' + accessToken
+        //     );
             
-        this.socket.onopen = () => {
-            console.log('WebSocket 연결됨');
-        }
+        // this.socket.onopen = () => {
+        //     console.log('WebSocket 연결됨');
+        // }
     }
 
 	showLoader() {
@@ -119,7 +119,6 @@ export default class WaitGamePage {
             }
 
             const data = await response.json();
-            console.log('매칭 1111', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
             this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name);
@@ -154,6 +153,7 @@ export default class WaitGamePage {
 			if (data.type === 'game_start') {
 				if (data.room_name) {
 					this.navigateToGamePage(data.room_name, jwtToken);
+					this.socket.close();  // 매칭 컨슈머 연결 종료
 				} else {
 					console.error('room_name is undefined');
 				}
@@ -161,14 +161,14 @@ export default class WaitGamePage {
 		};
 	
 		this.socket.onclose = (e) => {
-			console.error('Chat socket closed unexpectedly');
+			console.log('매칭 웹소켓 연결 종료');
 		};
 	}
 
     // 게임 페이지로 이동하기 전에 API 요청
     async navigateToGamePage(roomName, jwtToken) {
-		console.log('Room Name:', roomName);  // Debugging 추가
-		console.log('JWT Token:', jwtToken);  // Debugging 추가
+		// console.log('Room Name:', roomName);  // Debugging 추가
+		// console.log('JWT Token:', jwtToken);  // Debugging 추가
 	
 		try {
 			const accessToken = localStorage.getItem("access_token");
@@ -186,11 +186,7 @@ export default class WaitGamePage {
 			}
 	
 			const data = await response.json();
-			// console.log('게임 페이지 응답:', data);
-			console.log('testttttttttttttttttt');
-			console.log(data.room_name);
-			console.log(data.jwt_token);
-			console.log('testttttttttttttttttt');
+			console.log('게임 페이지 응답:', data);
 	
 			const router = getRouter();
 			router.navigate('/online-game', {

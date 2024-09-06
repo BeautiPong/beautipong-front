@@ -1,3 +1,4 @@
+import { getRouter } from '../../js/router.js';
 export default class OnlineGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -16,8 +17,6 @@ export default class OnlineGamePage {
 
     // WebSocket 연결을 설정하고 게임 초기화를 담당하는 메서드
     async afterRender(roomName, jwtToken) {
-		console.log('Room Name:', roomName);  // Debugging 추가
-		console.log('JWT Token:', jwtToken);  // Debugging 추가
 	
 		if (!roomName || !jwtToken) {
 			console.error('Room name or JWT token is missing');
@@ -89,58 +88,92 @@ export default class OnlineGamePage {
         this.renderer.render(this.scene, this.camera);
     }
 
-    // WebSocket 연결을 설정하는 메서드
     connectWebSocket(roomName, jwtToken) {
-        const socketUrl = `ws://localhost:8000/ws/game/online/${roomName}/?token=${jwtToken}`;
-        this.socket = new WebSocket(socketUrl);
-
-        this.socket.onopen = () => {
-            console.log("WebSocket 연결 성공");
-        };
-
-        this.socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("서버로부터 받은 데이터:", data);
-
-            // 서버에서 받은 데이터를 처리
-            if (data.type === 'assign_role') {
-                this.playerRole = data.role;
-            } else if (data.type === 'game_state') {
-                this.updateGameState(data);
-            } else if (data.type === 'game_over') {
-                alert(`Game Over! Winner: ${data.winner}`);
-            }
-        };
-
-        this.socket.onclose = () => {
-            console.log("WebSocket 연결 종료");
-        };
-
-        this.socket.onerror = (error) => {
-            console.error("WebSocket 오류 발생:", error);
-        };
-
-        document.addEventListener('keydown', (event) => this.handleKeyPress(event));
-    }
-
-    // 키 입력을 처리하는 메서드
-    handleKeyPress(event) {
-        let direction = null;
-
-        if (event.code === 'KeyA') {
-            direction = 'left';
-        } else if (event.code === 'KeyD') {
-            direction = 'right';
-        }
-
-        if (direction && this.playerRole) {
-            this.socket.send(JSON.stringify({
-                type: 'move',
-                direction: direction,
-                player: this.playerRole
-            }));
-        }
-    }
+		const socketUrl = `ws://localhost:8000/ws/game/online/${roomName}/?token=${jwtToken}`;
+	
+		// 기존 WebSocket이 존재하고, 아직 닫히지 않았다면 종료
+		if (this.socket) {
+			if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
+				console.log('Existing WebSocket connection found, closing it.');
+				this.socket.close();
+			}
+		}
+	
+		// 새로운 WebSocket 연결 생성
+		this.socket = new WebSocket(socketUrl);
+	
+		this.socket.onopen = () => {
+			console.log("WebSocket 연결 성공");
+		};
+	
+		this.socket.onmessage = (event) => {
+			const data = JSON.parse(event.data);
+	
+			// 서버에서 받은 데이터를 처리
+			if (data.type === 'assign_role') {
+				console.log("서버로부터 받은 데이터:", data);
+				this.playerRole = data.role;
+			} else if (data.type === 'game_state') {
+				this.updateGameState(data);
+			} else if (data.type === 'game_over') {
+				console.log("서버로부터 받은 데이터:", data);
+				alert(`Game Over! Winner: ${data.winner}`);
+				this.socket.close(); // 게임이 끝나면 WebSocket 연결 종료
+			}
+		};
+	
+		this.socket.onclose = () => {
+			console.log("게임 WebSocket 연결 종료");
+			alert("게임이 종료되었습니다. 대기실로 돌아갑니다.");
+			this.disconnectWebSocket(); // 명확히 연결 종료
+			const router = getRouter();
+			if (router) {
+				router.navigate('/');
+			} else {
+				console.error('Router not found!');
+			}
+		};
+	
+		this.socket.onerror = (error) => {
+			console.error("WebSocket 오류 발생:", error);
+		};
+	
+		// 이벤트 핸들러 등록 (한번만 실행되게)
+		if (!this.isEventListenerSet) {
+			document.addEventListener('keydown', (event) => this.handleKeyPress(event));
+			this.isEventListenerSet = true; // 이벤트 핸들러가 한 번만 등록되도록 설정
+		}
+	}
+	
+	// WebSocket 연결을 명확히 종료하는 메서드
+	disconnectWebSocket() {
+		if (this.socket) {
+			if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
+				this.socket.close(); // WebSocket 연결 종료
+			}
+			this.socket = null;  // WebSocket 객체를 명확히 null로 설정
+		}
+	}
+	
+	// 키 입력을 처리하는 메서드
+	handleKeyPress(event) {
+		let direction = null;
+	
+		if (event.code === 'KeyA') {
+			direction = 'left';
+		} else if (event.code === 'KeyD') {
+			direction = 'right';
+		}
+	
+		// WebSocket 연결이 아직 열려 있는지 확인 후 메시지 전송
+		if (direction && this.playerRole && this.socket && this.socket.readyState === WebSocket.OPEN) {
+			this.socket.send(JSON.stringify({
+				type: 'move',
+				direction: direction,
+				player: this.playerRole  // 자신의 역할을 명시
+			}));
+		}
+	}
 
     // 게임 상태를 업데이트하는 메서드
     updateGameState(data) {
