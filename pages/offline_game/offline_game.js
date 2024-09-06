@@ -1,10 +1,6 @@
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
 
 export default class offlineGamePage {
-    constructor() {
-        this.socket = null; // WebSocket 연결을 위한 속성
-        this.animationFrameId = null; // 애니메이션 프레임 ID를 위한 속성
-    }
     render() {
         return `
             <div class="offline_game">
@@ -18,6 +14,7 @@ export default class offlineGamePage {
         `;
     }
 
+    
 
     async afterRender() {
 
@@ -28,6 +25,7 @@ export default class offlineGamePage {
     const user1="user1";
     const user2="user2";
     let matchType = "";
+    let socket = null
     await fetchUserInfo();
 
     // const user1 = JSON.parse(document.getElementById('user1').textContent);
@@ -75,7 +73,7 @@ export default class offlineGamePage {
         socketUrl = 'ws://localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
-    this.socket = new WebSocket(socketUrl);
+    socket = new WebSocket(socketUrl);
 
 
     // 서버로부터 받아온 테이블, 패들 정보
@@ -138,7 +136,7 @@ export default class offlineGamePage {
 
     animate();
 
-    this.socket.onmessage = function(event) {
+    socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (data.type === 'game_loop') {
             const ball_position = data.state.ball_pos;
@@ -160,25 +158,15 @@ export default class offlineGamePage {
 
         else if (data.type === 'game_end') {
             alert('Game Over - ' + data.winner + ' wins!');
+            cleanUp();
         }
     };
 
-    // 페이지를 떠날 때 정리 작업 추가
-    // window.addEventListener('beforeunload', () => cleanUp());
-    window.addEventListener('beforeunload', () => 
+    function cleanUp()
     {
-        console.log("in before");
-    });
-
-    // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
-    // window.addEventListener('popstate', () => cleanUp());
-    window.addEventListener('popstate', () => 
-    {
-        console.log("in pop");
-        
         // WebSocket 연결 닫기
-        if (this.socket) {
-            this.socket.close();
+        if (socket) {
+            socket.close();
             console.log("WebSocket 연결 닫힘");
         }
 
@@ -194,22 +182,44 @@ export default class offlineGamePage {
             rendererDom.remove();
             console.log("Three.js 캔버스 제거");
         }
-        
+    }
+
+    // 페이지를 떠날 때 정리 작업 추가
+    // window.addEventListener('beforeunload', () => cleanUp());
+    window.addEventListener('beforeunload', () => 
+    {
+        console.log("in before");
     });
+
     
+    // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
+    window.addEventListener('popstate', cleanUp);
+
+    
+    const nav__logout = document.getElementById('nav__logout');
+    nav__logout.addEventListener('click', cleanUp);
+    const nav__main = document.getElementById('nav__main');
+    nav__main.addEventListener('click', cleanUp);
+    const nav__mypage = document.getElementById('nav__mypage');
+    nav__mypage.addEventListener('click', cleanUp);
+    const nav__friend = document.getElementById('nav__friend');
+    nav__friend.addEventListener('click', cleanUp);
+    const nav__rank = document.getElementById('nav__rank');
+    nav__rank.addEventListener('click', cleanUp);
+
     
 
-    socket.onopen = function() {
-        console.log("WebSocket connection opened");
-    };
+    // socket.onopen = function() {
+    //     console.log("WebSocket connection opened");
+    // };
 
-    socket.onclose = function(event) {
-        console.log("WebSocket connection closed:", event);
-    };
+    // socket.onclose = function(event) {
+    //     console.log("WebSocket connection closed:", event);
+    // };
 
-    socket.onerror = function(event) {
-        console.error("WebSocket error occurred:", event);
-    };
+    // socket.onerror = function(event) {
+    //     console.error("WebSocket error occurred:", event);
+    // };
 
     const keysPressed = {};
     const validKeys = ['w', 's', 'o', 'l'];
