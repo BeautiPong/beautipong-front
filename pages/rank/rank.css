@@ -1,0 +1,66 @@
+.rank-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+}
+
+.rank--background {
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 75vw;
+    height: 90vh;
+    border-radius: 40px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+	box-sizing: border-box;
+	padding: 4%;
+	gap: 4%;
+}
+
+.rank__left-section {
+	width: 50%;
+	height: 100%;
+
+	display: flex;
+	flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+	gap: 5%;
+}
+
+.rank__left-section__user-info {
+	width: 100%;
+	height: 15%;
+	border: solid;
+
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.rank__left-section__total-info {
+	width: 100%;
+	height: 85%;
+	border: solid;
+
+	display: flex;
+	flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.rank__right-section {
+	border: solid;
+	width: 50%;
+	height: 100%;
+
+	display: flex;
+    justify-content: center;
+    align-items: center;
+}
