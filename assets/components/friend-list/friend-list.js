@@ -8,8 +8,9 @@ export function createFriendList(image, nickname) {
                     <p class="list-nickname">${nickname}</p>
                     <p class="list-online-status"></p>
                 </div>
-                <img class="menu-icon" src="../../assets/icons/Menu.svg" alt="메뉴">
             </div>
         </div>
     `;
 }
+
+{/* <img class="menu-icon" src="../../assets/icons/Menu.svg" alt="메뉴"></img> */}
