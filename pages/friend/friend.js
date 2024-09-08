@@ -77,9 +77,10 @@ export default class FriendPage {
                     // 생성된 친구 요소를 DOM에 추가
                     const newFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(newFriendElement);
-            
+
                     // 이벤트 리스너를 직접 추가
-                    newFriendElement.addEventListener('click', () => {
+                    const nicknameElement = newFriendElement.querySelector('.list-nickname');
+                    nicknameElement.addEventListener('click', () => {
                         this.updateChatBox(nickname);
                     });
                 });
