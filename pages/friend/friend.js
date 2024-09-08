@@ -357,11 +357,10 @@ export default class FriendPage {
                     })
                     .then(response => response.json())
                     .then(data => {
-                        console.log("회원 찾음");
                         const userFindBox = modalDiv.querySelector('.user-find-box');
                         userFindBox.innerHTML = '';
                         
-                        if (data) {
+                        if (data && data.name) {
                             // 친구 정보를 보여주는 로직 추가
                             userFindBox.innerHTML = `
                                 <div class="user-find-box-detail">
