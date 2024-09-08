@@ -1,4 +1,5 @@
 import { getRouter } from '../../js/router.js';
+import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
 export default class WaitGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -140,6 +141,7 @@ export default class WaitGamePage {
 	
 		// WebSocket 연결 시작
 		this.socket = new WebSocket(socketUrl);
+		setMatchingWebSocket(this.socket);
 	
 		this.socket.onopen = () => {
 			console.log("매칭 웹소켓 연결 성공");
@@ -154,6 +156,7 @@ export default class WaitGamePage {
 				if (data.room_name) {
 					this.navigateToGamePage(data.room_name, jwtToken);
 					this.socket.close();  // 매칭 컨슈머 연결 종료
+					setMatchingWebSocket(null);
 				} else {
 					console.error('room_name is undefined');
 				}
@@ -162,6 +165,7 @@ export default class WaitGamePage {
 	
 		this.socket.onclose = (e) => {
 			console.log('매칭 웹소켓 연결 종료');
+			setMatchingWebSocket(null);
 		};
 	}
 

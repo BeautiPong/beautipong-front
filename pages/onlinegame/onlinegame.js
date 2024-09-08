@@ -1,4 +1,5 @@
 import { getRouter } from '../../js/router.js';
+import { setGameWebSocket } from './../../assets/components/nav/nav.js';
 export default class OnlineGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -94,16 +95,17 @@ export default class OnlineGamePage {
 		// 기존 WebSocket이 존재하고, 아직 닫히지 않았다면 종료
 		if (this.socket) {
 			if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
-				console.log('Existing WebSocket connection found, closing it.');
 				this.socket.close();
+				setGameWebSocket(null);
 			}
 		}
 	
 		// 새로운 WebSocket 연결 생성
 		this.socket = new WebSocket(socketUrl);
+		setGameWebSocket(this.socket);
 	
 		this.socket.onopen = () => {
-			console.log("WebSocket 연결 성공");
+			console.log("게임 WebSocket 연결 성공");
 		};
 	
 		this.socket.onmessage = (event) => {
@@ -124,7 +126,7 @@ export default class OnlineGamePage {
 	
 		this.socket.onclose = () => {
 			console.log("게임 WebSocket 연결 종료");
-			alert("게임이 종료되었습니다. 대기실로 돌아갑니다.");
+			// alert("게임이 종료되었습니다. 대기실로 돌아갑니다.");
 			this.disconnectWebSocket(); // 명확히 연결 종료
 			const router = getRouter();
 			if (router) {
@@ -150,8 +152,10 @@ export default class OnlineGamePage {
 		if (this.socket) {
 			if (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING) {
 				this.socket.close(); // WebSocket 연결 종료
+				setGameWebSocket(null);
 			}
 			this.socket = null;  // WebSocket 객체를 명확히 null로 설정
+			setGameWebSocket(null);
 		}
 	}
 	
