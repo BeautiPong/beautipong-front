@@ -10,8 +10,8 @@ export function createChatRoom(image, nickname, win) {
             </div>
         </div>
         <div class="friend-button-list">
-            <button class="delete-friend-btn">삭제</button>
-            <button class="block-friend-btn">차단</button>
+            <button id="delete-friend-btn">삭제</button>
+            <button id="block-friend-btn">차단</button>
         </div>
     </div>
     <div class="chat-box-down">

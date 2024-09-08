@@ -179,6 +179,46 @@ export default class FriendPage {
         } catch (error) {
             console.error('채팅 방을 불러오는 중 오류 발생:', error);
         }
+
+        // 친구 삭제
+        document.querySelector('#delete-friend-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/friend/delete/${friendNickname}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // 삭제 성공 후 처리
+                alert('친구가 삭제되었습니다.');
+                // 추가적인 삭제 후 UI 업데이트 처리 필요
+            } catch (error) {
+                console.error('친구 삭제 중 오류 발생:', error);
+            }
+        });
+
+        // 친구 차단
+        document.querySelector('#block-friend-btn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/api/friend/block/${friendNickname}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // 차단 성공 후 처리
+                alert('친구가 차단되었습니다.');
+                // 추가적인 차단 후 UI 업데이트 처리 필요
+            } catch (error) {
+                console.error('친구 차단 중 오류 발생:', error);
+            }
+        });
     }
     
     async loadMessages(roomName, token) {

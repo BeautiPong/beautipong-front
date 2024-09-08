@@ -35,7 +35,7 @@
     margin: 1vw 2vh;
 }
 
-.delete-friend-btn, .block-friend-btn {
+#delete-friend-btn, #block-friend-btn {
     background-color: #f0f0f0;
     /* border: 1px solid #ccc; */
     padding: 5px 10px;
