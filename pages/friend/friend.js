@@ -336,9 +336,9 @@ export default class FriendPage {
             const data = JSON.parse(e.data);
             
             const friendReq = document.querySelector('.friend-request-box');
-            friendReq.innerHTML = '';
 
             if (data.tag === 'request' && friendReq) {
+                friendReq.innerHTML = '';
                 const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
                 friendReq.innerHTML += requestHTML;
 
@@ -389,9 +389,6 @@ export default class FriendPage {
                     });
                 }
             }
-            
-            if (data.tag === 'accept')
-                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
         };
     }
     

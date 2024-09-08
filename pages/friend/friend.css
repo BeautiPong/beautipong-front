@@ -28,9 +28,10 @@
     display: flex;
     flex-direction: column;
 
-    height: 20vh;
+    height: 20%;
     /* border: 1px solid var(--main-text-color); */
     padding: 3vw 3vh;
+    margin-bottom: 0;
 }
 
 .friend-request-search {
@@ -79,9 +80,10 @@
     display: flex;
     flex-direction: column;
 
-    height: 80vh;
+    height: 80%;
     /* border: 1px solid var(--main-text-color); */
     padding: 3vw 3vh;
+    margin-top: 0;
 }
 
 .friend-list-text {
