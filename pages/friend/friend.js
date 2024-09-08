@@ -3,6 +3,8 @@ import {createFriendList} from '../../assets/components/friend-list/friend-list.
 import {createChatRoom} from '../../assets/components/chat-room/chat-room.js';
 import {createMessage} from '../../assets/components/message/message.js';
 import {createUserSearchModal} from '../../assets/components/user-search-modal/user-search-modal.js';
+import { getRouter } from '../../../js/router.js';
+import {createModal} from '../../assets/components/modal/modal.js';
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -115,6 +117,36 @@ export default class FriendPage {
         }
     }
 
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createModal(message, buttonMsg);
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function(event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
+
     async loadChatRoom(roomName, myname, token, friendNickname) {
         try {
             const chatContainer = document.querySelector('.chat-box');
@@ -193,8 +225,11 @@ export default class FriendPage {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 // 삭제 성공 후 처리
-                alert('친구가 삭제되었습니다.');
-                // 추가적인 삭제 후 UI 업데이트 처리 필요
+                // alert('친구가 삭제되었습니다.');
+                this.showModal('친구 삭제가 완료되었습니다.', '확인');
+
+                const router = getRouter();
+                router.navigate('/friend');
             } catch (error) {
                 console.error('친구 삭제 중 오류 발생:', error);
             }
@@ -213,8 +248,11 @@ export default class FriendPage {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 // 차단 성공 후 처리
-                alert('친구가 차단되었습니다.');
-                // 추가적인 차단 후 UI 업데이트 처리 필요
+                // alert('친구가 차단되었습니다.');
+                this.showModal('친구 차단이 완료되었습니다.', '확인');
+                
+                const router = getRouter();
+                router.navigate('/friend');
             } catch (error) {
                 console.error('친구 차단 중 오류 발생:', error);
             }
@@ -400,8 +438,8 @@ export default class FriendPage {
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                            friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
-                            reqNotMsg.classList.remove('show');
+                            const router = getRouter();
+                            router.navigate('/friend');
                         } catch (error) {
                             console.error('Fetch error:', error);
                         }
@@ -422,13 +460,18 @@ export default class FriendPage {
                             if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
-                            friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..</p>';
-                            reqNotMsg.classList.remove('show');
+                            const router = getRouter();
+                            router.navigate('/friend');
                         } catch (error) {
                             console.error('Fetch error:', error);
                         }
                     });
                 }
+            }
+            else if (data.tag === 'accept')
+            {
+                const router = getRouter();
+                router.navigate('/friend');
             }
         };
     }
