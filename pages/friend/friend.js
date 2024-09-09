@@ -354,7 +354,7 @@ export default class FriendPage {
                         }
                     }
                     else
-                        userFindBox.innerHTML = '';
+                        userFindBox.innerHTML = '<p>친구 요청이 완료되었습니다.</p>';
 
                 } catch (error) {
                     console.error('Fetch error:', error);
