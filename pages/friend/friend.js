@@ -331,10 +331,10 @@ export default class FriendPage {
                     if (!response.ok) {
                         const responseData = await response.json();
 
-                        if (response.status === 400) {
-                            const errorMessage = responseData.detail[0];
+                        console.log(responseData);
 
-                            console.log(errorMessage);
+                        if (response.status === 400) {
+                            const errorMessage = responseData[0];
 
                             switch(errorMessage) {
                                 case "You cannot add yourself as a friend.":
