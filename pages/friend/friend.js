@@ -329,9 +329,32 @@ export default class FriendPage {
                     });
 
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        const responseData = await response.json();
+
+                        if (response.status === 400) {
+                            const errorMessage = responseData.detail[0];
+
+                            console.log(errorMessage);
+
+                            switch(errorMessage) {
+                                case "You cannot add yourself as a friend.":
+                                    userFindBox.innerHTML = '<p>자기 자신을 친구로 추가할 수 없습니다.</p>';
+                                    break;
+                                case "You already request friend.":
+                                    userFindBox.innerHTML = '<p>이미 친구 요청을 보냈습니다.</p>';
+                                    break;
+                                case "You cannot add already friend as a friend.":
+                                    userFindBox.innerHTML = '<p>이미 친구로 추가된 사용자입니다.</p>';
+                                    break;
+                                default:
+                                    userFindBox.innerHTML = '<p>친구 추가 중 오류가 발생했습니다.</p>';
+                            }
+                        } else {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
                     }
-                    userFindBox.innerHTML = '';
+                    else
+                        userFindBox.innerHTML = '';
 
                 } catch (error) {
                     console.error('Fetch error:', error);
