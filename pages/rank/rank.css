@@ -37,7 +37,7 @@
 .rank__left-section__user-info {
 	width: 100%;
 	height: 15%;
-	border: solid;
+	/* border: solid; */
 
 	display: flex;
     justify-content: center;
@@ -47,12 +47,14 @@
 .rank__left-section__total-info {
 	width: 100%;
 	height: 85%;
-	border: solid;
+	/* border: solid; */
 
 	display: flex;
 	flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+
+	gap: 3%;
 }
 
 .rank__right-section {

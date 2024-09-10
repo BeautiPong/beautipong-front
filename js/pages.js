@@ -31,6 +31,7 @@ export default container => {
     const rank = () => {
         const page = new RankPage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const friend = () => {
