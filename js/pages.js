@@ -9,6 +9,7 @@ import TwoFactorPage from '../pages/2fa/2fa.js'
 import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
 import OfflineGamePage from '../pages/offline_game/offline_game.js'
+import OnlineGamePage from '../pages/onlinegame/onlinegame.js'
 
 export default container => {
     const home = () => {
@@ -49,6 +50,7 @@ export default container => {
     const nickname = () => {
         const page = new NicknamePage();
         container.innerHTML = page.render();
+        page.afterRender();
     }
 
     const twoFactor = () => {
@@ -76,6 +78,20 @@ export default container => {
         container.innerHTML = page.render();
         page.afterRender();
     }
+
+    const onlineGame = () => {
+      const { roomName, jwtToken } = window.history.state || {};
+
+      const page = new OnlineGamePage();
+
+      if (roomName && jwtToken) {
+        container.innerHTML = page.render();
+        page.afterRender(roomName, jwtToken);
+      } else {
+        console.error('roomName 또는 jwtToken이 없습니다:', { roomName, jwtToken });
+      }
+    }
+
   
     return {
         home,
@@ -85,9 +101,10 @@ export default container => {
         friend,
         signup,
         nickname,
-	    twoFactor,
+	      twoFactor,
         oauth,
         waitgame,
         offline_game
+    		onlineGame,
     }
 }

@@ -9,7 +9,7 @@ function checkLoginStatus() {
   if (!token && window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
     
     // 처음 로그인해서 임시토큰을 발급받은 상태면 2fa로 넘어갈 수 있도록 
-    if (tmpToken && window.location.pathname !== '/2fa')
+    if (tmpToken && window.location.pathname === '/2fa' || window.location.pathname === "/nickname")
       return ;
 
     router.navigate('/login');
@@ -34,6 +34,7 @@ router
 .addRoute('/42oauth-redirect', pages.oauth)
 .addRoute('/waitgame', pages.waitgame)
 .addRoute('/offline_game', pages.offline_game)  
+.addRoute('/online-game', pages.onlineGame)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
 })

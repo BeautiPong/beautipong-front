@@ -36,7 +36,7 @@
     color: var(--main-color);
     font-size: 40px;
     font-weight: 700;
-    margin-bottom: 7%;
+    margin-bottom: 5.5%;
 }
 
 .signup-container form {
@@ -72,7 +72,7 @@
     cursor: pointer;
     margin-top: 15px;
     border-radius: 10px;
-    height: 80px;
+    height: 70px;
     
     color: var(--main-text-color);
     font-size: 24px;
