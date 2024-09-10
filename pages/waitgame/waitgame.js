@@ -1,4 +1,5 @@
 import { getRouter } from '../../js/router.js';
+import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
 export default class WaitGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -114,6 +115,20 @@ export default class WaitGamePage {
                 })
             });
 
+			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
+			if (response.status === 401) {
+				const newAccessToken = await refreshAccessToken();
+	
+				// 새 액세스 토큰으로 다시 요청
+				response = await fetch('http://localhost:8000/api/game/match/', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${newAccessToken}`,
+					},
+				});
+			}
+
             if (!response.ok) {
                 throw new Error('랜덤 매칭에 실패했습니다.');
             }
@@ -140,6 +155,7 @@ export default class WaitGamePage {
 	
 		// WebSocket 연결 시작
 		this.socket = new WebSocket(socketUrl);
+		setMatchingWebSocket(this.socket);
 	
 		this.socket.onopen = () => {
 			console.log("매칭 웹소켓 연결 성공");
@@ -154,6 +170,7 @@ export default class WaitGamePage {
 				if (data.room_name) {
 					this.navigateToGamePage(data.room_name, jwtToken);
 					this.socket.close();  // 매칭 컨슈머 연결 종료
+					setMatchingWebSocket(null);
 				} else {
 					console.error('room_name is undefined');
 				}
@@ -162,6 +179,7 @@ export default class WaitGamePage {
 	
 		this.socket.onclose = (e) => {
 			console.log('매칭 웹소켓 연결 종료');
+			setMatchingWebSocket(null);
 		};
 	}
 
@@ -180,6 +198,20 @@ export default class WaitGamePage {
 					'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
 				},
 			});
+
+			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
+			if (response.status === 401) {
+				const newAccessToken = await refreshAccessToken();
+	
+				// 새 액세스 토큰으로 다시 요청
+				response = await fetch(`http://localhost:8000/api/game/online/${roomName}/`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${newAccessToken}`,
+					},
+				});
+			}
 	
 			if (!response.ok) {
 				throw new Error('게임 페이지 요청에 실패했습니다.');
@@ -211,6 +243,19 @@ export default class WaitGamePage {
                     'Authorization': `Bearer ${accessToken}`, // 필요에 따라 인증 토큰 추가
                 },
             });
+
+			if (response.status === 401) {
+				const newAccessToken = await refreshAccessToken();
+	
+				// 새 액세스 토큰으로 다시 요청
+				response = await fetch('http://localhost:8000/api/friend/info/', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${newAccessToken}`,
+					},
+				});
+			}
 
             if (!response.ok) {
                 throw new Error('친구 목록을 불러오는 데 실패했습니다.');
