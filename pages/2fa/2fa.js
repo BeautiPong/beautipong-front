@@ -178,6 +178,8 @@ export default class TwoFactorPage {
                 // 임시 토큰 삭제
                 localStorage.removeItem('temp_token');
 
+				this.connectWebSocket(data.access_token);
+
                 // 대시보드 페이지로 이동
 				document.querySelector('.nav-container').style.display = 'block';
                 const router = getRouter();
@@ -191,6 +193,27 @@ export default class TwoFactorPage {
         } catch (error) {
             console.error('2FA 요청 중 오류 발생:', error);
         }
+    }
+
+	connectWebSocket(accessToken) {
+        const socket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
+
+        socket.onopen = () => {
+            console.log('알림 WebSocket 연결 성공');
+        };
+
+        socket.onmessage = (event) => {
+            const message = JSON.parse(event.data);
+            console.log('서버로부터 받은 메시지:', message);
+        };
+
+        socket.onclose = () => {
+            console.log('알림 WebSocket 연결 종료');
+        };
+
+        socket.onerror = (error) => {
+            console.error('알림 WebSocket 오류 발생:', error);
+        };
     }
 
     handle2FAError(errorData) {
