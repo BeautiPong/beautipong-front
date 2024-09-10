@@ -86,11 +86,33 @@
     margin-top: 0;
 }
 
+.friend-list-title {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 3vh;
+}
+
+.friend-actions {
+    display: flex;
+    flex-direction: row;
+}
+
+.accept-friend-list {
+    cursor: pointer;
+    color: var(--main-text-color);
+    width: 3vw;
+}
+
+.block-friend-text {
+    cursor: pointer;
+    color: var(--main-text-color);
+    width: 3vw;
+}
+
 .friend-list-text {
     color: var(--main-text-color);
     font-size: 1.2vw;
     font-weight: 600;
-    margin-bottom: 3vh;
 }
 
 .friend-list-box {

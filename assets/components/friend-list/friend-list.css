@@ -59,6 +59,13 @@
     /* margin-right: 17vw; */
 }
 
-.menu-icon {
+.block-none {
+    display: none;
+
     cursor: pointer;
+    color: var(--main-text-color);    
+}
+
+.list-container.blocked .block-none {
+    display: block;
 }
