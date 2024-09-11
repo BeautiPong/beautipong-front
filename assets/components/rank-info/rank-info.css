@@ -15,6 +15,24 @@
 	background-color: rgba(255,255,255, 0.7);
 }
 
+.user-rank-info:hover {
+	color: var(--accept-button-color) !important;
+	background-color: var(--main-color) !important;
+	border: solid 3px var(--accept-button-color) !important;
+	box-shadow: 5px 5px 4px rgba(110,208,135, 0.3) !important;
+}
+
+#profile-user-rank-info-inAll {
+	color: var(--main-color);
+	background-color: rgba(110,208,135, 0.7);
+}
+
+.profile-user-rank-info {
+	color: var(--main-color);
+	background-color: var(--accept-button-color);
+	pointer-events: none;
+}
+
 .user-rank-info span:nth-of-type(1) {
 	width: 10%;
 	text-align: right;

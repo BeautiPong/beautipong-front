@@ -57,9 +57,15 @@ export default class RankPage {
                 //유저 정보 출력
                 const userRankData = rankData.find(data => data.nickname === profileNickname);
                 userRankContainer.innerHTML = renderUserRankInfo(userRankData);
+
+                //유저용 클래스 추가
+                const userRankDiv = userRankContainer.querySelector('.user-rank-info'); // 생성된 div 선택
+                if (userRankDiv) {
+                    userRankDiv.classList.add('profile-user-rank-info');
+                }
     
                 //전체 랭킹 출력
-                totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data)).join('');
+                totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
     
             } else {
                 console.error('유저 랭킹 데이터를 가져오지 못했습니다:', response.statusText);

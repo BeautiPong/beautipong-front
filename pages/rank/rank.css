@@ -55,6 +55,8 @@
     align-items: center;
 
 	gap: 3%;
+
+	overflow-y: scroll;
 }
 
 .rank__right-section {
