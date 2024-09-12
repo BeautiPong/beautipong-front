@@ -505,7 +505,7 @@ export default class FriendPage {
     }
 
     // 친구 차단 해제
-    async unblockFriend(friend_nickname) {
+    async unblockFriend(friend_nickname, friendListBox) {
         const token = localStorage.getItem('access_token');
         try {
             const response = await fetch(`http://localhost:8000/api/friend/reblock/${friend_nickname}/`, {
@@ -517,16 +517,65 @@ export default class FriendPage {
             });
     
             if (response.ok) {
-                // 차단 해제 성공
-                console.log('친구 차단 해제 성공');
-
+                this.updateBlockedFriendList(friendListBox);
             }
         } catch (error) {
             console.error('차단 해제 중 오류 발생:', error);
         }
     }
+
+    async updateBlockedFriendList(friendListBox) {
+
+        try {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch('http://localhost:8000/api/friend/block-list/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+
+            if (data.friends.length > 0) {
+                // 친구가 있으면 친구 정보 표시
+                friendListBox.innerHTML = '';
+                friendListBox.classList.remove('friend-list-box');
+
+                data.friends.forEach(friend => {
+
+                    const nickname = friend.nickname;
+                    const image = friend.image || '../../assets/images/profile.svg';
+                    const is_active = friend.is_active;
+
+                    // 친구 요소를 생성
+                    const friendComponent = createFriendList(image, nickname, true);
+            
+                    // 새 친구 요소를 DOM에 추가
+                    const tempElement = document.createElement('div');
+                    tempElement.innerHTML = friendComponent;
+            
+                    // 생성된 친구 요소를 DOM에 추가
+                    const blockFriendElement = tempElement.firstElementChild;
+                    friendListBox.appendChild(blockFriendElement);
+
+                    // 차단 해제 버튼에 클릭 이벤트 추가
+                    const unblockButton = blockFriendElement.querySelector('.block-none');
+                    if (unblockButton) {
+                        unblockButton.addEventListener('click', () => this.unblockFriend(nickname, friendListBox));
+                    }
+                });
+            
+            } else {
+                // 차단된 친구가 없으면 다음 문구 표시
+                friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
+            }
+        } catch (error) {
+            console.error('친구 목록을 불러오는 중 오류 발생:', error);
+            friendListBox.classList.add('friend-list-box');
+        }
+    }
     
-    // 차단함
+    // 차단함으로 이동
     async clickBlockIcon() {
         document.addEventListener('DOMContentLoaded', () => {
             const blockIconElement = document.querySelector('.block-friend-text');
@@ -534,55 +583,8 @@ export default class FriendPage {
     
             if (blockIconElement) {
                 blockIconElement.addEventListener('click', async () => {
-                    friendListBox.innerHTML = '';       // 초기화
-                    
-                    try {
-                        const token = localStorage.getItem('access_token');
-                        const response = await fetch('http://localhost:8000/api/friend/block-list/', {
-                            headers: {
-                                'Authorization': `Bearer ${token}`,
-                                'Content-Type': 'application/json'
-                            }
-                        });
-                        const data = await response.json();
-            
-                        if (data.friends.length > 0) {
-                            // 친구가 있으면 친구 정보 표시
-                            friendListBox.innerHTML = '';
-                            friendListBox.classList.remove('friend-list-box');
-
-                            data.friends.forEach(friend => {
-
-                                const nickname = friend.nickname;
-                                const image = friend.image || '../../assets/images/profile.svg';
-                                const is_active = friend.is_active;
-            
-                                // 친구 요소를 생성
-                                const friendComponent = createFriendList(image, nickname, true);
-                        
-                                // 새 친구 요소를 DOM에 추가
-                                const tempElement = document.createElement('div');
-                                tempElement.innerHTML = friendComponent;
-                        
-                                // 생성된 친구 요소를 DOM에 추가
-                                const blockFriendElement = tempElement.firstElementChild;
-                                friendListBox.appendChild(blockFriendElement);
-
-                                // 차단 해제 버튼에 클릭 이벤트 추가
-                                const unblockButton = blockFriendElement.querySelector('.block-none');
-                                if (unblockButton) {
-                                    unblockButton.addEventListener('click', () => this.unblockFriend(nickname));
-                                }
-                            });
-                        
-                        } else {
-                            // 차단된 친구가 없으면 다음 문구 표시
-                            friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
-                        }
-                    } catch (error) {
-                        console.error('친구 목록을 불러오는 중 오류 발생:', error);
-                        friendListBox.classList.add('friend-list-box');
-                    }
+                    friendListBox.innerHTML = '';
+                    this.updateBlockedFriendList(friendListBox);
                 });
             } else {
                 console.error('block-icon 요소를 찾을 수 없습니다.');
