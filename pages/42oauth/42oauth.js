@@ -1,6 +1,7 @@
 import { createModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { loadProfile } from '../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 export default class OauthRedirectPage {
     render() {
@@ -33,7 +34,7 @@ export default class OauthRedirectPage {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
 
-						this.connectWebSocket(data.access_token);
+						connectNotificationWebSocket(data.access_token);
 						
                         document.querySelector('.nav-container').style.display = 'block';
                         const router = getRouter();
@@ -49,26 +50,6 @@ export default class OauthRedirectPage {
         }
     }
 
-	connectWebSocket(accessToken) {
-        const socket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
-
-        socket.onopen = () => {
-            console.log('알림 WebSocket 연결 성공');
-        };
-
-        socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            console.log('서버로부터 받은 메시지:', message);
-        };
-
-        socket.onclose = () => {
-            console.log('알림 WebSocket 연결 종료');
-        };
-
-        socket.onerror = (error) => {
-            console.error('알림 WebSocket 오류 발생:', error);
-        };
-    }
 
      // 모달 창 생성 및 표시 함수
      showModal(message, buttonMsg) {

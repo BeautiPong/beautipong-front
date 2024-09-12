@@ -1,6 +1,8 @@
 import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import {loadProfile} from '../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+
 
 export default class TwoFactorPage {
     render() {
@@ -178,7 +180,7 @@ export default class TwoFactorPage {
                 // 임시 토큰 삭제
                 localStorage.removeItem('temp_token');
 
-				this.connectWebSocket(data.access_token);
+				connectNotificationWebSocket(data.access_token);
 
                 // 대시보드 페이지로 이동
 				document.querySelector('.nav-container').style.display = 'block';
@@ -195,26 +197,6 @@ export default class TwoFactorPage {
         }
     }
 
-	connectWebSocket(accessToken) {
-        const socket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
-
-        socket.onopen = () => {
-            console.log('알림 WebSocket 연결 성공');
-        };
-
-        socket.onmessage = (event) => {
-            const message = JSON.parse(event.data);
-            console.log('서버로부터 받은 메시지:', message);
-        };
-
-        socket.onclose = () => {
-            console.log('알림 WebSocket 연결 종료');
-        };
-
-        socket.onerror = (error) => {
-            console.error('알림 WebSocket 오류 발생:', error);
-        };
-    }
 
     handle2FAError(errorData) {
         // 에러 메시지 div 선택

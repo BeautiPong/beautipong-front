@@ -6,6 +6,8 @@ const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
 
+
+
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
@@ -218,3 +220,72 @@ function showModal(message, buttonMsg) {
 		}
 	};
 }
+
+let notificationWebSocket = null;
+let hasNotification = false;
+
+// 알림 상태를 표시하는 함수
+function updateNotificationDisplay() {
+    const notificationPopup = document.getElementById('notification-popup');
+    const notificationBell = document.getElementById('notification-bell');
+
+    if (hasNotification) {
+        notificationPopup.innerText = '새로운 알림이 있어요!';
+        notificationPopup.style.display = 'block';
+        notificationBell.style.fill = 'red';
+    } else {
+        notificationPopup.innerText = '새로운 알림이 없어요.';
+        notificationPopup.style.display = 'none';
+        notificationBell.style.fill = 'none';
+    }
+}
+
+export function connectNotificationWebSocket(accessToken) {
+    if (notificationWebSocket) {
+        notificationWebSocket.close();
+    }
+
+    notificationWebSocket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
+
+    notificationWebSocket.onopen = () => {
+        console.log('알림 WebSocket 연결 성공');
+    };
+
+    notificationWebSocket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('서버로부터 받은 메시지:', message);
+
+        
+		hasNotification = true; 
+		updateNotificationDisplay(); 
+    };
+
+    notificationWebSocket.onclose = () => {
+        console.log('알림 WebSocket 연결 종료');
+    };
+
+    notificationWebSocket.onerror = (error) => {
+        console.error('알림 WebSocket 오류 발생:', error);
+    };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const friendNav = document.getElementById('nav__friend');
+
+    friendNav.addEventListener('mouseover', () => {
+        const notificationPopup = document.getElementById('notification-popup');
+        notificationPopup.style.display = 'block';
+    });
+
+    friendNav.addEventListener('mouseleave', () => {
+        const notificationPopup = document.getElementById('notification-popup');
+        notificationPopup.style.display = 'none';
+    });
+
+    friendNav.addEventListener('click', () => {
+        hasNotification = false; 
+        updateNotificationDisplay(); 
+    });
+
+    updateNotificationDisplay();
+});
