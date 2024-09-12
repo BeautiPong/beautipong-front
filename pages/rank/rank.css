@@ -31,23 +31,21 @@
     justify-content: center;
     align-items: center;
 
-	gap: 5%;
+	gap: 3%;
 }
 
 .rank__left-section__user-info {
 	width: 100%;
 	height: 15%;
-	/* border: solid; */
 
 	display: flex;
     justify-content: center;
-    align-items: center;
+	padding-right: 3%;
 }
 
 .rank__left-section__total-info {
 	width: 100%;
 	height: 85%;
-	/* border: solid; */
 
 	display: flex;
 	flex-direction: column;
@@ -57,14 +55,41 @@
 	gap: 3%;
 
 	overflow-y: scroll;
+	padding-right: 10px;
+}
+
+/* Chrome, Safari, Edge용 스크롤바 스타일링 */
+.rank__left-section__total-info::-webkit-scrollbar {
+    width: 10px;
+}
+
+.rank__left-section__total-info::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.rank__left-section__total-info::-webkit-scrollbar-thumb {
+    background-color: rgba(171, 171, 171, 0.5);
+}
+
+.rank__left-section__total-info::-webkit-scrollbar-thumb:hover {
+    background-color: var(--sub-text-color);
+}
+
+.rank__left-section__total-info::-webkit-scrollbar-track,
+.rank__left-section__total-info::-webkit-scrollbar-thumb {
+    border-radius: 10px;
 }
 
 .rank__right-section {
-	border: solid;
 	width: 50%;
 	height: 100%;
 
 	display: flex;
     justify-content: center;
     align-items: center;
+
+	/* background-color: var(--main-color);
+	border: solid 5px var(--accept-button-color);
+	border-radius: 20px;
+	box-shadow: 5px 5px 4px rgba(110,208,135, 0.4); */
 }

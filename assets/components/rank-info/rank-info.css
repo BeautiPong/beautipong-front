@@ -20,6 +20,7 @@
 	background-color: var(--main-color) !important;
 	border: solid 3px var(--accept-button-color) !important;
 	box-shadow: 5px 5px 4px rgba(110,208,135, 0.3) !important;
+	cursor: pointer;
 }
 
 #profile-user-rank-info-inAll {

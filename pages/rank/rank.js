@@ -66,6 +66,9 @@ export default class RankPage {
     
                 //전체 랭킹 출력
                 totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
     
             } else {
                 console.error('유저 랭킹 데이터를 가져오지 못했습니다:', response.statusText);
