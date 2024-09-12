@@ -72,6 +72,35 @@ export async function loadProfile() {
     }
 }
 
+let matchingWebSocket = null;
+let gameWebSocket = null;
+
+export function setMatchingWebSocket(socket) {
+    matchingWebSocket = socket;
+}
+
+export function setGameWebSocket(socket) {
+    gameWebSocket = socket;
+}
+
+export function getMatchingWebSocket() {
+    return matchingWebSocket;
+}
+
+export function getGameWebSocket() {
+    return gameWebSocket;
+}
+
+export function disconnectSpecificWebSocket() {
+    if (gameWebSocket && gameWebSocket.readyState === WebSocket.OPEN) {
+        gameWebSocket.close();
+    }
+
+    if (matchingWebSocket && matchingWebSocket.readyState === WebSocket.OPEN) {
+        matchingWebSocket.close();
+    }
+}
+
 // 페이지 로드 시 프로필 정보 가져오기
 document.addEventListener('DOMContentLoaded', loadProfile);
 document.addEventListener('DOMContentLoaded', () => {
@@ -94,18 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
     navMain.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/');
         setActiveNavButton(navMain);
     });
+
     navMypage.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/mypage');
         setActiveNavButton(navMypage);
     });
+
     navFriend.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/friend');
         setActiveNavButton(navFriend);
     });
+
     navRank.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/rank');
         setActiveNavButton(navRank);
     });
