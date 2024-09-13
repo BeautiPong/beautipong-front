@@ -113,7 +113,7 @@ export default container => {
 	      twoFactor,
         oauth,
         waitgame,
-        offlineWaitGame
+        offlineWaitGame,
         offline_game,
     	  onlineGame,
     }
