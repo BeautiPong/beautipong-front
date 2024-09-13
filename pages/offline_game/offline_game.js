@@ -14,7 +14,7 @@ export default class offlineGamePage {
         `;
     }
 
-    
+
 
     async afterRender() {
 
@@ -22,21 +22,26 @@ export default class offlineGamePage {
     // Django 템플릿에서 전달된 정보를 JavaScript로 가져오기
     const token = localStorage.getItem("access_token");
     console.log("token: ", token);
-    const user1="user1";
-    const user2="user2";
+    const urlParams = new URLSearchParams(window.location.search);
+    const user1 = urlParams.get('player1') || 'user1';
+    const user2 = urlParams.get('player2') || 'user2';
+    const user3 = urlParams.get('player3') || 'user3';
+    const user4 = urlParams.get('player4') || 'user4';
+    console.log("user3: ", user3);
+    console.log("user4: ", user4);
+    // WebSocket 연결이나 게임 로직에서 user1, user2 사용
     let matchType = "";
     let socket = null
     await fetchUserInfo();
 
-    // const user1 = JSON.parse(document.getElementById('user1').textContent);
-    // const user2 = JSON.parse(document.getElementById('user2').textContent);
-    // const user3 = JSON.parse(document.getElementById('user3').textContent);
-    // const user4 = JSON.parse(document.getElementById('user4').textContent);
+
     async function fetchUserInfo() {
         console.log("in fetchUserInfo");
         const formData = {
             "user1" : user1,
             "user2" : user2,
+            "user3" : user3,
+            "user4" : user4
         };
     try {
         console.log("in try");
@@ -67,9 +72,10 @@ export default class offlineGamePage {
     let socketUrl;
     console.log("matchType: ", matchType);
     if (matchType === '1v1') {
-        console.log(user1,user2)
+        console.log('1v1')
         socketUrl = 'ws://' + 'localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
+        console.log('tournament')
         socketUrl = 'ws://localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
@@ -136,6 +142,9 @@ export default class offlineGamePage {
 
     animate();
 
+    let currentMatch = 1; // 현재 경기 번호를 저장하는 변수
+    const totalMatches = 3; // 토너먼트에서 총 경기는 3번 (Best of 3 형식)
+
     socket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (data.type === 'game_loop') {
@@ -158,9 +167,18 @@ export default class offlineGamePage {
 
         else if (data.type === 'game_end') {
             alert('Game Over - ' + data.winner + ' wins!');
-            cleanUp();
+
+            // 경기가 끝났을 때 다음 경기 준비
+            if (currentMatch < totalMatches && matchType === 'tournament') {
+                currentMatch++;
+                console.log(`Starting match ${currentMatch}`);
+            } else {
+                console.log("Tournament Finished");
+                cleanUp(); // 모든 경기가 끝났을 때 정리 작업 수행
+            }
         }
     };
+
 
     function cleanUp()
     {
@@ -171,10 +189,10 @@ export default class offlineGamePage {
         }
 
         // 애니메이션 루프 중단
-        if (this.animationFrameId) {
-            cancelAnimationFrame(this.animationFrameId);
-            console.log("애니메이션 루프 중단");
-        }
+        // if (this.animationFrameId) {
+        //     cancelAnimationFrame(this.animationFrameId);
+        //     console.log("애니메이션 루프 중단");
+        // }
 
         // Three.js 렌더러를 DOM에서 제거
         const rendererDom = document.querySelector('canvas');
@@ -186,16 +204,16 @@ export default class offlineGamePage {
 
     // 페이지를 떠날 때 정리 작업 추가
     // window.addEventListener('beforeunload', () => cleanUp());
-    window.addEventListener('beforeunload', () => 
+    window.addEventListener('beforeunload', () =>
     {
         console.log("in before");
     });
 
-    
+
     // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
     window.addEventListener('popstate', cleanUp);
 
-    
+
     const nav__logout = document.getElementById('nav__logout');
     nav__logout.addEventListener('click', cleanUp);
     const nav__main = document.getElementById('nav__main');
@@ -207,7 +225,7 @@ export default class offlineGamePage {
     const nav__rank = document.getElementById('nav__rank');
     nav__rank.addEventListener('click', cleanUp);
 
-    
+
 
     // socket.onopen = function() {
     //     console.log("WebSocket connection opened");

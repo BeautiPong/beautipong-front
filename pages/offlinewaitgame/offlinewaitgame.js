@@ -1,3 +1,4 @@
+import { getRouter } from '../../js/router.js'
 import OfflinePlayerInfo from '../../assets/components/offline-player-info/offline-play-info.js'; // PlayerInfo 클래스 임포트
 export default class OfflineWaitGame {
     constructor() {
@@ -20,6 +21,9 @@ export default class OfflineWaitGame {
     }
     // 플레이어 정보를 추가하는 메서드
     addPlayers() {
+
+        let matchType = "";
+
         const playersData = [
             { nickname: 'Player 1', img: 'assets/images/profile1.png'},
             { nickname: 'Player 2', img: 'assets/images/profile2.png'},
@@ -43,10 +47,11 @@ export default class OfflineWaitGame {
             });
         });
 
-        const gameStartBtn = document.getElementById('gameStartBtn');
+        const gameStartBtn = document.querySelector('.game-start-btn');
         gameStartBtn.addEventListener('click', () => {
             this.startGame();
         });
+
     }
 
     updatePlayerNickname(playerNumber, newNickname) {
@@ -55,7 +60,10 @@ export default class OfflineWaitGame {
     }
 
     startGame() {
-        // game.html 페이지로 리디렉션 (게임 페이지 경로를 실제 경로로 교체)
-        // 게임 페이지로 리다이렉트
+        const router = getRouter(); // router 객체 가져오기
+        // router.navigate('/offline_game');
+        router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&player3=${encodeURIComponent(this.playersNicknames.player3)}&player4=${encodeURIComponent(this.playersNicknames.player4)}`);
+        // router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}`);
     }
+
 }

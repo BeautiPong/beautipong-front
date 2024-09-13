@@ -10,6 +10,7 @@ import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
 import OfflineWaitGame from '../pages/offlinewaitgame/offlinewaitgame.js'
 import OfflineGamePage from '../pages/offline_game/offline_game.js'
+// import MatchTypeSelectPage from '../pages/offlinewaitgame/matchTypeSelect.js'
 import OnlineGamePage from '../pages/onlinegame/onlinegame.js'
 
 export default container => {
@@ -47,7 +48,7 @@ export default container => {
         container.innerHTML = page.render();
         page.addEventListeners();
     }
-      
+
     const nickname = () => {
         const page = new NicknamePage();
         container.innerHTML = page.render();
@@ -81,6 +82,12 @@ export default container => {
         offlineWaitGame.addPlayers();  // 플레이어 정보 추가
     }
 
+    // const matchTypeSelect = () => {
+    //     const page = new MatchTypeSelectPage();
+    //     container.innerHTML = page.render();
+    //     // page.afterRender();
+    // }
+
     const offline_game = () => {
         const page = new OfflineGamePage();
         container.innerHTML = page.render();
@@ -101,7 +108,7 @@ export default container => {
     }
 
 
-  
+
     return {
         home,
         login,
@@ -110,11 +117,12 @@ export default container => {
         friend,
         signup,
         nickname,
-	      twoFactor,
+	    twoFactor,
         oauth,
         waitgame,
         offlineWaitGame,
         offline_game,
-    	  onlineGame,
+    	onlineGame,
+        // matchTypeSelect
     }
 }

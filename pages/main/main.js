@@ -25,6 +25,8 @@ export default class MainPage {
 
         offlineBtn.addEventListener('click', () => {
             router.navigate('/offlinewaitgame');
+            // router.navigate('/matchTypeSelect');
+
         });
     }
 }
