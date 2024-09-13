@@ -84,3 +84,50 @@ a span {
     cursor: pointer;
     opacity: 50%;
 }
+
+#nav__friend {
+    position: relative;
+}
+
+.notification-wrapper {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    display: flex;
+    align-items: center;
+    visibility: hidden; 
+}
+
+#notification-bell {
+    width: 50px;
+    height: 50px;
+    display: none; 
+}
+
+.notification-popup {
+    visibility: hidden; 
+    background-color: rgba(255, 0, 0, 0.4);
+    padding: 10px 15px;
+    border-radius: 5px;
+    color: white;
+    font-size: 17px;
+    white-space: nowrap;
+    position: absolute;
+    top: 5px;
+    left: 40px;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.notification-wrapper:hover .notification-popup {
+    visibility: visible;
+    opacity: 1;
+}
+
+#nav__friend.has-notification .notification-wrapper {
+    visibility: visible;
+}
+
+#nav__friend.has-notification #notification-bell {
+    display: block; 
+}

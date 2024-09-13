@@ -26,3 +26,5 @@ logs:
 # 컨테이너 상태 확인
 status:
 	$(DOCKER_COMPOSE) -f $(DOCKER_COMPOSE_FILE) ps
+
+re: down up

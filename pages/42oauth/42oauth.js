@@ -1,9 +1,12 @@
 import { createModal } from '../../assets/components/modal/modal.js';
+import { getRouter } from '../../js/router.js';
+import { loadProfile } from '../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 export default class OauthRedirectPage {
     render() {
         return `
-            <h1>42 oauth redirect Page</h1>
+            <h1></h1>
         `;
     }
 
@@ -11,34 +14,42 @@ export default class OauthRedirectPage {
         // URL에서 'code' 파라미터 추출
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
-        console.log("코드 테스트");
 
         if (code) {
             // 'code'가 존재하는 경우, 서버로 POST 요청을 보내어 액세스 토큰을 요청합니다.
             try {
-                const response = await fetch('http://localhost:8000/api/user/get-token/', {
-                    method: 'POST',
-                    mode: 'cors',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ code }),  // 'code'를 서버에 전달
+                const response = await fetch(`http://localhost:8000/api/user/get-token/?code=${code}`, {
+                    method: 'GET',
                 });
-
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('42 회원가입 성공:', data);
-                    window.location.href = '#/login'; // 로그인 페이지로 이동
-                    this.showModal('회원가입이 성공적으로 완료되었습니다!', '확인');
+                    const router = getRouter();
+                    console.log(data);
+
+                    if (data.message === "42user 회원가입 성공!") {
+                        localStorage.setItem('temp_token', data.temp_token);
+                        this.showModal('환영합니다! 닉네임을 설정해주세요.', '확인');
+                        router.navigate('/nickname');
+                    } else if (data.message === "로그인 성공.") {
+                        localStorage.setItem('access_token', data.access_token);
+                        localStorage.setItem('refresh_token', data.refresh_token);
+
+						connectNotificationWebSocket(data.access_token);
+						
+                        document.querySelector('.nav-container').style.display = 'block';
+                        const router = getRouter();
+                        router.navigate('/');
+                        loadProfile();
+                    }
                 } else {
-                    console.error('42 토큰 요청 실패:', response.status);
+                    console.error('42 토큰 요청 실패:', response.status, response.statusText);
                 }
             } catch (error) {
                 console.error('42 토큰 요청 중 오류 발생:', error);
             }
         }
     }
+
 
      // 모달 창 생성 및 표시 함수
      showModal(message, buttonMsg) {

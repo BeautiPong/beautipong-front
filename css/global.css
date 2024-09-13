@@ -9,6 +9,8 @@
 @import "../pages/waitgame/waitgame.css";
 @import "../pages/offlinewaitgame/offlinewaitgame.css";
 @import "../pages/friend/friend.css";
+@import "../pages/onlinegame/onlinegame.css";
+@import "../pages/offline_game/offline_game.css";
 
 @import "../assets/components/nav/nav.css";
 @import "../assets/components/player-info/player-info.css";
@@ -18,7 +20,8 @@
 @import "../assets/components/friend-list/friend-list.css";
 @import "../assets/components/chat-room/chat-room.css";
 @import "../assets/components/message/message.css";
-
+@import "../assets/components/recent-game/recent-game.css";
+@import "../assets/components/user-search-modal/user-search-modal.css";
 
 
 :root {

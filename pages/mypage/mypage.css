@@ -8,11 +8,10 @@
 }
 
 .mypage--background {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 30px;
-
-    height: 90%;
-    width: 90%;
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 75vw;
+    height: 90vh;
+    border-radius: 40px;
 
     display: flex;
     justify-content: center;
@@ -47,15 +46,6 @@
     text-align: center;
 }
 
-.mypage__top__profile-info__nicknameEdit {
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-
-    padding-top: 5%;
-    gap: 1%;
-}
-
 .mypage__top__profile-info__imgEdit {
     position: relative; /* 자식 요소들의 절대 위치 기준이 됨 */
     display: flex;
@@ -76,10 +66,19 @@
 #mypage__top__profile-info__edit {
     position: absolute; /* 부모 요소를 기준으로 절대 위치 설정 */
     width: 10%; /* 아이콘 크기 설정 */
-    right: 10px; /* 부모 요소의 우측 끝에 위치 */
-    bottom: 10px; /* 부모 요소의 하단 끝에 위치 */
+    right: 15px; /* 부모 요소의 우측 끝에 위치 */
+    bottom: 15px; /* 부모 요소의 하단 끝에 위치 */
 
     cursor: pointer;
+}
+
+.mypage__top__profile-info__nicknameEdit {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    padding-top: 5%;
+    gap: 1%;
 }
 
 #mypage__top__profile-info__nickname {
@@ -139,8 +138,45 @@
 }
 
 .mypage__bottom {
-    border: solid;
-
     width: 100%;
     height: 50%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 3%;
+}
+
+#mypage__bottom__title {
+    color: var(--main-color);
+    font-size: 26px;
+    font-weight: 600;
+}
+
+#mypage__bottom__content {
+    background-color: var(--main-color);
+    box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 30px;
+
+    width: 85%;
+    height: 80%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5%;
+
+    padding: 5% 15%;
+    box-sizing: border-box;
+}
+
+#mypage__bottom__nogame {
+    color: var(--sub-text-color);
+    text-align: center;
+    padding: 5%;
+    font-size: 18px;
+    font-weight: 600;
+
+    padding-bottom: 35%;
 }

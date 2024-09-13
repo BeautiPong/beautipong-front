@@ -1,10 +1,13 @@
-import {createModal} from '../modal/modal.js';
+import { createModal } from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
 
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
+
+let notificationWebSocket = null;
+let hasNotification = false;
 
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
@@ -32,7 +35,7 @@ export async function loadProfile() {
         // 응답 처리
         if (response.ok) {
             const profileData = await response.json();
-			console.log(profileData);
+			// console.log(profileData);
             // DOM 요소에 프로필 정보 설정
 			if (profileData.img) {
             	profileImg.src = profileData.img;
@@ -57,11 +60,53 @@ export async function loadProfile() {
 			}
 	
             profileNickname.textContent = profileData.nickname;
+
+			localStorage.setItem('nickname', profileData.nickname);
+			localStorage.setItem('score', profileData.score);
+			localStorage.setItem('match_cnt', profileData.match_cnt);
+			localStorage.setItem('win_cnt', profileData.win_cnt);
+			localStorage.setItem('win_rate', profileData.win_rate);
+			localStorage.setItem('img', profileData.image);
         } else {
             console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
         }
     } catch (error) {
         console.error('프로필 정보 로딩 중 오류 발생:', error);
+    }
+}
+
+let matchingWebSocket = null;
+let gameWebSocket = null;
+
+export function setMatchingWebSocket(socket) {
+    matchingWebSocket = socket;
+}
+
+export function setGameWebSocket(socket) {
+    gameWebSocket = socket;
+}
+
+export function getMatchingWebSocket() {
+    return matchingWebSocket;
+}
+
+export function getGameWebSocket() {
+    return gameWebSocket;
+}
+
+export function disconnectSpecificWebSocket() {
+    if (gameWebSocket && gameWebSocket.readyState === WebSocket.OPEN) {
+        gameWebSocket.close();
+    }
+
+    if (matchingWebSocket && matchingWebSocket.readyState === WebSocket.OPEN) {
+        matchingWebSocket.close();
+    }
+}
+
+export function disconnectNotificationWebSocket() {
+    if (notificationWebSocket && notificationWebSocket.readyState === WebSocket.OPEN) {
+        notificationWebSocket.close();
     }
 }
 
@@ -76,20 +121,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const router = getRouter();
 
+	// 네비게이션 버튼 클릭 시 active 클래스 적용 및 다른 버튼에서 제거하는 함수
+	function setActiveNavButton(activeButton) {
+		const buttons = [navMain, navMypage, navFriend, navRank];
+		buttons.forEach(button => {
+			button.classList.remove('nav__select');
+		});
+		activeButton.classList.add('nav__select');
+	}
+
     logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
     navMain.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/');
         setActiveNavButton(navMain);
     });
+
     navMypage.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/mypage');
         setActiveNavButton(navMypage);
     });
+
     navFriend.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/friend');
         setActiveNavButton(navFriend);
     });
+
     navRank.addEventListener('click', () => {
+        disconnectSpecificWebSocket();
         router.navigate('/rank');
         setActiveNavButton(navRank);
     });
@@ -151,9 +212,9 @@ function showModal(message, buttonMsg) {
 				console.log('로그아웃 성공:', data.message);
 				modalDiv.remove();
 	
-				// 토큰 제거
-				localStorage.removeItem('access_token');
-				localStorage.removeItem('refresh_token');
+
+				disconnectNotificationWebSocket();
+				localStorage.clear();
 	
 				// 로그인 페이지로 리다이렉트
 				const router = getRouter();
@@ -168,3 +229,61 @@ function showModal(message, buttonMsg) {
 		}
 	};
 }
+
+
+
+function updateNotificationDisplay() {
+    const notificationWrapper = document.querySelector('.notification-wrapper');
+    const notificationBell = document.getElementById('notification-bell');
+    const friendNav = document.getElementById('nav__friend');
+
+    if (hasNotification) {
+        friendNav.classList.add('has-notification');
+        notificationWrapper.style.visibility = 'visible'; 
+        notificationBell.style.display = 'block'; 
+    } else {
+        friendNav.classList.remove('has-notification');
+        notificationWrapper.style.visibility = 'hidden'; 
+        notificationBell.style.display = 'none'; 
+    }
+}
+
+export function connectNotificationWebSocket(accessToken) {
+    if (notificationWebSocket) {
+        notificationWebSocket.close();
+    }
+
+    notificationWebSocket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
+
+    notificationWebSocket.onopen = () => {
+        console.log('알림 WebSocket 연결 성공');
+    };
+
+    notificationWebSocket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('서버로부터 받은 메시지:', message);
+
+        hasNotification = true; 
+        updateNotificationDisplay(); 
+    };
+
+    notificationWebSocket.onclose = () => {
+        console.log('알림 WebSocket 연결 종료');
+    };
+
+    notificationWebSocket.onerror = (error) => {
+        console.error('알림 WebSocket 오류 발생:', error);
+    };
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const friendNav = document.getElementById('nav__friend');
+
+    friendNav.addEventListener('click', () => {
+        hasNotification = false; 
+        updateNotificationDisplay(); 
+    });
+
+    updateNotificationDisplay(); 
+});
