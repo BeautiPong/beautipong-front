@@ -9,6 +9,7 @@
 @import "../pages/waitgame/waitgame.css";
 @import "../pages/friend/friend.css";
 @import "../pages/onlinegame/onlinegame.css";
+@import "../pages/offline_game/offline_game.css";
 
 @import "../assets/components/nav/nav.css";
 @import "../assets/components/player-info/player-info.css";
