@@ -47,19 +47,15 @@ export default class FriendPage {
     async updateFriendRequest(friendReq, image, sender) {
         const token = localStorage.getItem('access_token');
 
-        // friendReq.innerHTML = '';
         const requestContainer = document.createElement('div');
         requestContainer.innerHTML = createFriendRequest(image, sender);
         friendReq.appendChild(requestContainer);
-        // const requestHTML = createFriendRequest(image, sender);
-        // // friendReq.innerHTML += requestHTML;
-        // friendReq.appendChild(requestHTML);
 
         const reqNotMsg = document.querySelector('.friend-request-noti');
         reqNotMsg.classList.add('show');
 
         // 수락 버튼에 이벤트 리스너 추가
-        const acceptButton = friendReq.querySelector('.request-accept-btn');
+        const acceptButton = requestContainer.querySelector('.request-accept-btn');
         if (acceptButton) {
             acceptButton.addEventListener('click', async function() {
                 try {
