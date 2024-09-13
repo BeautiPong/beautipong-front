@@ -33,6 +33,7 @@ router
 .addRoute('/2fa', pages.twoFactor)
 .addRoute('/42oauth-redirect', pages.oauth)
 .addRoute('/waitgame', pages.waitgame)
+.addRoute('/offlinewaitgame', pages.offlineWaitGame)
 .addRoute('/offline_game', pages.offline_game)  
 .addRoute('/online-game', pages.onlineGame)
 .setNotFound(() => {

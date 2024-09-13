@@ -7,12 +7,14 @@
 @import "../pages/nickname/nickname.css";
 @import "../pages/mypage/mypage.css";
 @import "../pages/waitgame/waitgame.css";
+@import "../pages/offlinewaitgame/offlinewaitgame.css";
 @import "../pages/friend/friend.css";
 @import "../pages/onlinegame/onlinegame.css";
 @import "../pages/offline_game/offline_game.css";
 
 @import "../assets/components/nav/nav.css";
 @import "../assets/components/player-info/player-info.css";
+@import "../assets/components/offline-player-info/offline-player-info.css";
 @import "../assets/components/modal/modal.css";
 @import "../assets/components/friend-request/friend-request.css";
 @import "../assets/components/friend-list/friend-list.css";
