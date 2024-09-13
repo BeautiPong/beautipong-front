@@ -5,6 +5,10 @@ import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js
 
 
 export default class TwoFactorPage {
+    constructor() {
+        this.handleKeyDown = this.handleKeyDown.bind(this);
+    }
+
     render() {
         return `
             <div class="two-factor">
@@ -36,36 +40,6 @@ export default class TwoFactorPage {
                 </div>
             </div>
         `;
-    }
-
-    // 모달 창 생성 및 표시 함수
-    showModal(message, buttonMsg) {
-        // 모달 컴포넌트 불러오기
-        const modalHTML = createModal(message, buttonMsg);
-
-        // 새 div 요소를 생성하여 모달을 페이지에 추가
-        const modalDiv = document.createElement('div');
-        modalDiv.innerHTML = modalHTML;
-        document.body.appendChild(modalDiv);
-
-        // 닫기 버튼에 이벤트 리스너 추가
-        const closeBtn = modalDiv.querySelector('.close');
-        closeBtn.onclick = function() {
-            modalDiv.remove();
-        };
-
-        // 확인 버튼에 이벤트 리스너 추가
-        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-        confirmBtn.onclick = function() {
-            modalDiv.remove();
-        };
-
-        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
-        window.onclick = function(event) {
-            if (event.target == modalDiv.querySelector('.modal')) {
-                modalDiv.remove();
-            }
-        };
     }
 
     async afterRender() {
@@ -100,11 +74,16 @@ export default class TwoFactorPage {
         const verifyButton = document.getElementById("verify-btn");
         verifyButton.addEventListener("click", (event) => this.handleSubmit(event));
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                this.handleSubmit(event);
-            }
-        });
+        // 엔터 키 리스너 등록
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    // 엔터 키 처리 함수
+    handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.handleSubmit(event);
+        }
     }
 
     async handleGenerateButtonClick(event) {
@@ -124,12 +103,12 @@ export default class TwoFactorPage {
 
     async send2FARequest() {
         const tempToken = localStorage.getItem('temp_token');
-    
+
         if (!tempToken) {
             console.error('임시 토큰이 없습니다.');
             return;
         }
-    
+
         try {
             const response = await fetch('http://localhost:8000/api/otp/generate/', {
                 method: 'POST',
@@ -138,7 +117,7 @@ export default class TwoFactorPage {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (!response.ok) {
                 console.error('2FA 이메일 전송 실패:', response.status);
             } else {
@@ -180,13 +159,16 @@ export default class TwoFactorPage {
                 // 임시 토큰 삭제
                 localStorage.removeItem('temp_token');
 
-				connectNotificationWebSocket(data.access_token);
+                connectNotificationWebSocket(data.access_token);
 
                 // 대시보드 페이지로 이동
-				document.querySelector('.nav-container').style.display = 'block';
+                document.querySelector('.nav-container').style.display = 'block';
                 const router = getRouter();
                 router.navigate('/');
                 loadProfile();
+
+                // 2FA 페이지에서 엔터 키 리스너 제거
+                document.removeEventListener('keydown', this.handleKeyDown);
             } else {
                 console.error('2FA 인증 실패:', response.status);
                 const errorData = await response.json();
@@ -197,28 +179,26 @@ export default class TwoFactorPage {
         }
     }
 
-
     handle2FAError(errorData) {
         // 에러 메시지 div 선택
         const errorDiv = document.querySelector('.error-message');
-        
+
         // 에러 메시지 보이게
         errorDiv.innerText = '코드가 틀렸습니다. 다시 시도해주세요.';
         // 에러 메시지 보이게 설정
         errorDiv.classList.add('show');
-    
+
         // 모든 입력 박스에 에러 스타일 추가
         const inputs = document.querySelectorAll('.two-fa-inputs input');
         inputs.forEach(input => {
             input.classList.add('input-error');
-
 
             // 입력 시 에러 상태 리셋
             input.addEventListener('input', function () {
                 // 에러 메시지 숨기기
                 errorDiv.innerText = '';
                 errorDiv.classList.remove('show');
-                
+
                 // 모든 입력 박스에서 에러 스타일 제거
                 inputs.forEach(input => {
                     input.classList.remove('input-error');
