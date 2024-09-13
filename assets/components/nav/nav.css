@@ -91,30 +91,43 @@ a span {
 
 .notification-wrapper {
     position: absolute;
-    top: -12px;
-    right: -12px;
+    top: -18px;
+    right: -18px;
     display: flex;
     align-items: center;
+    visibility: hidden; 
 }
 
 #notification-bell {
-    width: 25px;
-    height: 25px;
+    width: 50px;
+    height: 50px;
+    display: none; 
 }
 
 .notification-popup {
-    display: none;
-    background-color: rgba(255, 0, 0, 0.8);
-    padding: 5px 10px;
+    visibility: hidden; 
+    background-color: rgba(255, 0, 0, 0.4);
+    padding: 10px 15px;
     border-radius: 5px;
     color: white;
-    font-size: 14px;
+    font-size: 17px;
     white-space: nowrap;
     position: absolute;
-    top: 0;
-    left: 25px;
+    top: 5px;
+    left: 40px;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
-#nav__friend:hover .notification-popup {
-    display: block;
+.notification-wrapper:hover .notification-popup {
+    visibility: visible;
+    opacity: 1;
+}
+
+#nav__friend.has-notification .notification-wrapper {
+    visibility: visible;
+}
+
+#nav__friend.has-notification #notification-bell {
+    display: block; 
 }

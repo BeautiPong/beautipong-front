@@ -6,7 +6,8 @@ const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
 
-
+let notificationWebSocket = null;
+let hasNotification = false;
 
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
@@ -100,6 +101,12 @@ export function disconnectSpecificWebSocket() {
 
     if (matchingWebSocket && matchingWebSocket.readyState === WebSocket.OPEN) {
         matchingWebSocket.close();
+    }
+}
+
+export function disconnectNotificationWebSocket() {
+    if (notificationWebSocket && notificationWebSocket.readyState === WebSocket.OPEN) {
+        notificationWebSocket.close();
     }
 }
 
@@ -205,6 +212,8 @@ function showModal(message, buttonMsg) {
 				console.log('로그아웃 성공:', data.message);
 				modalDiv.remove();
 	
+
+				disconnectNotificationWebSocket();
 				localStorage.clear();
 	
 				// 로그인 페이지로 리다이렉트
@@ -221,22 +230,21 @@ function showModal(message, buttonMsg) {
 	};
 }
 
-let notificationWebSocket = null;
-let hasNotification = false;
 
-// 알림 상태를 표시하는 함수
+
 function updateNotificationDisplay() {
-    const notificationPopup = document.getElementById('notification-popup');
+    const notificationWrapper = document.querySelector('.notification-wrapper');
     const notificationBell = document.getElementById('notification-bell');
+    const friendNav = document.getElementById('nav__friend');
 
     if (hasNotification) {
-        notificationPopup.innerText = '새로운 알림이 있어요!';
-        notificationPopup.style.display = 'block';
-        notificationBell.style.fill = 'red';
+        friendNav.classList.add('has-notification');
+        notificationWrapper.style.visibility = 'visible'; 
+        notificationBell.style.display = 'block'; 
     } else {
-        notificationPopup.innerText = '새로운 알림이 없어요.';
-        notificationPopup.style.display = 'none';
-        notificationBell.style.fill = 'none';
+        friendNav.classList.remove('has-notification');
+        notificationWrapper.style.visibility = 'hidden'; 
+        notificationBell.style.display = 'none'; 
     }
 }
 
@@ -255,9 +263,8 @@ export function connectNotificationWebSocket(accessToken) {
         const message = JSON.parse(event.data);
         console.log('서버로부터 받은 메시지:', message);
 
-        
-		hasNotification = true; 
-		updateNotificationDisplay(); 
+        hasNotification = true; 
+        updateNotificationDisplay(); 
     };
 
     notificationWebSocket.onclose = () => {
@@ -269,23 +276,14 @@ export function connectNotificationWebSocket(accessToken) {
     };
 }
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const friendNav = document.getElementById('nav__friend');
-
-    friendNav.addEventListener('mouseover', () => {
-        const notificationPopup = document.getElementById('notification-popup');
-        notificationPopup.style.display = 'block';
-    });
-
-    friendNav.addEventListener('mouseleave', () => {
-        const notificationPopup = document.getElementById('notification-popup');
-        notificationPopup.style.display = 'none';
-    });
 
     friendNav.addEventListener('click', () => {
         hasNotification = false; 
         updateNotificationDisplay(); 
     });
 
-    updateNotificationDisplay();
+    updateNotificationDisplay(); 
 });
