@@ -300,7 +300,7 @@ export default class FriendPage {
     
             document.querySelector('#chat-message-input').focus();
     
-            document.querySelector('#chat-message-input').onkeyup = function(e) {
+            document.querySelector('#chat-message-input').onkeydown = function(e) {
                 if (e.isComposing || e.keyCode === 229) return;
                 if (e.key === 'Enter') {
                     e.preventDefault();
