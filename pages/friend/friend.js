@@ -99,42 +99,9 @@ export default class FriendPage {
         }
     }
 
-    async fetchAndDisplayFriendList() {
-
+    async updateFriendList(friendListBox) {
         const token = localStorage.getItem('access_token');
 
-        // 친구 요청 목록
-        try {
-            const response = await fetch('http://localhost:8000/api/friend/pend/', {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            const data = await response.json();
-            const friendReq = document.querySelector('.friend-request-box');
-
-            friendReq.innerHTML = '';
-            if (data.friends.length > 0) {
-                friendReq.classList.remove('no-friend-requests');
-                friendReq.classList.add('has-friend-requests');
-                data.friends.forEach(friend => {
-                    const image = friend.image || '../../assets/images/profile.svg';
-                    const nickname = friend.nickname
-    
-                    this.updateFriendRequest(friendReq, image, nickname)
-                    
-                });
-            } else {
-                friendReq.classList.remove('has-friend-requests');
-                friendReq.classList.add('no-friend-requests');
-                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..';
-            }
-        } catch (error) {
-            console.error('친구 요청 목록을 불러오는 중 오류 발생:', error);
-        }
-
-        // 친구 리스트 표시
         try {
             const response = await fetch('http://localhost:8000/api/chat/friend_list/', {
                 headers: {
@@ -145,7 +112,7 @@ export default class FriendPage {
             const data = await response.json();
 
             // query selector로 friend-list-box 찾아오기
-            const friendListBox = document.querySelector('.friend-list-box');
+            // const friendListBox = document.querySelector('.friend-list-box');
 
             if (data.friends.length > 0) {
                 // 친구가 있으면 친구 정보 표시
@@ -186,6 +153,59 @@ export default class FriendPage {
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류 발생:', error);
             friendListBox.classList.add('friend-list-box');
+        }
+    }
+
+    async fetchAndDisplayFriendList() {
+
+        const token = localStorage.getItem('access_token');
+
+        // 친구 요청 목록
+        try {
+            const response = await fetch('http://localhost:8000/api/friend/pend/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            const friendReq = document.querySelector('.friend-request-box');
+
+            friendReq.innerHTML = '';
+            if (data.friends.length > 0) {
+                friendReq.classList.remove('no-friend-requests');
+                friendReq.classList.add('has-friend-requests');
+                data.friends.forEach(friend => {
+                    const image = friend.image || '../../assets/images/profile.svg';
+                    const nickname = friend.nickname
+    
+                    this.updateFriendRequest(friendReq, image, nickname)
+                    
+                });
+            } else {
+                friendReq.classList.remove('has-friend-requests');
+                friendReq.classList.add('no-friend-requests');
+                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..';
+            }
+        } catch (error) {
+            console.error('친구 요청 목록을 불러오는 중 오류 발생:', error);
+        }
+
+        // 친구 리스트 표시
+        const friendListBox = document.querySelector('.friend-list-box');
+        this.updateFriendList(friendListBox);
+        
+
+        // 친구함으로 이동
+        const acceptIconElement = document.querySelector('.accept-friend-list');
+
+        if (acceptIconElement) {
+            acceptIconElement.addEventListener('click', async () => {
+                friendListBox.innerHTML = '';
+                this.updateFriendList(friendListBox);
+            });
+        } else {
+            console.error('accept-friend-list 요소를 찾을 수 없습니다.');
         }
     }
 
