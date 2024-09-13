@@ -1,6 +1,8 @@
 import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import {loadProfile} from '../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+
 
 export default class TwoFactorPage {
     render() {
@@ -178,6 +180,8 @@ export default class TwoFactorPage {
                 // 임시 토큰 삭제
                 localStorage.removeItem('temp_token');
 
+				connectNotificationWebSocket(data.access_token);
+
                 // 대시보드 페이지로 이동
 				document.querySelector('.nav-container').style.display = 'block';
                 const router = getRouter();
@@ -192,6 +196,7 @@ export default class TwoFactorPage {
             console.error('2FA 요청 중 오류 발생:', error);
         }
     }
+
 
     handle2FAError(errorData) {
         // 에러 메시지 div 선택

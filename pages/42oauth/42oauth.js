@@ -1,6 +1,7 @@
 import { createModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { loadProfile } from '../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 export default class OauthRedirectPage {
     render() {
@@ -32,6 +33,9 @@ export default class OauthRedirectPage {
                     } else if (data.message === "로그인 성공.") {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
+
+						connectNotificationWebSocket(data.access_token);
+						
                         document.querySelector('.nav-container').style.display = 'block';
                         const router = getRouter();
                         router.navigate('/');
@@ -45,6 +49,7 @@ export default class OauthRedirectPage {
             }
         }
     }
+
 
      // 모달 창 생성 및 표시 함수
      showModal(message, buttonMsg) {
