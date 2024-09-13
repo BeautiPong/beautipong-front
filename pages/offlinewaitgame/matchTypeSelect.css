@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f2f2f2;
+}
+
+.game-mode-container {
+    text-align: center;
+    background-color: transparent; /* 배경 투명하게 설정 */
+    padding: 0;
+    max-width: 100%;
+    width: 100%;
+}
+
+h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 60px;
+}
+
+.mode-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* 버튼 사이 간격 */
+}
+
+.mode-btn {
+    background-color: #ff6f61;
+    color: white;
+    padding: 40px;
+    font-size: 32px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 300px; /* 버튼의 고정 너비 설정 */
+    height: 150px;
+    text-align: center;
+}
+
+.mode-btn:hover {
+    background-color: #ff3d2f;
+}

@@ -22,14 +22,25 @@ export default class OfflineWaitGame {
     // 플레이어 정보를 추가하는 메서드
     addPlayers() {
 
-        let matchType = "";
 
-        const playersData = [
+        const urlParams = new URLSearchParams(window.location.search);
+        const matchType = urlParams.get('matchType');
+        console.log("matchType: ", matchType);
+        let playersData = null
+
+        if(matchType === '1vs1') {
+        playersData = [
+            { nickname: 'Player 1', img: 'assets/images/profile1.png'},
+            { nickname: 'Player 2', img: 'assets/images/profile2.png'},
+        ];
+    } else if(matchType === 'tournament') {
+        playersData = [
             { nickname: 'Player 1', img: 'assets/images/profile1.png'},
             { nickname: 'Player 2', img: 'assets/images/profile2.png'},
             { nickname: 'Player 3', img: 'assets/images/profile3.png'},
             { nickname: 'Player 4', img: 'assets/images/profile4.png'}
         ];
+    }
 
         const container = document.querySelector('.offline-game-player-cards'); // 카드들이 들어갈 컨테이너 div
 
@@ -49,7 +60,7 @@ export default class OfflineWaitGame {
 
         const gameStartBtn = document.querySelector('.game-start-btn');
         gameStartBtn.addEventListener('click', () => {
-            this.startGame();
+            this.startGame(matchType);
         });
 
     }
@@ -59,11 +70,13 @@ export default class OfflineWaitGame {
         console.log(`Player ${playerNumber} 닉네임 업데이트:`, this.playersNicknames);
     }
 
-    startGame() {
+    startGame(matchType) {
         const router = getRouter(); // router 객체 가져오기
         // router.navigate('/offline_game');
-        router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&player3=${encodeURIComponent(this.playersNicknames.player3)}&player4=${encodeURIComponent(this.playersNicknames.player4)}`);
-        // router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}`);
+        if(matchType === '1vs1')
+            router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&matchType=${matchType}`);
+        else
+            router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&player3=${encodeURIComponent(this.playersNicknames.player3)}&player4=${encodeURIComponent(this.playersNicknames.player4)}&matchType=${matchType}`);
     }
 
 }
