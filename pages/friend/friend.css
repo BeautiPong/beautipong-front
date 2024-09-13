@@ -28,9 +28,11 @@
     display: flex;
     flex-direction: column;
 
-    height: 20%;
+    /* height: 20%; */
+    height: 23%;
     /* border: 1px solid var(--main-text-color); */
-    padding: 3vw 3vh;
+    /* padding: 3vw 3vh; */
+    padding: 3vw 3vh 0;
     margin-bottom: 0;
 }
 
@@ -38,6 +40,8 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 0.5vh;
+
+    /* border: 1px solid var(--main-text-color); */
 }
 
 .friend-request-text {
@@ -64,8 +68,19 @@
     color: var(--main-text-color);
 }
 
-/* 친구 요청 수락 박스 */
+/* 친구 요청 박스 */
 .friend-request-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    color: var(--main-text-color);
+    border-radius: 20px;
+    overflow-y: auto; /* 내용이 많을 경우 스크롤 가능 */
+}
+
+/* 요청이 없을 때 */
+.no-friend-requests {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -74,6 +89,13 @@
     background-color: rgba(0,0,0, 0.2);
     color: var(--main-text-color);
     border-radius: 20px;
+    text-align: center; /* 텍스트 가운데 정렬 */
+}
+
+/* 요청이 있을 때 친구 요청 박스 스타일 */
+.has-friend-requests {
+    max-height: 10vw;
+    width: 100%;
 }
 
 .friend-list {
@@ -81,7 +103,6 @@
     flex-direction: column;
 
     height: 80%;
-    /* border: 1px solid var(--main-text-color); */
     padding: 3vw 3vh;
     margin-top: 0;
 }

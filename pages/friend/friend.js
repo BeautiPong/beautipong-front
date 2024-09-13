@@ -20,9 +20,7 @@ export default class FriendPage {
                                 <img class="friend-search-icon" src="../../assets/icons/userSearch.svg" alt="친구찾기">
                             </div>
                             <p class="friend-request-noti">새로운 친구 요청이 도착했어요!</p>
-                            <div class="friend-request-box">
-                                <p>새로운 친구 요청이 없습니다..</p>
-                            </div>
+                            <div class="friend-request-box"></div>
                         </div>
                         <div class="friend-list">
                             <div class="friend-list-title">
@@ -44,11 +42,104 @@ export default class FriendPage {
             </div>
         `;
     }
+    
+    // 친구 요청 확인
+    async updateFriendRequest(friendReq, image, sender) {
+        const token = localStorage.getItem('access_token');
+
+        // friendReq.innerHTML = '';
+        const requestContainer = document.createElement('div');
+        requestContainer.innerHTML = createFriendRequest(image, sender);
+        friendReq.appendChild(requestContainer);
+        // const requestHTML = createFriendRequest(image, sender);
+        // // friendReq.innerHTML += requestHTML;
+        // friendReq.appendChild(requestHTML);
+
+        const reqNotMsg = document.querySelector('.friend-request-noti');
+        reqNotMsg.classList.add('show');
+
+        // 수락 버튼에 이벤트 리스너 추가
+        const acceptButton = friendReq.querySelector('.request-accept-btn');
+        if (acceptButton) {
+            acceptButton.addEventListener('click', async function() {
+                try {
+                    const response = await fetch(`http://localhost:8000/api/friend/accept/${sender}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const router = getRouter();
+                    router.navigate('/friend');
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                }
+            });
+        }
+        // 거절 버튼에 이벤트 리스너 추가
+        const refuseButton = friendReq.querySelector('.request-refuse-btn');
+        if (refuseButton) {
+            refuseButton.addEventListener('click', async function() {
+                // 거절하면 친구 관계 삭제하는 api 호출
+                try {
+                    const response = await fetch(`http://localhost:8000/api/friend/delete/${sender}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const router = getRouter();
+                    router.navigate('/friend');
+                } catch (error) {
+                    console.error('Fetch error:', error);
+                }
+            });
+        }
+    }
 
     async fetchAndDisplayFriendList() {
 
+        const token = localStorage.getItem('access_token');
+
+        // 친구 요청 목록
         try {
-            const token = localStorage.getItem('access_token');
+            const response = await fetch('http://localhost:8000/api/friend/pend/', {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            const friendReq = document.querySelector('.friend-request-box');
+
+            friendReq.innerHTML = '';
+            if (data.friends.length > 0) {
+                friendReq.classList.remove('no-friend-requests');
+                friendReq.classList.add('has-friend-requests');
+                data.friends.forEach(friend => {
+                    const image = friend.image || '../../assets/images/profile.svg';
+                    const nickname = friend.nickname
+    
+                    this.updateFriendRequest(friendReq, image, nickname)
+                    
+                });
+            } else {
+                friendReq.classList.remove('has-friend-requests');
+                friendReq.classList.add('no-friend-requests');
+                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..';
+            }
+        } catch (error) {
+            console.error('친구 요청 목록을 불러오는 중 오류 발생:', error);
+        }
+
+        // 친구 리스트 표시
+        try {
             const response = await fetch('http://localhost:8000/api/chat/friend_list/', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -439,62 +530,64 @@ export default class FriendPage {
         );
 
 
-        notificationSocket.onmessage = function(e) {
+        notificationSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
             
             const friendReq = document.querySelector('.friend-request-box');
 
             if (data.tag === 'request' && friendReq) {
                 friendReq.innerHTML = '';
-                const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
-                friendReq.innerHTML += requestHTML;
+                this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                // friendReq.innerHTML = '';
+                // const requestHTML = createFriendRequest("../../assets/images/profile.svg", data.sender);
+                // friendReq.innerHTML += requestHTML;
 
-                const reqNotMsg = document.querySelector('.friend-request-noti');
-                reqNotMsg.classList.add('show');
+                // const reqNotMsg = document.querySelector('.friend-request-noti');
+                // reqNotMsg.classList.add('show');
 
-                // 수락 버튼에 이벤트 리스너 추가
-                const acceptButton = friendReq.querySelector('.request-accept-btn');
-                if (acceptButton) {
-                    acceptButton.addEventListener('click', async function() {
-                        try {
-                            const response = await fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
-                                method: 'POST',
-                                headers: {
-                                    'Authorization': `Bearer ${token}`
-                                }
-                            });
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            const router = getRouter();
-                            router.navigate('/friend');
-                        } catch (error) {
-                            console.error('Fetch error:', error);
-                        }
-                    });
-                }
-                // 거절 버튼에 이벤트 리스너 추가
-                const refuseButton = friendReq.querySelector('.request-refuse-btn');
-                if (refuseButton) {
-                    refuseButton.addEventListener('click', async function() {
-                        // 거절하면 친구 관계 삭제하는 api 호출
-                        try {
-                            const response = await fetch(`http://localhost:8000/api/friend/delete/${data.sender}/`, {
-                                method: 'POST',
-                                headers: {
-                                    'Authorization': `Bearer ${token}`
-                                }
-                            });
-                            if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                            }
-                            const router = getRouter();
-                            router.navigate('/friend');
-                        } catch (error) {
-                            console.error('Fetch error:', error);
-                        }
-                    });
-                }
+                // // 수락 버튼에 이벤트 리스너 추가
+                // const acceptButton = friendReq.querySelector('.request-accept-btn');
+                // if (acceptButton) {
+                //     acceptButton.addEventListener('click', async function() {
+                //         try {
+                //             const response = await fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
+                //                 method: 'POST',
+                //                 headers: {
+                //                     'Authorization': `Bearer ${token}`
+                //                 }
+                //             });
+                //             if (!response.ok) {
+                //                 throw new Error(`HTTP error! status: ${response.status}`);
+                //             }
+                //             const router = getRouter();
+                //             router.navigate('/friend');
+                //         } catch (error) {
+                //             console.error('Fetch error:', error);
+                //         }
+                //     });
+                // }
+                // // 거절 버튼에 이벤트 리스너 추가
+                // const refuseButton = friendReq.querySelector('.request-refuse-btn');
+                // if (refuseButton) {
+                //     refuseButton.addEventListener('click', async function() {
+                //         // 거절하면 친구 관계 삭제하는 api 호출
+                //         try {
+                //             const response = await fetch(`http://localhost:8000/api/friend/delete/${data.sender}/`, {
+                //                 method: 'POST',
+                //                 headers: {
+                //                     'Authorization': `Bearer ${token}`
+                //                 }
+                //             });
+                //             if (!response.ok) {
+                //                 throw new Error(`HTTP error! status: ${response.status}`);
+                //             }
+                //             const router = getRouter();
+                //             router.navigate('/friend');
+                //         } catch (error) {
+                //             console.error('Fetch error:', error);
+                //         }
+                //     });
+                // }
             }
             else if (data.tag === 'accept')
             {
