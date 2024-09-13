@@ -11,6 +11,8 @@
 
     border: 3px solid var(--refuse-button-color);
     box-sizing: border-box;
+
+    margin-bottom: 0.5vh;
 }
 
 .request-box {
