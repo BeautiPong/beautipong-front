@@ -21,6 +21,7 @@ export default class matchTypeSelect {
 		const tournamentBtn = document.getElementById('tournament-btn');
 
 		vs1Btn.addEventListener('click', () => {
+			console.log('vs1 button clicked');
 			router.navigate('/offlinewaitgame?matchType=1vs1');
 		});
 
