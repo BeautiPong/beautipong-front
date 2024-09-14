@@ -56,13 +56,20 @@ export default class RankPage {
                         <div class="rank__right-section__user-info--text">
                             <div class="rank-star-container">
                                 <img src="assets/icons/rank-star.svg" alt="rank-star" />
-                                <span class="rank-number">1</span>
+                                <span class="rank-number">-</span>
                             </div>
                             <span>seonmiki</span>
                         </div>
                     </div>
                     <div class="rank__right-section__user-dash-board">
-                        <canvas id="myChart"></canvas>
+                        <div class="user-dash-board__rate">
+                            <div class="user-dash-board__rate--text">
+                                <span>10전 7승 3패</span>
+                                <span>승률 70%</span>
+                            </div>
+                            <canvas id="stateChart" height="20"></canvas>
+                        </div>
+                        <canvas id="myChart" height="280"></canvas>
                     </div>
                 </section>
             </div>
@@ -72,6 +79,7 @@ export default class RankPage {
 
     afterRender() {
         this.loadTotalRank();
+        this.loadStateRecords();
         this.loadGameRecords();
     }
 
@@ -127,6 +135,78 @@ export default class RankPage {
             console.error('유저 랭팅 데이터 로딩 중 오류 발생:', error);
         }
     }
+
+    async loadStateRecords() {
+        const ctx = document.getElementById('stateChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['승률'],
+                datasets: [
+                    {
+                        label: '승률',
+                        data: [70],
+                        backgroundColor: '#6ED087', // 막대 색상
+                        borderRadius: Number.MAX_VALUE, // 둥글게
+                        barThickness: 25, // 막대 두께
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y', // 수평 방향
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            display: false // x축 글자 숨기기
+                        },
+                        grid: {
+                            display: false, // 그리드 숨기기
+                            drawBorder: false // x축 선 숨기기
+                        },
+                        border: {
+                            display: false // x축 경계선 숨기기
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            display: false
+                        },
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        border: {
+                            display: false
+                        }
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false // 툴팁 비활성화
+                    }
+                },
+                interaction: {
+                    mode: 'nearest', // 호버 모드 설정
+                    intersect: true // 교차하도록 설정
+                },
+                elements: {
+                    bar: {
+                        hoverBackgroundColor: '#6ED087',
+                        borderRadius: Number.MAX_VALUE, // 모든 모서리 둥글게
+                        borderSkipped: false // 좌우 측면 둥글게 설정
+                    }
+                }
+            }
+        });
+    }
+    
 
     async loadGameRecords() {
         try {
