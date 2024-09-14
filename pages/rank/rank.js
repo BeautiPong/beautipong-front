@@ -69,7 +69,7 @@ export default class RankPage {
                             </div>
                             <canvas id="stateChart" height="20"></canvas>
                         </div>
-                        <canvas id="myChart" height="280"></canvas>
+                        <canvas id="myChart" height="250"></canvas>
                     </div>
                 </section>
             </div>
