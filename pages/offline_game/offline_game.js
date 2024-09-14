@@ -167,6 +167,7 @@ export default class offlineGamePage {
 
         else if (data.type === 'game_end') {
             alert('Game Over - ' + data.winner + ' wins!');
+            socket.send(JSON.stringify({ type: 'game_end_ack' }));
 
             // 경기가 끝났을 때 다음 경기 준비
             if (currentMatch < totalMatches && matchType === 'tournament') {
