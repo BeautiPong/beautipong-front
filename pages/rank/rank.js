@@ -132,16 +132,26 @@ export default class RankPage {
     
                 //전체 랭킹 출력
                 totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
-                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
-                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
-                totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                // totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                // totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+                // totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
 
                 // 유저 클릭 이벤트 등록
                 const allUsers = totalRankContainer.querySelectorAll('.user-rank-info');
                 allUsers.forEach(userElement => {
+                    // 유저 클릭 시
                     userElement.addEventListener('click', () => {
+                        // 모든 유저의 active 클래스 제거
+                        allUsers.forEach(el => el.classList.remove('active'));
+                
+                        // 클릭한 유저에 active 클래스 추가
+                        userElement.classList.add('active');
+                
+                        // 유저 닉네임에 해당하는 데이터 찾기
                         const clickedUserNickname = userElement.querySelector('.user-rank-info__nickname').textContent;
                         const clickedUserData = rankData.find(data => data.nickname === clickedUserNickname);
+                        
+                        // 클릭한 유저 데이터 업데이트
                         if (clickedUserData) {
                             this.updateUserRankInfo(clickedUserData);
                         }
