@@ -54,7 +54,7 @@
 
 	gap: 3%;
 
-	overflow-y: scroll;
+	overflow-y: auto;
 	padding-right: 10px;
 }
 
@@ -135,6 +135,7 @@
 
 .rank-star-container img {
     width: 55px;
+	margin-top: -5px;
 }
 
 .rank-number {
@@ -146,7 +147,7 @@
 }
 
 .rank__right-section__user-info--text span{
-	font-size: 34px;
+	font-size: 30px;
 	font-weight: 600;
 	color: var(--accept-button-color);
 }
@@ -167,6 +168,7 @@
 
 .user-dash-board__rate {
 	padding: 0 3%;
+	height: 10%;
 }
 
 .user-dash-board__rate--text {
@@ -190,6 +192,11 @@
     border-radius: 20px; /* 둥글기 설정 */
 }
 
-/* #myChart {
+.user-dash-board__graph {
+	height: 70%;
 	width: 100%;
-} */
+	
+	display: flex;
+	justify-content: center;
+	padding-top: 3%;
+}

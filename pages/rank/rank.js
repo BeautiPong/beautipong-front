@@ -38,6 +38,10 @@ const Utils = {
 
 export default class RankPage {
 
+    // 차트 인스턴스를 저장할 변수
+    stateChartInstance = null;
+    myChartInstance = null;
+
     render() {
         return `
         <div class="rank-container">
@@ -56,20 +60,22 @@ export default class RankPage {
                         <div class="rank__right-section__user-info--text">
                             <div class="rank-star-container">
                                 <img src="assets/icons/rank-star.svg" alt="rank-star" />
-                                <span class="rank-number">-</span>
+                                <span class="rank-number"></span>
                             </div>
-                            <span>seonmiki</span>
+                            <span id="rank-data--nickname"></span>
                         </div>
                     </div>
                     <div class="rank__right-section__user-dash-board">
                         <div class="user-dash-board__rate">
                             <div class="user-dash-board__rate--text">
-                                <span>10전 7승 3패</span>
-                                <span>승률 70%</span>
+                                <span></span>
+                                <span></span>
                             </div>
                             <canvas id="stateChart" height="20"></canvas>
                         </div>
-                        <canvas id="myChart" height="250"></canvas>
+                        <div class="user-dash-board__graph">
+                            <canvas id="myChart" height="250" width="400"></canvas>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -79,8 +85,6 @@ export default class RankPage {
 
     afterRender() {
         this.loadTotalRank();
-        this.loadStateRecords();
-        this.loadGameRecords();
     }
 
     async loadTotalRank() {
@@ -88,7 +92,9 @@ export default class RankPage {
             const profileNickname = localStorage.getItem('nickname');
             const userRankContainer = document.querySelector('.rank__left-section__user-info');
             const totalRankContainer = document.querySelector('.rank__left-section__total-info');
-    
+            const rankNumberElement = document.querySelector('.rank-number');
+            const nicknameElement = document.getElementById('rank-data--nickname');
+
             let response = await fetch(`http://localhost:8000/api/score/all/`, {
                 method: 'GET',
                 headers: {
@@ -121,12 +127,26 @@ export default class RankPage {
                 if (userRankDiv) {
                     userRankDiv.classList.add('profile-user-rank-info');
                 }
+                nicknameElement.textContent = profileNickname;
+                this.updateUserRankInfo(userRankData);
     
                 //전체 랭킹 출력
                 totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
                 totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
                 totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
                 totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
+
+                // 유저 클릭 이벤트 등록
+                const allUsers = totalRankContainer.querySelectorAll('.user-rank-info');
+                allUsers.forEach(userElement => {
+                    userElement.addEventListener('click', () => {
+                        const clickedUserNickname = userElement.querySelector('.user-rank-info__nickname').textContent;
+                        const clickedUserData = rankData.find(data => data.nickname === clickedUserNickname);
+                        if (clickedUserData) {
+                            this.updateUserRankInfo(clickedUserData);
+                        }
+                    });
+                });
     
             } else {
                 console.error('유저 랭킹 데이터를 가져오지 못했습니다:', response.statusText);
@@ -136,81 +156,34 @@ export default class RankPage {
         }
     }
 
-    async loadStateRecords() {
-        const ctx = document.getElementById('stateChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['승률'],
-                datasets: [
-                    {
-                        label: '승률',
-                        data: [70],
-                        backgroundColor: '#6ED087', // 막대 색상
-                        borderRadius: Number.MAX_VALUE, // 둥글게
-                        barThickness: 25, // 막대 두께
-                    }
-                ]
-            },
-            options: {
-                indexAxis: 'y', // 수평 방향
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        max: 100,
-                        ticks: {
-                            display: false // x축 글자 숨기기
-                        },
-                        grid: {
-                            display: false, // 그리드 숨기기
-                            drawBorder: false // x축 선 숨기기
-                        },
-                        border: {
-                            display: false // x축 경계선 숨기기
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            display: false
-                        },
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        border: {
-                            display: false
-                        }
-                    }
-                },
-                responsive: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: false // 툴팁 비활성화
-                    }
-                },
-                interaction: {
-                    mode: 'nearest', // 호버 모드 설정
-                    intersect: true // 교차하도록 설정
-                },
-                elements: {
-                    bar: {
-                        hoverBackgroundColor: '#6ED087',
-                        borderRadius: Number.MAX_VALUE, // 모든 모서리 둥글게
-                        borderSkipped: false // 좌우 측면 둥글게 설정
-                    }
-                }
-            }
+    updateUserRankInfo(userData) {
+        const rankNumberElement = document.querySelector('.rank-number');
+        const nicknameElement = document.getElementById('rank-data--nickname');
+
+        // 유저 정보 업데이트
+        nicknameElement.textContent = userData.nickname;
+        if (!userData.rank)
+            rankNumberElement.textContent = '-';
+        else
+            rankNumberElement.textContent = userData.rank;
+
+        requestAnimationFrame(() => {
+            this.loadStateRecords(userData.nickname);
+            this.loadGameRecords(userData.nickname);
         });
     }
-    
 
-    async loadGameRecords() {
+    async loadStateRecords(nickname) {
+        const ctx = document.getElementById('stateChart').getContext('2d');
+    
+        // 기존 차트가 있다면 제거
+        if (this.stateChartInstance) {
+            this.stateChartInstance.destroy();
+        }
+    
         try {
-            const response = await fetch('http://localhost:8000/api/score/graph/dongseo', {
+            // API 요청
+            let response = await fetch(`http://localhost:8000/api/user/info/${nickname}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -219,7 +192,112 @@ export default class RankPage {
     
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                response = await fetch('http://localhost:8000/api/score/graph/dongseo', {
+                response = await fetch(`http://localhost:8000/api/user/info/${nickname}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
+            }
+    
+            if (response.ok) {
+                const data = await response.json();
+                const winRate = data.win_rate;
+                const lose_cnt = data.match_cnt - data.win_cnt;
+
+                const gameCountElement = document.querySelector('.user-dash-board__rate--text span:nth-of-type(1)');
+                const gameStateElement = document.querySelector('.user-dash-board__rate--text span:nth-of-type(2)');
+                gameCountElement.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${lose_cnt}패`;
+                gameStateElement.textContent = `승률 ${winRate}%`
+    
+                // 새 차트 생성
+                this.stateChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['승률'],
+                        datasets: [
+                            {
+                                label: '승률',
+                                data: [winRate],
+                                backgroundColor: '#6ED087', // 막대 색상
+                                borderRadius: Number.MAX_VALUE, // 둥글게
+                                barThickness: 25, // 막대 두께
+                            }
+                        ]
+                    },
+                    options: {
+                        indexAxis: 'y', // 수평 방향
+                        scales: {
+                            x: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    display: false // x축 글자 숨기기
+                                },
+                                grid: {
+                                    display: false, // 그리드 숨기기
+                                    drawBorder: false // x축 선 숨기기
+                                },
+                                border: {
+                                    display: false // x축 경계선 숨기기
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    display: false
+                                },
+                                grid: {
+                                    display: false,
+                                    drawBorder: false
+                                },
+                                border: {
+                                    display: false
+                                }
+                            }
+                        },
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false // 툴팁 비활성화
+                            }
+                        },
+                        interaction: {
+                            mode: 'nearest', // 호버 모드 설정
+                            intersect: true // 교차하도록 설정
+                        },
+                        elements: {
+                            bar: {
+                                hoverBackgroundColor: '#6ED087',
+                                borderRadius: Number.MAX_VALUE, // 모든 모서리 둥글게
+                                borderSkipped: false // 좌우 측면 둥글게 설정
+                            }
+                        }
+                    }
+                });
+            } else {
+                console.error('Failed to load state records:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error loading state records:', error);
+        }
+    }    
+
+    async loadGameRecords(nickname) {
+        try {
+            const response = await fetch(`http://localhost:8000/api/score/graph/${nickname}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+    
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
+                response = await fetch(`http://localhost:8000/api/score/graph/${nickname}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,
@@ -231,18 +309,27 @@ export default class RankPage {
                 const gameRecords = await response.json();
                 // 날짜 포맷 변환 (DD-MM-YY)
                 const dates = gameRecords.map(record => {
+                
                 const date = new Date(record.create_time);
+                if (date == 'Invalid Date')
+                    return '00-00-00';
+
                 const day = String(date.getDate()).padStart(2, '0'); // 일
                 const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
                 const year = String(date.getFullYear()).slice(2); // 연도 마지막 두 자리
-
                 return `${year}-${month}-${day}`; // 24-09-03 형식으로 변환
                 });
                 const scores = gameRecords.map(record => record.score);
     
                 // 차트 렌더링
                 const ctx = document.getElementById('myChart').getContext('2d');
-                new Chart(ctx, {
+                // 기존 차트가 있다면 제거
+                if (this.myChartInstance) {
+                    this.myChartInstance.destroy();
+                }
+
+                // 새 차트 생성
+                this.myChartInstance = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: dates,  // X축 날짜
