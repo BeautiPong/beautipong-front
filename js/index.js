@@ -35,7 +35,7 @@ router
 .addRoute('/waitgame', pages.waitgame)
 .addRoute('/offlinewaitgame', pages.offlineWaitGame)
 .addRoute('/offline_game', pages.offline_game)
-// .addRoute('/matchTypeSelect', pages.matchTypeSelect)
+.addRoute('/matchTypeSelect', pages.matchTypeSelect)
 .addRoute('/online-game', pages.onlineGame)
 .setNotFound(() => {
   container.innerHTML = '<h1>Page Not Found!</h1>';
