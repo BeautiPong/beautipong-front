@@ -40,10 +40,11 @@ export const createRouter = () => {
     checkRoutes();
   };
 
-  router.navigate = (path) => {
-    window.history.pushState({}, '', path);
+  router.navigate = (path, params = {}) => {
+    window.history.pushState(params, '', path);
     checkRoutes();
   };
+
 
   routerInstance = router;
   return router;

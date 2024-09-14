@@ -1,6 +1,14 @@
 import { getRouter } from '../../js/router.js';
 
 export default class LoginPage {
+    // handleEnterKey를 클래스 속성으로 선언하여 두 함수 모두 접근 가능하게 만듭니다.
+    handleEnterKey = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.handleFormBtn(event);
+        }
+    };
+
     render() {
         return `
             <div class="login">
@@ -40,14 +48,11 @@ export default class LoginPage {
             router.navigate('/signup'); // /signup 페이지로 라우팅
         });
 
-		const formButton = document.getElementById('signIn-btn');
-		formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 화살표 함수 사용
+        const formButton = document.getElementById('signIn-btn');
+        formButton.addEventListener('click', (event) => this.handleFormBtn(event)); // 로그인 버튼 클릭 시 실행
 
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                this.handleFormBtn(event);
-            }
-        });
+        // keydown 이벤트 리스너 등록
+        document.addEventListener('keydown', this.handleEnterKey);
 
         // 42 OAuth 로그인 버튼에 클릭 이벤트 리스너 추가
         const login42Button = document.getElementById('start-with__42logo');
@@ -55,7 +60,6 @@ export default class LoginPage {
             window.location.href = 'http://localhost:8000/api/user/login/';
         });
     }
-
 
     async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
@@ -86,6 +90,10 @@ export default class LoginPage {
                 const data = await response.json();
                 console.log('로그인 성공:', data);
                 localStorage.setItem('temp_token', data.temp_token);
+
+                // 2FA 페이지로 이동하기 전에 keydown 이벤트 리스너 제거
+                document.removeEventListener('keydown', this.handleEnterKey);
+
                 const router = getRouter(); // router 객체 가져오기
                 router.navigate('/2fa'); // 로그인 성공 후 /2fa 페이지로 라우팅
             } else {
@@ -99,7 +107,6 @@ export default class LoginPage {
     }
 
     handleLoginError(errorData) {
-
         const idInput = document.querySelector('#userId');
         const pwInput = document.querySelector('#pw');
         const idErrorDiv = document.querySelector('.id-error-message');
@@ -115,9 +122,9 @@ export default class LoginPage {
 
                     // 사용자 입력 시 에러 상태 리셋
                     idInput.addEventListener('input', function () {
-                    idErrorDiv.innerText = 'default';
-                    idErrorDiv.classList.remove('show');
-                    idInput.classList.remove('input-error');});
+                        idErrorDiv.innerText = 'default';
+                        idErrorDiv.classList.remove('show');
+                        idInput.classList.remove('input-error');});
                 }
                 if (!document.getElementById('pw').value) {
                     pwErrorDiv.innerText = "비밀번호를 입력해주세요.";
@@ -126,16 +133,16 @@ export default class LoginPage {
 
                     // 사용자 입력 시 에러 상태 리셋
                     pwInput.addEventListener('input', function () {
-                    pwErrorDiv.innerText = 'default';
-                    pwErrorDiv.classList.remove('show');
-                    pwInput.classList.remove('input-error');});
+                        pwErrorDiv.innerText = 'default';
+                        pwErrorDiv.classList.remove('show');
+                        pwInput.classList.remove('input-error');});
                 }
                 break ;
 
             case "존재하지 않는 아이디입니다." :
                 idErrorDiv.innerText = `${errorData.message}`;
                 idErrorDiv.classList.add('show');
-            
+
                 idInput.classList.add('input-error');
 
                 idInput.addEventListener('input', function () {
@@ -143,7 +150,7 @@ export default class LoginPage {
                     idErrorDiv.classList.remove('show');
                     idInput.classList.remove('input-error');
                 });
-                
+
                 break;
             case "비밀번호가 틀렸습니다." :
                 pwErrorDiv.innerText = `${errorData.message}`;
@@ -156,7 +163,7 @@ export default class LoginPage {
                     pwErrorDiv.classList.remove('show');
                     pwInput.classList.remove('input-error');
                 });
-                
+
                 break;
         }
     }

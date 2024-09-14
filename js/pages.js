@@ -8,6 +8,9 @@ import NicknamePage from '../pages/nickname/nickname.js'
 import TwoFactorPage from '../pages/2fa/2fa.js'
 import OauthRedirectPage from '../pages/42oauth/42oauth.js'
 import WaitGamePage from '../pages/waitgame/waitgame.js'
+import OfflineWaitGame from '../pages/offlinewaitgame/offlinewaitgame.js'
+import OfflineGamePage from '../pages/offline_game/offline_game.js'
+import OnlineGamePage from '../pages/onlinegame/onlinegame.js'
 
 export default container => {
     const home = () => {
@@ -71,6 +74,34 @@ export default container => {
         page.bindEvents();
 
     }
+
+
+    const offlineWaitGame = () => {
+        const offlineWaitGame = new OfflineWaitGame();
+        container.innerHTML = offlineWaitGame.render();  // HTML 구조를 렌더링
+        offlineWaitGame.addPlayers();  // 플레이어 정보 추가
+    }
+
+    const offline_game = () => {
+        const page = new OfflineGamePage();
+        container.innerHTML = page.render();
+        page.afterRender();
+    }
+
+    const onlineGame = () => {
+      const { roomName, jwtToken } = window.history.state || {};
+
+      const page = new OnlineGamePage();
+
+      if (roomName && jwtToken) {
+        container.innerHTML = page.render();
+        page.afterRender(roomName, jwtToken);
+      } else {
+        console.error('roomName 또는 jwtToken이 없습니다:', { roomName, jwtToken });
+      }
+    }
+
+
   
     return {
         home,
@@ -80,8 +111,11 @@ export default container => {
         friend,
         signup,
         nickname,
-	    twoFactor,
+	      twoFactor,
         oauth,
         waitgame,
+        offlineWaitGame,
+        offline_game,
+    	  onlineGame,
     }
 }
