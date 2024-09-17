@@ -42,7 +42,7 @@ export default class FriendPage {
             </div>
         `;
     }
-    
+
     // 친구 요청 확인
     async updateFriendRequest(friendReq, image, sender) {
         const token = localStorage.getItem('access_token');
@@ -118,7 +118,7 @@ export default class FriendPage {
                 // 친구가 있으면 친구 정보 표시
                 friendListBox.innerHTML = '';
                 friendListBox.classList.remove('friend-list-box');
-            
+
                 data.friends.forEach(friend => {
 
                     const nickname = friend.nickname;
@@ -128,14 +128,14 @@ export default class FriendPage {
                     const is_active = friend.is_active;
                     const score = friend.score;
 
-                    
+
                     // 친구 요소를 생성
                     const friendComponent = createFriendList(image, nickname, false);
-            
+
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
                     tempElement.innerHTML = friendComponent;
-            
+
                     // 생성된 친구 요소를 DOM에 추가
                     const newFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(newFriendElement);
@@ -178,9 +178,9 @@ export default class FriendPage {
                 data.friends.forEach(friend => {
                     const image = friend.image || '../../assets/images/profile.svg';
                     const nickname = friend.nickname
-    
+
                     this.updateFriendRequest(friendReq, image, nickname)
-                    
+
                 });
             } else {
                 friendReq.classList.remove('has-friend-requests');
@@ -194,7 +194,7 @@ export default class FriendPage {
         // 친구 리스트 표시
         const friendListBox = document.querySelector('.friend-list-box');
         this.updateFriendList(friendListBox);
-        
+
 
         // 친구함으로 이동
         const acceptIconElement = document.querySelector('.accept-friend-list');
@@ -263,25 +263,25 @@ export default class FriendPage {
     async loadChatRoom(roomName, myname, token, friendNickname) {
         try {
             const chatContainer = document.querySelector('.chat-box');
-    
+
             // 기존 내용을 지우고 새로운 내용으로 교체
             chatContainer.innerHTML = `
                 ${createChatRoom("", friendNickname, "n승n패")}
             `;
-    
+
             // 기존 대화 내용 불러오기
             await this.loadMessages(roomName, token);
-    
+
             // 웹소켓 연결 설정
             const chatSocket = new WebSocket(
                 `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
             );
-            
+
 
             chatSocket.onopen = function(e) {
                 console.log('WebSocket connection established.');
             };
-    
+
             chatSocket.onmessage = function(e) {
                 const data = JSON.parse(e.data);
                 const myName = data.user;
@@ -293,13 +293,13 @@ export default class FriendPage {
                     chatLog.scrollTop = chatLog.scrollHeight;
                 }
             };
-    
+
             chatSocket.onclose = function(e) {
                 console.error('Chat socket closed unexpectedly');
             };
-    
+
             document.querySelector('#chat-message-input').focus();
-    
+
             document.querySelector('#chat-message-input').onkeydown = function(e) {
                 if (e.isComposing || e.keyCode === 229) return;
                 if (e.key === 'Enter') {
@@ -307,11 +307,11 @@ export default class FriendPage {
                     sendMessage();
                 }
             };
-    
+
             function sendMessage() {
                 const messageInputDom = document.querySelector('#chat-message-input');
                 const message = messageInputDom.value;
-    
+
                 // 소켓으로 메시지 보내기
                 chatSocket.send(JSON.stringify({
                     'message': message,
@@ -320,7 +320,7 @@ export default class FriendPage {
                 }));
                 messageInputDom.value = '';
             }
-    
+
         } catch (error) {
             console.error('채팅 방을 불러오는 중 오류 발생:', error);
         }
@@ -363,7 +363,7 @@ export default class FriendPage {
                 // 차단 성공 후 처리
                 // alert('친구가 차단되었습니다.');
                 this.showModal('친구 차단이 완료되었습니다.', '확인');
-                
+
                 const router = getRouter();
                 router.navigate('/friend');
             } catch (error) {
@@ -371,7 +371,7 @@ export default class FriendPage {
             }
         });
     }
-    
+
     async loadMessages(roomName, token) {
         try {
             const response = await fetch(`http://localhost:8000/api/chat/pre_message/${roomName}/`, {
@@ -380,11 +380,11 @@ export default class FriendPage {
                     'Authorization': `Bearer ${token}`
                 }
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-    
+
             const data = await response.json();
             const myName = data.user;
 
@@ -397,7 +397,7 @@ export default class FriendPage {
 
             // 하단으로 스크롤
             chatLog.scrollTop = chatLog.scrollHeight;
-    
+
         } catch (error) {
             console.error('메시지를 불러오는 중 오류 발생:', error);
         }
@@ -495,7 +495,7 @@ export default class FriendPage {
                     .then(data => {
                         const userFindBox = modalDiv.querySelector('.user-find-box');
                         userFindBox.innerHTML = '';
-                        
+
                         if (data && data.name) {
                             // 친구 정보를 보여주는 로직 추가
                             userFindBox.innerHTML = `
@@ -530,7 +530,7 @@ export default class FriendPage {
 
         document.addEventListener('DOMContentLoaded', () => {
             const searchIconElement = document.querySelector('.friend-search-icon');
-        
+
             if (searchIconElement) {
                 searchIconElement.addEventListener('click', async () => {
                     this.showUserSearchModal();
@@ -540,7 +540,7 @@ export default class FriendPage {
             }
         });
 
-        // 웹소켓 연결 설정 
+        // 웹소켓 연결 설정
         const notificationSocket = new WebSocket(
             `ws://localhost:8000/ws/user/?token=${token}`
         );
@@ -548,7 +548,7 @@ export default class FriendPage {
 
         notificationSocket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-            
+
             const friendReq = document.querySelector('.friend-request-box');
 
             if (data.tag === 'request' && friendReq) {
@@ -624,7 +624,7 @@ export default class FriendPage {
                     'Content-Type': 'application/json'
                 }
             });
-    
+
             if (response.ok) {
                 this.updateBlockedFriendList(friendListBox);
             }
@@ -658,11 +658,11 @@ export default class FriendPage {
 
                     // 친구 요소를 생성
                     const friendComponent = createFriendList(image, nickname, true);
-            
+
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
                     tempElement.innerHTML = friendComponent;
-            
+
                     // 생성된 친구 요소를 DOM에 추가
                     const blockFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(blockFriendElement);
@@ -673,7 +673,7 @@ export default class FriendPage {
                         unblockButton.addEventListener('click', () => this.unblockFriend(nickname, friendListBox));
                     }
                 });
-            
+
             } else {
                 // 차단된 친구가 없으면 다음 문구 표시
                 friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
@@ -683,13 +683,13 @@ export default class FriendPage {
             friendListBox.classList.add('friend-list-box');
         }
     }
-    
+
     // 차단함으로 이동
     async clickBlockIcon() {
         document.addEventListener('DOMContentLoaded', () => {
             const blockIconElement = document.querySelector('.block-friend-text');
             const friendListBox = document.querySelector('.friend-list-box');
-    
+
             if (blockIconElement) {
                 blockIconElement.addEventListener('click', async () => {
                     friendListBox.innerHTML = '';
