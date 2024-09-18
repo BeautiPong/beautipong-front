@@ -1,12 +1,15 @@
 // chat-room 컴포넌트 함수
-export function createChatRoom(image, nickname, win) {
+export function createChatRoom(image, nickname, win, score) {
     return `
     <div class="chat-box-up">
         <div class="up-left">
             <img class="friend-image" src="../../assets/images/profile.svg" alt="친구이미지">
             <div class="friend-profile">
                 <p class="friend-name-text">${nickname}</p>
-                <p class="friend-win-text">${win}</p>
+                <div class="info">
+                    <p class="friend-score-text">P.${score}</p>
+                    <p class="friend-win-text">${win}</p>
+                </div>
             </div>
         </div>
         <div class="friend-button-list">

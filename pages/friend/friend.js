@@ -212,9 +212,9 @@ export default class FriendPage {
                     friendListBox.appendChild(newFriendElement);
 
                     // 이벤트 리스너를 직접 추가
-                    const nicknameElement = newFriendElement.querySelector('.list-nickname');
-                    nicknameElement.addEventListener('click', () => {
-                        this.showChatBox(nickname);
+                    const chatRoomElement = newFriendElement.querySelector('.list-box');
+                    chatRoomElement.addEventListener('click', () => {
+                        this.showChatBox(image, nickname, match_cnt, win_cnt, score);
                     });
                 });
             } else {
@@ -227,7 +227,7 @@ export default class FriendPage {
     }
 
     // 채팅방 만들기
-    async showChatBox(friendNickname) {
+    async showChatBox(image, friendNickname, match_cnt, win_cnt, score) {
         try {
             const token = localStorage.getItem('access_token');
             fetch('http://localhost:8000/api/chat/create/', {
@@ -240,7 +240,7 @@ export default class FriendPage {
             })
             .then(response => response.json())
             .then(data => {
-                this.loadChatRoom(data.room_name, data.sender, token, friendNickname);
+                this.loadChatRoom(data.room_name, data.sender, token, friendNickname, image, match_cnt, win_cnt, score);
             });
         } catch (error) {
             console.error('채팅 내용을 불러오는 중 오류 발생:', error);
@@ -248,13 +248,16 @@ export default class FriendPage {
     }
 
     // 채팅방 불러오기
-    async loadChatRoom(roomName, myname, token, friendNickname) {
+    async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
         // 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
 
+            const lose_cnt = match_cnt - win_cnt;
+            const win_inform = `${win_cnt}승 ${lose_cnt}패`;
+
             chatContainer.innerHTML = `
-                ${createChatRoom("", friendNickname, "n승n패")}
+                ${createChatRoom(image, friendNickname, win_inform, score)}
             `;
 
             // 기존 대화 내용 불러오기
