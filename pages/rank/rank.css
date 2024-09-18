@@ -117,7 +117,7 @@
 }
 
 .rank__right-section__user-info--img img{
-	width: 35%;
+	width: 30%;
 	border-radius: 50%;
 }
 
@@ -134,8 +134,8 @@
 }
 
 .rank-star-container img {
-    width: 55px;
-	margin-top: -5px;
+    width: 48px;
+	margin-top: -3px;
 }
 
 .rank-number {
@@ -147,7 +147,7 @@
 }
 
 .rank__right-section__user-info--text span{
-	font-size: 30px;
+	font-size: 26px;
 	font-weight: 600;
 	color: var(--accept-button-color);
 }

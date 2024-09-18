@@ -74,7 +74,7 @@ export default class RankPage {
                             <canvas id="stateChart" height="20"></canvas>
                         </div>
                         <div class="user-dash-board__graph">
-                            <canvas id="myChart" height="250" width="400"></canvas>
+                            <canvas id="myChart" height="180" width="350"></canvas>
                         </div>
                     </div>
                 </section>
