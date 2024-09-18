@@ -201,7 +201,7 @@ export default class FriendPage {
                     const score = friend.score;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, false);
+                    const friendComponent = createFriendList(image, nickname, is_active, false);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');

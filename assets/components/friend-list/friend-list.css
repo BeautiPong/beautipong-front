@@ -28,13 +28,14 @@
     width: 55px;
     height: 55px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    
+
     margin-right: 1vw;
 }
 
 .name-status {
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     width: 70%;
 }
@@ -48,21 +49,27 @@
     cursor: pointer;
 }
 
-.list-online-status {
+.list-online-status.true{
     width: 20px;
     height: 20px;
     border-radius: 50%;
     display: inline-block;
     background-color: var(--accept-button-color);
+}
 
-    /* margin-right: 17vw; */
+.list-online-status.false{
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: var(--refuse-button-color);
 }
 
 .block-none {
     display: none;
 
     cursor: pointer;
-    color: var(--main-text-color);    
+    color: var(--main-text-color);
 }
 
 .list-container.blocked .block-none {
