@@ -1,7 +1,7 @@
 import { createModal } from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
-
+import WaitGamePage from "../../../pages/waitgame/waitgame.js";
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
@@ -289,7 +289,9 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-
+                const waitGamePage = new WaitGamePage();
+                waitGamePage.startMatch(sender);
+                modalDiv.remove();
             }
 
         }

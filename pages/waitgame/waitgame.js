@@ -2,10 +2,12 @@ import { getRouter } from '../../js/router.js';
 import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
+
 export default class WaitGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
     }
+    static socket = null;
 
     // 페이지 렌더링
     render() {
@@ -42,11 +44,12 @@ export default class WaitGamePage {
     //     const accessToken = localStorage.getItem("access_token");
     // }
 
+
 	showLoader() {
         const loader = document.getElementById('loader');
         const inviteBtn = document.getElementById('inviteBtn');
         const randomBtn = document.getElementById('randomBtn');
-
+        // console.log("loader", loader, "inviteBtn", inviteBtn, "randomBtn", randomBtn);
         // 로더를 표시하고 버튼들을 숨김
         loader.classList.remove('hidden');
         inviteBtn.style.display = 'none';
@@ -77,7 +80,7 @@ export default class WaitGamePage {
 
     bindEvents() {
         document.getElementById('randomBtn').addEventListener('click', () => {
-            this.startRandomMatch(); // 랜덤 매칭 시작
+            this.startMatch(); // 랜덤 매칭 시작
         });
 
         document.getElementById('inviteBtn').addEventListener('click', () => {
@@ -90,22 +93,42 @@ export default class WaitGamePage {
         });
     }
 
-	async startRandomMatch() {
-        this.showLoader(); // 로더를 표시하고 버튼을 숨김
+	async startMatch(friendNickname = null) {
+        if(!friendNickname)
+            this.showLoader(); // 로더를 표시하고 버튼을 숨김
 
         try {
             const accessToken = localStorage.getItem("access_token");
 
-            const response = await fetch('http://localhost:8000/api/game/match/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
-                },
-                body: JSON.stringify({
-                    // 필요한 경우 추가 데이터 여기에 포함
-                })
-            });
+            let response;
+            if(friendNickname)
+            {
+                const myNickname = localStorage.getItem('nickname');
+                response = await fetch('http://localhost:8000/api/game/match/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
+                    },
+                    body: JSON.stringify({
+                        "myNickname": myNickname,
+                        "friendNickname": friendNickname
+                    })
+                });
+            }
+            else
+            {
+                response = await fetch('http://localhost:8000/api/game/match/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
+                    },
+                    body: JSON.stringify({
+                        // 필요한 경우 추가 데이터 여기에 포함
+                    })
+                });
+            }
 
 			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
 			if (response.status === 401) {
@@ -126,6 +149,7 @@ export default class WaitGamePage {
             }
 
             const data = await response.json();
+            console.log('랜덤 매칭 응답:', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
             this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name);
@@ -146,14 +170,14 @@ export default class WaitGamePage {
 		}
 
 		// WebSocket 연결 시작
-		this.socket = new WebSocket(socketUrl);
-		setMatchingWebSocket(this.socket);
+		WaitGamePage.socket = new WebSocket(socketUrl);
+		setMatchingWebSocket(WaitGamePage.socket);
 
-		this.socket.onopen = () => {
+		WaitGamePage.socket.onopen = () => {
 			console.log("매칭 웹소켓 연결 성공");
 		};
 
-		this.socket.onmessage = (e) => {
+		WaitGamePage.socket.onmessage = (e) => {
 			const data = JSON.parse(e.data);
 			console.log("Received data:", data);
 
@@ -161,7 +185,7 @@ export default class WaitGamePage {
 			if (data.type === 'game_start') {
 				if (data.room_name) {
 					this.navigateToGamePage(data.room_name, jwtToken);
-					this.socket.close();  // 매칭 컨슈머 연결 종료
+					WaitGamePage.socket.close();  // 매칭 컨슈머 연결 종료
 					setMatchingWebSocket(null);
 				} else {
 					console.error('room_name is undefined');
@@ -169,7 +193,7 @@ export default class WaitGamePage {
 			}
 		};
 
-		this.socket.onclose = (e) => {
+		WaitGamePage.socket.onclose = (e) => {
 			console.log('매칭 웹소켓 연결 종료');
 			setMatchingWebSocket(null);
 		};
@@ -277,7 +301,9 @@ export default class WaitGamePage {
                 li.addEventListener('click', () => {
                     console.log("친구 클릭");
                     this.sendInvite(friend.nickname, access_token); // 친구에게 초대 전송
+                    this.startMatch(friend.nickname); // 초대 후 매칭 시작
                     this.closeModal(); // 초대 후 모달 닫기
+
                 });
                 friendList.appendChild(li);
             });
