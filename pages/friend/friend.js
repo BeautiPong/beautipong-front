@@ -6,6 +6,8 @@ import {createUserSearchModal} from '../../assets/components/user-search-modal/u
 import { getRouter } from '../../../js/router.js';
 import {createModal} from '../../assets/components/modal/modal.js';
 
+let chatSocket = null;
+
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
@@ -273,9 +275,12 @@ export default class FriendPage {
             await this.loadMessages(roomName, token);
 
             // 웹소켓 연결 설정
-            const chatSocket = new WebSocket(
-                `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
-            );
+            if(chatSocket === null)
+            {
+                chatSocket = new WebSocket(
+                    `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
+                );
+            }
 
 
             chatSocket.onopen = function(e) {
@@ -295,6 +300,7 @@ export default class FriendPage {
             };
 
             chatSocket.onclose = function(e) {
+                chatSocket = null;
                 console.error('Chat socket closed unexpectedly');
             };
 
