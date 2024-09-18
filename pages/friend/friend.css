@@ -121,14 +121,18 @@
 
 .accept-friend-list {
     cursor: pointer;
-    color: var(--main-text-color);
-    width: 3vw;
+    color: var(--sub-text-color);
+    font-size: x-large;
+    font-weight: 600;
+
+    margin-right: 0.5vw;
 }
 
 .block-friend-text {
     cursor: pointer;
-    color: var(--main-text-color);
-    width: 3vw;
+    color: var(--sub-text-color);
+    font-size: x-large;
+    font-weight: 600;
 }
 
 .friend-list-text {
