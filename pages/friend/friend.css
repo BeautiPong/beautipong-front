@@ -52,10 +52,9 @@
 }
 
 .friend-request-noti {
-    color: var(--refuse-button-color);
+    color: var(--sub-text-color);
     font-weight: 600;
     margin-bottom: 0.5vh;
-    margin-left: 1vw;
 
     visibility: hidden;
 }
