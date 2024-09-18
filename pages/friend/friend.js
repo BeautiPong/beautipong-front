@@ -59,7 +59,7 @@ export default class FriendPage {
         if (acceptButton) {
             acceptButton.addEventListener('click', async function() {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/friend/accept/${sender}/`, {
+                    const response = await fetch(`https://localhost/api/friend/accept/${sender}/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -81,7 +81,7 @@ export default class FriendPage {
             refuseButton.addEventListener('click', async function() {
                 // 거절하면 친구 관계 삭제하는 api 호출
                 try {
-                    const response = await fetch(`http://localhost:8000/api/friend/delete/${sender}/`, {
+                    const response = await fetch(`https://localhost/api/friend/delete/${sender}/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -103,7 +103,7 @@ export default class FriendPage {
         const token = localStorage.getItem('access_token');
 
         try {
-            const response = await fetch('http://localhost:8000/api/chat/friend_list/', {
+            const response = await fetch('https://localhost/api/chat/friend_list/', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -162,7 +162,7 @@ export default class FriendPage {
 
         // 친구 요청 목록
         try {
-            const response = await fetch('http://localhost:8000/api/friend/pend/', {
+            const response = await fetch('https://localhost/api/friend/pend/', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -212,7 +212,7 @@ export default class FriendPage {
     async updateChatBox(friendNickname) {
         try {
             const token = localStorage.getItem('access_token');
-            fetch('http://localhost:8000/api/chat/create/', {
+            fetch('https://localhost/api/chat/create/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -274,7 +274,7 @@ export default class FriendPage {
     
             // 웹소켓 연결 설정
             const chatSocket = new WebSocket(
-                `ws://localhost:8000/ws/chat/${roomName}/?token=${token}`
+                `wss://localhost/ws/chat/${roomName}/?token=${token}`
             );
             
 
@@ -328,7 +328,7 @@ export default class FriendPage {
         // 친구 삭제
         document.querySelector('#delete-friend-btn').addEventListener('click', async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/friend/delete/${friendNickname}/`, {
+                const response = await fetch(`https://localhost/api/friend/delete/${friendNickname}/`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -351,7 +351,7 @@ export default class FriendPage {
         // 친구 차단
         document.querySelector('#block-friend-btn').addEventListener('click', async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/friend/block/${friendNickname}/`, {
+                const response = await fetch(`https://localhost/api/friend/block/${friendNickname}/`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`
@@ -374,7 +374,7 @@ export default class FriendPage {
     
     async loadMessages(roomName, token) {
         try {
-            const response = await fetch(`http://localhost:8000/api/chat/pre_message/${roomName}/`, {
+            const response = await fetch(`https://localhost/api/chat/pre_message/${roomName}/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -434,7 +434,7 @@ export default class FriendPage {
 
             requestBtn.addEventListener('click', async function() {
                 try {
-                    const response = await fetch(`http://localhost:8000/api/friend/add/${name}/`, {
+                    const response = await fetch(`https://localhost/api/friend/add/${name}/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -484,7 +484,7 @@ export default class FriendPage {
 
                 if (friend_nickname.length > 0) {
                     // 친구 검색
-                    fetch(`http://localhost:8000/api/friend/search/${friend_nickname}/`, {
+                    fetch(`https://localhost/api/friend/search/${friend_nickname}/`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -542,7 +542,7 @@ export default class FriendPage {
 
         // 웹소켓 연결 설정 
         const notificationSocket = new WebSocket(
-            `ws://localhost:8000/ws/user/?token=${token}`
+            `wss://localhost/ws/user/?token=${token}`
         );
 
 
@@ -566,7 +566,7 @@ export default class FriendPage {
                 // if (acceptButton) {
                 //     acceptButton.addEventListener('click', async function() {
                 //         try {
-                //             const response = await fetch(`http://localhost:8000/api/friend/accept/${data.sender}/`, {
+                //             const response = await fetch(`https://localhost/api/friend/accept/${data.sender}/`, {
                 //                 method: 'POST',
                 //                 headers: {
                 //                     'Authorization': `Bearer ${token}`
@@ -588,7 +588,7 @@ export default class FriendPage {
                 //     refuseButton.addEventListener('click', async function() {
                 //         // 거절하면 친구 관계 삭제하는 api 호출
                 //         try {
-                //             const response = await fetch(`http://localhost:8000/api/friend/delete/${data.sender}/`, {
+                //             const response = await fetch(`https://localhost/api/friend/delete/${data.sender}/`, {
                 //                 method: 'POST',
                 //                 headers: {
                 //                     'Authorization': `Bearer ${token}`
@@ -617,7 +617,7 @@ export default class FriendPage {
     async unblockFriend(friend_nickname, friendListBox) {
         const token = localStorage.getItem('access_token');
         try {
-            const response = await fetch(`http://localhost:8000/api/friend/reblock/${friend_nickname}/`, {
+            const response = await fetch(`https://localhost/api/friend/reblock/${friend_nickname}/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -637,7 +637,7 @@ export default class FriendPage {
 
         try {
             const token = localStorage.getItem('access_token');
-            const response = await fetch('http://localhost:8000/api/friend/block-list/', {
+            const response = await fetch('https://localhost/api/friend/block-list/', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'

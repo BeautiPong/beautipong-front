@@ -1,19 +1,19 @@
-version: '3.8'
-
-services:
-  frontend:
-    build:
-      context: .  # 현재 디렉토리 (beautipong-front)
-      dockerfile: Dockerfile  # Dockerfile 경로
-    ports:
-      - "81:80"  # Nginx가 80 포트에서 실행됩니다.
-      - "443:443"  # HTTPS 포트
-    restart: always
-    volumes:
-      - .:/usr/share/nginx/html  # 현재 디렉토리를 Nginx의 HTML 디렉토리에 마운트
-    networks:
-      - frontend-network
-
-networks:
-  frontend-network:
-    driver: bridge
+#version: '3.8'
+#
+#services:
+#  frontend:
+#    build:
+#      context: .  # 현재 디렉토리 (beautipong-front)
+#      dockerfile: Dockerfile  # Dockerfile 경로
+#    ports:
+#      - "81:80"  # Nginx가 80 포트에서 실행됩니다.
+#      - "443:443"  # HTTPS 포트
+#    restart: always
+#    volumes:
+#      - .:/usr/share/nginx/html  # 현재 디렉토리를 Nginx의 HTML 디렉토리에 마운트
+#    networks:
+#      - frontend-network
+#
+#networks:
+#  frontend-network:
+#    driver: bridge

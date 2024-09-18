@@ -110,7 +110,7 @@ export default class TwoFactorPage {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/otp/generate/', {
+            const response = await fetch('https://localhost/api/otp/generate/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tempToken}`, // 헤더에 temp_token 포함
@@ -140,7 +140,7 @@ export default class TwoFactorPage {
         const tempToken = localStorage.getItem('temp_token');
 
         try {
-            const response = await fetch('http://localhost:8000/api/otp/verify/', {
+            const response = await fetch('https://localhost/api/otp/verify/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tempToken}`,
