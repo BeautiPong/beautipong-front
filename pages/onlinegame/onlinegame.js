@@ -90,7 +90,7 @@ export default class OnlineGamePage {
     }
 
     connectWebSocket(roomName, jwtToken) {
-		const socketUrl = `ws://localhost:8000/ws/game/online/${roomName}/?token=${jwtToken}`;
+		const socketUrl = `wss://localhost/ws/game/online/${roomName}/?token=${jwtToken}`;
 	
 		// 기존 WebSocket이 존재하고, 아직 닫히지 않았다면 종료
 		if (this.socket) {

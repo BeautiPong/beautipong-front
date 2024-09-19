@@ -57,7 +57,7 @@ export default class LoginPage {
         // 42 OAuth 로그인 버튼에 클릭 이벤트 리스너 추가
         const login42Button = document.getElementById('start-with__42logo');
         login42Button.addEventListener('click', async () => {
-            window.location.href = 'http://localhost:8000/api/user/login/';
+            window.location.href = 'https://localhost/api/user/login/';
         });
     }
 
@@ -77,7 +77,7 @@ export default class LoginPage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/pre-login/', {
+            const response = await fetch('https://localhost/api/user/account/pre-login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
