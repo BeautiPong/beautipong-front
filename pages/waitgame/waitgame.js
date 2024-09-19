@@ -1,5 +1,7 @@
 import { getRouter } from '../../js/router.js';
 import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+
 export default class WaitGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -36,19 +38,10 @@ export default class WaitGamePage {
         `;
     }
 
-    afterRender() {
-        const accessToken = localStorage.getItem("access_token");
-        // this.socket = new WebSocket(
-        //     'ws://'
-        //     + 'localhost:8000'
-        //     + '/ws/user/'
-        //     + '?token=' + accessToken
-        //     );
-            
-        // this.socket.onopen = () => {
-        //     console.log('WebSocket 연결됨');
-        // }
-    }
+    // afterRender() {
+    //     const accessToken = localStorage.getItem("access_token");
+    // }
+
 
 	showLoader() {
         const loader = document.getElementById('loader');
@@ -104,7 +97,7 @@ export default class WaitGamePage {
         try {
             const accessToken = localStorage.getItem("access_token");
 
-            const response = await fetch('http://localhost:8000/api/game/match/', {
+            const response = await fetch('https://localhost/api/game/match/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -118,9 +111,9 @@ export default class WaitGamePage {
 			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
 			if (response.status === 401) {
 				const newAccessToken = await refreshAccessToken();
-	
+
 				// 새 액세스 토큰으로 다시 요청
-				response = await fetch('http://localhost:8000/api/game/match/', {
+				response = await fetch('https://localhost/api/game/match/', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -145,26 +138,26 @@ export default class WaitGamePage {
 
     connectWebSocket(jwtToken, waitingRoom = null, roomName = null) {
 		let socketUrl;
-	
+
 		// waitingRoom과 roomName이 있으면 해당 URL로 WebSocket 연결, 없으면 기본 URL로 연결
 		if (waitingRoom && roomName) {
-			socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/?token=${jwtToken}`;
+			socketUrl = `wss://localhost/ws/match/${waitingRoom}/${roomName}/?token=${jwtToken}`;
 		} else {
-			socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
+			socketUrl = `wss://localhost/ws/match/?token=${jwtToken}`;
 		}
-	
+
 		// WebSocket 연결 시작
 		this.socket = new WebSocket(socketUrl);
 		setMatchingWebSocket(this.socket);
-	
+
 		this.socket.onopen = () => {
 			console.log("매칭 웹소켓 연결 성공");
 		};
-	
+
 		this.socket.onmessage = (e) => {
 			const data = JSON.parse(e.data);
 			console.log("Received data:", data);
-	
+
 			// 게임 시작 이벤트 처리
 			if (data.type === 'game_start') {
 				if (data.room_name) {
@@ -176,7 +169,7 @@ export default class WaitGamePage {
 				}
 			}
 		};
-	
+
 		this.socket.onclose = (e) => {
 			console.log('매칭 웹소켓 연결 종료');
 			setMatchingWebSocket(null);
@@ -187,11 +180,10 @@ export default class WaitGamePage {
     async navigateToGamePage(roomName, jwtToken) {
 		// console.log('Room Name:', roomName);  // Debugging 추가
 		// console.log('JWT Token:', jwtToken);  // Debugging 추가
-	
+
 		try {
 			const accessToken = localStorage.getItem("access_token");
-	
-			const response = await fetch(`http://localhost:8000/api/game/online/${roomName}/`, {
+			const response = await fetch(`https://localhost/api/game/online/${roomName}/`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json',
@@ -202,9 +194,9 @@ export default class WaitGamePage {
 			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
 			if (response.status === 401) {
 				const newAccessToken = await refreshAccessToken();
-	
+
 				// 새 액세스 토큰으로 다시 요청
-				response = await fetch(`http://localhost:8000/api/game/online/${roomName}/`, {
+				response = await fetch(`https://localhost/api/game/online/${roomName}/`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -212,14 +204,14 @@ export default class WaitGamePage {
 					},
 				});
 			}
-	
+
 			if (!response.ok) {
 				throw new Error('게임 페이지 요청에 실패했습니다.');
 			}
-	
+
 			const data = await response.json();
 			console.log('게임 페이지 응답:', data);
-	
+
 			const router = getRouter();
 			router.navigate('/online-game', {
 				roomName: data.room_name,
@@ -236,7 +228,7 @@ export default class WaitGamePage {
         try {
             const accessToken = localStorage.getItem("access_token");
 
-            const response = await fetch('http://localhost:8000/api/friend/info/', {
+            const response = await fetch('https://localhost/api/friend/info/', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -246,9 +238,9 @@ export default class WaitGamePage {
 
 			if (response.status === 401) {
 				const newAccessToken = await refreshAccessToken();
-	
+
 				// 새 액세스 토큰으로 다시 요청
-				response = await fetch('http://localhost:8000/api/friend/info/', {
+				response = await fetch('https://localhost/api/friend/info/', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -261,7 +253,6 @@ export default class WaitGamePage {
                 throw new Error('친구 목록을 불러오는 데 실패했습니다.');
             }
 
-            console.log(accessToken);
             const data = await response.json(); // 서버에서 받은 데이터를 파싱
             const friends = data.friends || []; // friends 배열 추출
             this.renderFriendList(friends, accessToken);
@@ -293,46 +284,30 @@ export default class WaitGamePage {
         }
     }
 
+    waitForSocketConnection(socket) {
+        return new Promise((resolve, reject) => {
+            if (socket.readyState === WebSocket.OPEN) {
+                resolve();
+            } else {
+                socket.addEventListener('open', resolve);
+            }
+        });
+    }
+
     // 친구에게 초대 메시지 전송
     async sendInvite(friendNickname, access_token) {
         const message = `${friendNickname}님이 게임에 초대했습니다.`;
-    
-        // WebSocket 연결 설정
-        // this.socket = new WebSocket('ws://localhost:8000/ws/notifications/'); 
+        const notificationWebSocket = connectNotificationWebSocket(access_token);
+        const myNickname = localStorage.getItem('nickname');
 
-        // this.socket = new WebSocket(
-        //     'ws://'
-        //     + 'localhost:8000'
-        //     + '/ws/user/'
-        //     + '?token=' + access_token
-        //     );
-            
-        // this.socket.onopen = () => {
-        //     console.log('WebSocket 연결됨');
+        await this.waitForSocketConnection(notificationWebSocket);
+        // 초대 메시지 전송
+        notificationWebSocket.send(JSON.stringify({
 
-            // 초대 메시지 전송
-        this.socket.send(JSON.stringify({
             type: 'invite_game', // 초대 메시지 유형
-            sender: '나의닉네임', // 실제 닉네임으로 변경
+            sender: myNickname, // 실제 닉네임으로 변경
+            receiver: friendNickname, // 친구의 닉네임
             message: message
         }));
-        alert(`${friendNickname}에게 초대장을 보냈습니다.`);
-            // this.socket.close(); // 초대 전송 후 WebSocket 연결 종료
-        // };
-
-        this.socket.onerror = (error) => {
-            console.error('WebSocket 오류:', error);
-        };
-
-        this.socket.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'start_game_with_friend') {
-                alert(`${data.sender}님과 게임을 시작합니다!`);
-            }
-        };
-
-        this.socket.onclose = () => {
-            console.log('WebSocket 연결 종료');
-        };
     }
 }

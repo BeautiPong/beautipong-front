@@ -13,7 +13,7 @@
 @import "../pages/rank/rank.css";
 @import "../pages/onlinegame/onlinegame.css";
 @import "../pages/offline_game/offline_game.css";
-
+@import "../pages/offlinewaitgame/matchTypeSelect.css";
 @import "../assets/components/nav/nav.css";
 @import "../assets/components/player-info/player-info.css";
 @import "../assets/components/offline-player-info/offline-player-info.css";

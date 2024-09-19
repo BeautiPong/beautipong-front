@@ -12,7 +12,7 @@ let hasNotification = false;
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
-        let response = await fetch('http://localhost:8000/api/user/profile/', {
+        let response = await fetch('https://localhost/api/user/profile/', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -24,7 +24,7 @@ export async function loadProfile() {
             const newAccessToken = await refreshAccessToken();
 
             // 새 액세스 토큰으로 다시 요청
-            response = await fetch('http://localhost:8000/api/user/profile/', {
+            response = await fetch('https://localhost/api/user/profile/', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${newAccessToken}`,
@@ -35,13 +35,13 @@ export async function loadProfile() {
         // 응답 처리
         if (response.ok) {
             const profileData = await response.json();
-            // console.log(profileData);
-            // DOM 요소에 프로필 정보 설정
-            if (profileData.img) {
-                profileImg.src = profileData.img;
+            if (profileData.image) {
+                profileImg.src = profileData.image;  // 백엔드에서 받은 이미지 URL 사용
             } else {
-                profileImg.src = "assets/images/profile.svg";
+                profileImg.src = "assets/images/profile.svg";  // 기본 이미지
             }
+            console.log(profileData);
+            // DOM 요소에 프로필 정보 설정
 
             if (profileData.score <= 1000) {
                 profileTier.src = `assets/icons/bronz.svg`;
@@ -184,7 +184,7 @@ function showModal(message, buttonMsg) {
                 refresh_token: localStorage.getItem('refresh_token'),
             };
 
-            const response = await fetch('http://localhost:8000/api/user/account/logout/', {
+            const response = await fetch('https://localhost/api/user/account/logout/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ function showModal(message, buttonMsg) {
                 formData.refresh_token = newAccessToken;
 
                 // 새 액세스 토큰으로 다시 요청
-                response = await fetch('http://localhost:8000/api/user/account/logout/', {
+                response = await fetch('https://localhost/api/user/account/logout/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -255,11 +255,11 @@ export function connectNotificationWebSocket(accessToken) {
     // 웹소켓이 이미 연결되어 있거나 열려있는 상태인지 확인
     if (notificationWebSocket && notificationWebSocket.readyState === WebSocket.OPEN) {
         console.log('기존 웹소켓 연결이 존재합니다.');
-        return;
+        return notificationWebSocket;
     }
 
     // 웹소켓 연결이 닫혀 있는 경우 새로 열기
-    notificationWebSocket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
+    notificationWebSocket = new WebSocket(`wss://localhost/ws/user/?token=${accessToken}`);
 
     notificationWebSocket.onopen = () => {
         console.log('알림 WebSocket 연결 성공');
@@ -267,19 +267,49 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log('서버로부터 받은 메시지:', message);
+        console.log('nav에서 서버로부터 받은 메시지:', message);
+        const data = JSON.parse(event.data);
+        if (data.type === 'invite_game') {
+            const sender = data.sender;
+            // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
+            const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
 
+            // 새 div 요소를 생성하여 모달을 페이지에 추가
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+
+            // 닫기 버튼에 이벤트 리스너 추가
+            const closeBtn = modalDiv.querySelector('.close');
+            closeBtn.onclick = function() {
+                modalDiv.remove();
+            };
+
+            // 확인 버튼에 이벤트 리스너 추가 (게임 초대 수락)
+            const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+
+            confirmBtn.onclick = async function() {
+
+            }
+
+        }
+        else if (data.type === 'start_game_with_friend') {
+            // alert(`${data.sender}님과 게임을 시작합니다!`);
+        }
         hasNotification = true;
         updateNotificationDisplay();
     };
 
     notificationWebSocket.onclose = () => {
+        notificationWebSocket = null;
         console.log('알림 WebSocket 연결 종료');
     };
 
     notificationWebSocket.onerror = (error) => {
         console.error('알림 WebSocket 오류 발생:', error);
     };
+
+    return notificationWebSocket;
 }
 
 
@@ -292,4 +322,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     updateNotificationDisplay();
+});
+
+window.addEventListener('load', () => {
+    const accessToken = localStorage.getItem('access_token'); // 세션 스토리지에서 토큰 가져오기
+    if (accessToken) {
+        connectNotificationWebSocket(accessToken); // WebSocket 연결 시도
+    } else {
+        console.error('access_token이 없습니다. 로그인 상태를 확인하세요.');
+    }
 });
