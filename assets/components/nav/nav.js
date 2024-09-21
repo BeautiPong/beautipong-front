@@ -217,8 +217,6 @@ function showModal(message, buttonMsg) {
 
                 disconnectNotificationWebSocket();
 
-                localStorage.clear();
-
                 // 로그인 페이지로 리다이렉트
                 const router = getRouter();
                 router.navigate('/login');
@@ -302,6 +300,7 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onclose = () => {
         notificationWebSocket = null;
+        localStorage.clear();
         console.log('알림 WebSocket 연결 종료');
     };
 
