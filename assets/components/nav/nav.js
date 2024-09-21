@@ -319,6 +319,7 @@ export function connectNotificationWebSocket(accessToken) {
     notificationWebSocket.onclose = () => {
         notificationWebSocket = null;
         localStorage.clear();
+        router.navigate('/');
         console.log('알림 WebSocket 연결 종료');
     };
 
