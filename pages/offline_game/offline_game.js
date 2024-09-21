@@ -1,3 +1,4 @@
+import { getRouter } from '../../js/router.js';
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
 
 export default class offlineGamePage {
@@ -21,16 +22,22 @@ export default class offlineGamePage {
     console.log("offline_game.js");
     // Django 템플릿에서 전달된 정보를 JavaScript로 가져오기
     const token = localStorage.getItem("access_token");
-    console.log("token: ", token);
+    // console.log("token: ", token);
     const urlParams = new URLSearchParams(window.location.search);
+
+    const matchType = urlParams.get('matchType');
     const user1 = urlParams.get('player1') || 'user1';
     const user2 = urlParams.get('player2') || 'user2';
-    const user3 = urlParams.get('player3') || 'user3';
-    const user4 = urlParams.get('player4') || 'user4';
-    console.log("user3: ", user3);
-    console.log("user4: ", user4);
+    let user3 = null;
+    let user4 = null;
+
+    if(matchType === 'tournament') {
+        user3 = urlParams.get('player3') || 'user3';
+        user4 = urlParams.get('player4') || 'user4';
+    }
+
     // WebSocket 연결이나 게임 로직에서 user1, user2 사용
-    let matchType = "";
+
     let socket = null
     await fetchUserInfo();
 
@@ -44,7 +51,6 @@ export default class offlineGamePage {
             "user4" : user4
         };
     try {
-        console.log("in try");
         // 백엔드로 POST 요청을 보냅니다.
         const response = await fetch('https://localhost/api/game/offline/', {
             method: 'POST',
@@ -58,8 +64,6 @@ export default class offlineGamePage {
         // 응답 처리
         if (response.ok) {
             const data = await response.json();
-            matchType = data.match_type;
-            console.log("matchType: ", matchType);
             console.log('POST 요청 성공!');
         } else {
             const errorData = await response.json();
@@ -70,17 +74,14 @@ export default class offlineGamePage {
     }
 }
     let socketUrl;
-    console.log("matchType: ", matchType);
-    if (matchType === '1v1') {
-        console.log('1v1')
+    if (matchType === '1vs1') {
         socketUrl = 'wss://' + 'localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
-        console.log('tournament')
         socketUrl = 'wss://localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
     socket = new WebSocket(socketUrl);
-
+    console.log("socket is constructed: ", socket);
 
     // 서버로부터 받아온 테이블, 패들 정보
     const tableWidth = 100;
@@ -201,6 +202,9 @@ export default class offlineGamePage {
             rendererDom.remove();
             console.log("Three.js 캔버스 제거");
         }
+        const router = getRouter();
+        if (router)
+            router.navigate('/');
     }
 
     // 페이지를 떠날 때 정리 작업 추가
@@ -232,31 +236,50 @@ export default class offlineGamePage {
     //     console.log("WebSocket connection opened");
     // };
 
-    // socket.onclose = function(event) {
-    //     console.log("WebSocket connection closed:", event);
-    // };
+    socket.onclose = function(event) {
+        socket = null;
+        console.log("WebSocket connection closed:", event);
+    };
 
-    // socket.onerror = function(event) {
-    //     console.error("WebSocket error occurred:", event);
-    // };
+    socket.onerror = function(event) {
+        console.error("WebSocket error occurred:", event);
+    };
 
-    const keysPressed = {};
-    const validKeys = ['w', 's', 'o', 'l'];
+    const validKeys = ['KeyW', 'KeyS', 'KeyO', 'KeyL']; // 한글 자음을 Key로 매핑 (자음에 해당하는 Key 값을 적어야 함)
+    const keysPressed = {};  // 누른 키를 저장할 객체
 
-    document.addEventListener('keydown', (event) => {
-        if (validKeys.includes(event.key)) {
-            // console.log(event.key);
-            keysPressed[event.key] = true;
-            handleKeyPresses();
+    // Three.js에서 사용되는 canvas 요소를 가져옵니다.
+    const canvas = document.querySelector('canvas');
+
+    // canvas가 포커스를 받을 수 있도록 tabindex를 설정합니다.
+    canvas.setAttribute('tabindex', '0');
+
+    // canvas 요소를 클릭하면 포커스를 설정해 키 입력을 받을 수 있도록 합니다.
+    canvas.focus();
+
+
+    // canvas 요소에 keydown 이벤트 등록
+    canvas.addEventListener('keydown', (event) => {
+        // console.log("in keydown socket: ", socket);
+        if(socket == null)
+            console.log("socket is null: ",socket);
+
+        const keyCode = event.code;  // 키의 물리적 코드로 처리
+        if (validKeys.includes(keyCode)) {
+            keysPressed[keyCode] = true;
+            handleKeyPresses();  // 키가 눌렸을 때 처리
         }
     });
 
-    document.addEventListener('keyup', (event) => {
-        if (validKeys.includes(event.key)) {
-            delete keysPressed[event.key];
+    // canvas 요소에 keyup 이벤트 등록
+    canvas.addEventListener('keyup', (event) => {
+        const keyCode = event.code;
+        if (validKeys.includes(keyCode)) {
+            delete keysPressed[keyCode];
         }
     });
 
+    // handleKeyPresses 함수 정의
     function handleKeyPresses() {
         for (let key in keysPressed) {
             if (keysPressed[key]) {

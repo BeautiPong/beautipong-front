@@ -25,7 +25,7 @@ export default class OfflineWaitGame {
 
         const urlParams = new URLSearchParams(window.location.search);
         const matchType = urlParams.get('matchType');
-        console.log("matchType: ", matchType);
+        // console.log("matchType: ", matchType);
         let playersData = null
 
         if(matchType === '1vs1') {
