@@ -1,14 +1,21 @@
 import { getRouter } from '../../js/router.js'
 
+
 export default class matchTypeSelect {
 	render() {
 		return `
         <div class="match-type-selection-div">
 			<div id="match-type-selection-container" class="match-type-selection-container">
-			<h1>게임 모드 선택</h1>
+			<h1>PLAY</h1>
 			<div class="mode-buttons">
-				<button id="vs1-btn" class="mode-btn">1 vs 1</button>
-				<button id="tournament-btn" class="mode-btn">Tournament</button>
+				<div id="vs1-btn" class="mode-btn">
+					<img class="mode-btn-img" src='../assets/images/two.png'/>
+					<button>2인</button>
+				</div>
+				<div id="tournament-btn" class="mode-btn">
+					<img class="mode-btn-img" src='../assets/images/four.png'/>
+					<button>4인</button>
+				</div>
 			</div>
 			</div>
 		</div>
