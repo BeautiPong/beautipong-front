@@ -5,7 +5,7 @@ export async function refreshAccessToken() {
   try {
     const refreshToken = getRefreshToken();
     console.log(refreshToken);
-    const response = await fetch('http://localhost:8000/api/user/token/reissue', {
+    const response = await fetch('https://localhost/api/user/token/reissue', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

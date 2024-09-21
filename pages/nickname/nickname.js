@@ -61,7 +61,7 @@ export default class NicknamePage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/nickname/', {
+            const response = await fetch('https://localhost/api/user/account/nickname/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

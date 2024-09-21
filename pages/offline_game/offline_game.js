@@ -52,7 +52,7 @@ export default class offlineGamePage {
         };
     try {
         // 백엔드로 POST 요청을 보냅니다.
-        const response = await fetch('http://localhost:8000/api/game/offline/', {
+        const response = await fetch('https://localhost/api/game/offline/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,9 +75,9 @@ export default class offlineGamePage {
 }
     let socketUrl;
     if (matchType === '1vs1') {
-        socketUrl = 'ws://' + 'localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
+        socketUrl = 'wss://' + 'localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
-        socketUrl = 'ws://localhost:8000' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
+        socketUrl = 'wss://localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
     socket = new WebSocket(socketUrl);
