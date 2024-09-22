@@ -29,17 +29,22 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
 
-    /* border: 2px solid var(--sub-text-color); */
     width: 100%;
     height: 100%;
     border-radius: 50px;
     color: var(--main-text-color);
     font-size: 1vw;
+
+    padding: 0 1vw;
 }
 
-.find-friend-name {
-    margin-right: 8vw;
+.user-find-box-image-name {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
 
 .find-friend-image{
@@ -48,8 +53,7 @@
     height: 3vw;
     border-radius: 50%;
 
-    margin-left: 1vw;
-    margin-right: 1vw;
+    margin-right: 0.5vw;
 }
 
 .request-btn {

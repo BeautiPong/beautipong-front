@@ -493,8 +493,10 @@ export default class FriendPage {
                             // 친구 정보를 보여주는 로직 추가
                             userFindBox.innerHTML = `
                                 <div class="user-find-box-detail">
-                                    <img class="find-friend-image" src="${data.image}">
-                                    <p class="find-friend-name">${data.name}</p>
+                                    <div class="user-find-box-image-name">
+                                        <img class="find-friend-image" src="${data.image}">
+                                        <p class="find-friend-name">${data.name}</p>
+                                    </div>
                                     <button class="request-btn">
                                         <p class="request-btn-text">친구요청</p>
                                     </button>
