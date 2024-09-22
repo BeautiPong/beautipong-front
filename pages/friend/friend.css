@@ -68,6 +68,14 @@
     color: var(--main-text-color);
 }
 
+.block-friend-text.click {
+    color: var(--main-text-color);
+}
+
+.accept-friend-list.click {
+    color: var(--main-text-color);
+}
+
 /* 친구 요청 박스 */
 .friend-request-box {
     display: flex;

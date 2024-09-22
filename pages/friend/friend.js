@@ -84,10 +84,14 @@ export default class FriendPage {
         const friendListBox = document.querySelector('.friend-list-box');
         this.showFriendList(friendListBox);
 
-        // 친구함으로 이동 (버튼 클릭)
         const accepBtn = document.querySelector('.accept-friend-list');
+        const blockBtn = document.querySelector('.block-friend-text');
+
+        // 친구함으로 이동 (버튼 클릭)
         if (accepBtn) {
             accepBtn.addEventListener('click', async () => {
+                accepBtn.classList.add('click');
+                blockBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
                 this.showFriendList(friendListBox);
             });
@@ -96,9 +100,10 @@ export default class FriendPage {
         }
 
         // 차단함으로 이동 (버튼 클릭)
-        const blockBtn = document.querySelector('.block-friend-text');
         if (blockBtn) {
             blockBtn.addEventListener('click', async () => {
+                blockBtn.classList.add('click');
+                accepBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
                 this.updateBlockedFriendList(friendListBox);
             });
