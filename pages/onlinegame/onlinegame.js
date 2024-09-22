@@ -1,5 +1,7 @@
 import { getRouter } from '../../js/router.js';
 import { setGameWebSocket } from './../../assets/components/nav/nav.js';
+import {createModal} from '../../assets/components/modal/modal.js';
+
 export default class OnlineGamePage {
     constructor() {
         this.socket = null; // WebSocket 인스턴스를 저장할 변수
@@ -23,7 +25,7 @@ export default class OnlineGamePage {
 			console.error('Room name or JWT token is missing');
 			return;
 		}
-	
+
 		this.initGame(); // 게임 초기화 메서드 호출
 		this.connectWebSocket(roomName, jwtToken); // WebSocket 연결 설정
 	}
@@ -118,9 +120,38 @@ export default class OnlineGamePage {
 			} else if (data.type === 'game_state') {
 				this.updateGameState(data);
 			} else if (data.type === 'game_over') {
-				console.log("서버로부터 받은 데이터:", data);
-				alert(`Game Over! Winner: ${data.winner}`);
-				this.socket.close(); // 게임이 끝나면 WebSocket 연결 종료
+				console.log(data);
+				const winner = data.winner;  // 게임 승자
+				const player1 = data.player1;
+				const player2 = data.player2;
+				const player1Score = data.scores.player1;
+				const player2Score = data.scores.player2;
+
+				let yourScore = 0;
+				let opponentScore = 0;
+				let rankPoint = 0;
+
+				if (this.playerRole === 'player1') {
+					this.userNickname = data.player1;
+					yourScore = player1Score;
+					opponentScore = player2Score;
+					rankPoint = data.player1_score;
+				} else if (this.playerRole === 'player2') {
+					this.userNickname = data.player2;
+					yourScore = player2Score;
+					opponentScore = player1Score;
+					rankPoint = data.player2_score;
+				}
+
+				const isWinner = (winner === this.userNickname);
+
+				const message = isWinner
+					? `승리! 내 스코어: ${yourScore}, 상대 스코어: ${opponentScore}, 점수: ${rankPoint}`
+					: `패배! 내 스코어: ${yourScore}, 상대 스코어: ${opponentScore}, 점수: ${rankPoint}`;
+
+				this.showModal(message, 'OK');
+
+				this.socket.close();
 			}
 		};
 	
@@ -158,7 +189,37 @@ export default class OnlineGamePage {
 			setGameWebSocket(null);
 		}
 	}
-	
+
+	// 모달 창 생성 및 표시 함수
+	showModal(message, buttonMsg) {
+		// 모달 컴포넌트 불러오기
+		const modalHTML = createModal(message, buttonMsg);
+
+		// 새 div 요소를 생성하여 모달을 페이지에 추가
+		const modalDiv = document.createElement('div');
+		modalDiv.innerHTML = modalHTML;
+		document.body.appendChild(modalDiv);
+
+		// 닫기 버튼에 이벤트 리스너 추가
+		const closeBtn = modalDiv.querySelector('.close');
+		closeBtn.onclick = function() {
+			modalDiv.remove();
+		};
+
+		// 확인 버튼에 이벤트 리스너 추가
+		const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+		confirmBtn.onclick = function() {
+			modalDiv.remove();
+		};
+
+		// 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+		window.onclick = function(event) {
+			if (event.target == modalDiv.querySelector('.modal')) {
+				modalDiv.remove();
+			}
+		};
+	}
+
 	// 키 입력을 처리하는 메서드
 	handleKeyPress(event) {
 		let direction = null;
