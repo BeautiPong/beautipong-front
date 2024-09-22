@@ -51,7 +51,7 @@ export default class FriendPage {
 
         // 친구 요청 목록 보여주기
         try {
-            const response = await fetch('http://localhost/api/friend/pend/', {
+            const response = await fetch('https://localhost/api/friend/pend/', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
