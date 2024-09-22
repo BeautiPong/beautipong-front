@@ -18,7 +18,7 @@ export default class OauthRedirectPage {
         if (code) {
             // 'code'가 존재하는 경우, 서버로 POST 요청을 보내어 액세스 토큰을 요청합니다.
             try {
-                const response = await fetch(`http://localhost:8000/api/user/get-token/?code=${code}`, {
+                const response = await fetch(`https://localhost/api/user/get-token/?code=${code}`, {
                     method: 'GET',
                 });
                 if (response.ok) {

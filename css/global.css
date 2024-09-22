@@ -1,5 +1,6 @@
 @import "reset.css";
 @import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Inter:wght@100..900&family=Noto+Sans+KR:wght@100..900&display=swap');
+
 @import "../pages/login/login.css";
 @import "../pages/signup/signup.css";
 @import "../pages/2fa/2fa.css";
@@ -9,6 +10,7 @@
 @import "../pages/waitgame/waitgame.css";
 @import "../pages/offlinewaitgame/offlinewaitgame.css";
 @import "../pages/friend/friend.css";
+@import "../pages/rank/rank.css";
 @import "../pages/onlinegame/onlinegame.css";
 @import "../pages/offline_game/offline_game.css";
 @import "../pages/offlinewaitgame/matchTypeSelect.css";
@@ -22,6 +24,7 @@
 @import "../assets/components/message/message.css";
 @import "../assets/components/recent-game/recent-game.css";
 @import "../assets/components/user-search-modal/user-search-modal.css";
+@import "../assets/components/rank-info/rank-info.css";
 
 
 :root {
@@ -53,5 +56,3 @@ main {
     width: 100%;
     height: 100%;
 }
-
-
