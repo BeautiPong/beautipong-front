@@ -133,7 +133,26 @@ document.addEventListener('DOMContentLoaded', () => {
         activeButton.classList.add('nav__select');
     }
 
+    // 현재 경로에 따라 active 상태 적용
+    function setActiveButtonByPathname() {
+        const currentPath = window.location.pathname;
+
+        if (currentPath === '/') {
+            setActiveNavButton(navMain);
+        } else if (currentPath === '/mypage') {
+            setActiveNavButton(navMypage);
+        } else if (currentPath === '/friend') {
+            setActiveNavButton(navFriend);
+        } else if (currentPath === '/rank') {
+            setActiveNavButton(navRank);
+        }
+    }
+
+    // 페이지가 로드되면 현재 pathname에 맞는 버튼에 active 상태 설정
+    setActiveButtonByPathname();
+
     logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
+
     navMain.addEventListener('click', () => {
         disconnectSpecificWebSocket();
         router.navigate('/');
@@ -158,7 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setActiveNavButton(navRank);
     });
 });
-
 
 // 모달 창 생성 및 표시 함수
 function showModal(message, buttonMsg) {
@@ -216,8 +234,6 @@ function showModal(message, buttonMsg) {
                 modalDiv.remove();
 
                 disconnectNotificationWebSocket();
-
-                localStorage.clear();
 
                 // 로그인 페이지로 리다이렉트
                 const router = getRouter();
@@ -302,6 +318,8 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onclose = () => {
         notificationWebSocket = null;
+        localStorage.clear();
+        router.navigate('/');
         console.log('알림 WebSocket 연결 종료');
     };
 
