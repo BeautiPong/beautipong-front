@@ -1,6 +1,7 @@
 import { createModal } from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
+import { SERVER_IP } from "../../../js/index.js";
 
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
@@ -12,7 +13,7 @@ let hasNotification = false;
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
-        let response = await fetch('https://localhost/api/user/profile/', {
+        let response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -24,7 +25,7 @@ export async function loadProfile() {
             const newAccessToken = await refreshAccessToken();
 
             // 새 액세스 토큰으로 다시 요청
-            response = await fetch('https://localhost/api/user/profile/', {
+            response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${newAccessToken}`,
@@ -202,7 +203,7 @@ function showModal(message, buttonMsg) {
                 refresh_token: localStorage.getItem('refresh_token'),
             };
 
-            const response = await fetch('https://localhost/api/user/account/logout/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/logout/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -217,7 +218,7 @@ function showModal(message, buttonMsg) {
                 formData.refresh_token = newAccessToken;
 
                 // 새 액세스 토큰으로 다시 요청
-                response = await fetch('https://localhost/api/user/account/logout/', {
+                response = await fetch(`https://${SERVER_IP}/api/user/account/logout/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -275,7 +276,7 @@ export function connectNotificationWebSocket(accessToken) {
     }
 
     // 웹소켓 연결이 닫혀 있는 경우 새로 열기
-    notificationWebSocket = new WebSocket(`wss://localhost/ws/user/?token=${accessToken}`);
+    notificationWebSocket = new WebSocket(`wss://${SERVER_IP}/ws/user/?token=${accessToken}`);
 
     notificationWebSocket.onopen = () => {
         console.log('알림 WebSocket 연결 성공');

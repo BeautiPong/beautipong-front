@@ -1,5 +1,6 @@
 import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
+import { SERVER_IP } from "../../js/index.js";
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class SignupPage {
@@ -101,7 +102,7 @@ export default class SignupPage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('https://localhost/api/user/account/join/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/join/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

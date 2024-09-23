@@ -1,6 +1,7 @@
 import { refreshAccessToken } from '../../js/token.js';
 import { renderGameRecord } from '../../assets/components/recent-game/recent-game.js'
-import { getRouter } from '../../js/router.js'; 
+import { getRouter } from '../../js/router.js';
+import {SERVER_IP} from "../../js/index.js";
 
 export default class MyPage {
 
@@ -117,7 +118,7 @@ export default class MyPage {
             const profileNickname = localStorage.getItem('nickname');
             const recentGameDataContainer = document.getElementById('mypage__bottom__content');
     
-            let response = await fetch(`https://localhost/api/game/info/${profileNickname}`, {
+            let response = await fetch(`https://${SERVER_IP}/api/game/info/${profileNickname}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -127,7 +128,7 @@ export default class MyPage {
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                response = await fetch(`https://localhost/api/game/info/${profileNickname}`, {
+                response = await fetch(`https://${SERVER_IP}/api/game/info/${profileNickname}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,
@@ -169,7 +170,7 @@ export default class MyPage {
     //     formData.append('img', newProfileImg);
     
     //     try {
-    //         const response = await fetch('https://localhost/api/user/profile/update/', {
+    //         const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
     //             method: 'PUT',
     //             headers: {
     //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -204,7 +205,7 @@ export default class MyPage {
         formData.append('img', newProfileImg);
     
         try {
-            const response = await fetch('https://localhost/api/user/profile/update/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`
@@ -238,7 +239,7 @@ export default class MyPage {
         if (newNickname) {
             // 닉네임이 변경된 경우 서버에 요청
             try {
-                const response = await fetch('https://localhost/api/user/profile/update/', {
+                const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
                     method: 'PUT',
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('access_token')}`,

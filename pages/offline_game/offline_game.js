@@ -1,5 +1,6 @@
 import { getRouter } from '../../js/router.js';
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
+import {SERVER_IP} from "../../js/index.js";
 
 export default class offlineGamePage {
     render() {
@@ -52,7 +53,7 @@ export default class offlineGamePage {
         };
     try {
         // 백엔드로 POST 요청을 보냅니다.
-        const response = await fetch('https://localhost/api/game/offline/', {
+        const response = await fetch(`https://${SERVER_IP}/api/game/offline/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,9 +76,9 @@ export default class offlineGamePage {
 }
     let socketUrl;
     if (matchType === '1vs1') {
-        socketUrl = 'wss://' + 'localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
+        socketUrl = 'wss://' + `${SERVER_IP}` + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
-        socketUrl = 'wss://localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
+        socketUrl = `wss://${SERVER_IP}` + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
     socket = new WebSocket(socketUrl);
