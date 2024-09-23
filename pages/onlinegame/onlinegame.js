@@ -1,6 +1,7 @@
 import { getRouter } from '../../js/router.js';
 import { setGameWebSocket } from './../../assets/components/nav/nav.js';
 import {createModal} from '../../assets/components/modal/modal.js';
+import {SERVER_IP} from "../../js/index.js";
 
 export default class OnlineGamePage {
     constructor() {
@@ -92,7 +93,7 @@ export default class OnlineGamePage {
     }
 
     connectWebSocket(roomName, jwtToken) {
-		const socketUrl = `wss://localhost/ws/game/online/${roomName}/?token=${jwtToken}`;
+		const socketUrl = `wss://${SERVER_IP}/ws/game/online/${roomName}/?token=${jwtToken}`;
 	
 		// 기존 WebSocket이 존재하고, 아직 닫히지 않았다면 종료
 		if (this.socket) {
