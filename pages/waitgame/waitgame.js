@@ -219,6 +219,7 @@ export default class WaitGamePage {
 				roomName: data.room_name,
 				jwtToken: data.jwt_token
 			});
+            document.querySelector('.nav-container').style.display = 'none';
 		} catch (error) {
 			console.error('게임 페이지 요청 중 오류가 발생했습니다:', error);
 		}

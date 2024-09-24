@@ -166,6 +166,7 @@ export default class OnlineGamePage {
 			} else {
 				console.error('Router not found!');
 			}
+			document.querySelector('.nav-container').style.display = 'block';
 		};
 	
 		this.socket.onerror = (error) => {
