@@ -8,15 +8,20 @@ export default class offlineGamePage {
             <div class="offline_game">
                 <div class="offline_game">
                     <div id="scoreboard">
-                        <div id="player1_score"></div>
-                        <div id="player2_score"></div>
+                        <div class="scoreboard__userinfo">
+                            <span class="player_nickname" id="player1_nickname"></span>
+                            <span class="player_score" id="player1_score"></span>
+                        </div>
+                        <span> : </span>
+                        <div class="scoreboard__userinfo">
+                            <span class="player_score" id="player2_score"></span>
+                            <span class="player_nickname" id="player2_nickname"></span>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     }
-
-
 
     async afterRender() {
 
@@ -176,7 +181,7 @@ export default class offlineGamePage {
     scene.add(ambientLight);
 
     const light = new THREE.DirectionalLight(0xffffff, 1.2);  // 강한 직사광 조명 추가
-    light.position.set(0, 100, 100);  // 조명 위치를 조정하여 테이블 위로 내려오게 설정
+    light.position.set(0, 40, 50);  // 조명 위치를 조정하여 테이블 위로 내려오게 설정
     scene.add(light);
 
     // 카메라 설정
@@ -211,8 +216,10 @@ export default class offlineGamePage {
             player2Paddle.position.z = player2_paddle_z;
 
             // 점수 업데이트
-            document.getElementById('player1_score').textContent = `${data.state.player1}: ${data.state.player1_score}`;
-            document.getElementById('player2_score').textContent = `${data.state.player2}: ${data.state.player2_score}`;
+            document.getElementById('player1_nickname').textContent = `${data.state.player1}`;
+            document.getElementById('player2_nickname').textContent = `${data.state.player2}`;
+            document.getElementById('player1_score').textContent = `${data.state.player1_score}`;
+            document.getElementById('player2_score').textContent = `${data.state.player2_score}`;
         }
 
         else if (data.type === 'game_end') {
