@@ -19,6 +19,7 @@ export default class MainPage {
         const onlineBtn = document.getElementById('main__online-btn');
         const offlineBtn = document.getElementById('main__offline-btn');
 
+        localStorage.getItem('access_token');
         onlineBtn.addEventListener('click', () => {
             router.navigate('/waitgame');
         });

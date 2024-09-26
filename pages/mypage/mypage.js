@@ -118,6 +118,7 @@ export default class MyPage {
             const profileNickname = localStorage.getItem('nickname');
             const recentGameDataContainer = document.getElementById('mypage__bottom__content');
     
+
             let response = await fetch(`https://${SERVER_IP}/api/game/info/${profileNickname}`, {
                 method: 'GET',
                 headers: {

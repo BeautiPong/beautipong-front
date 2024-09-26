@@ -106,6 +106,7 @@ export function disconnectSpecificWebSocket() {
 }
 
 export function disconnectNotificationWebSocket() {
+    console.log("로그아웃 후 소켓 disconnect");
     if (notificationWebSocket) {
         if (notificationWebSocket.readyState === WebSocket.OPEN) {
             notificationWebSocket.close();
