@@ -44,20 +44,20 @@ export async function loadProfile() {
             console.log(profileData);
             // DOM 요소에 프로필 정보 설정
 
-            if (profileData.score <= 1000) {
-                profileTier.src = `assets/icons/bronz.svg`;
+            if (profileData.score > 2000) {
+                profileTier.src = `assets/icons/dia.svg`;
             }
-            else if (profileData.score <= 1200) {
-                profileTier.src = `assets/icons/silver.svg`;
-            }
-            else if (profileData.score <= 1500) {
-                profileTier.src = `assets/icons/gold.svg`;
-            }
-            else if (profileData.score <= 2000) {
+            else if (profileData.score > 1500) {
                 profileTier.src = `assets/icons/platinum.svg`;
             }
+            else if (profileData.score > 1200) {
+                profileTier.src = `assets/icons/gold.svg`;
+            }
+            else if (profileData.score > 1000) {
+                profileTier.src = `assets/icons/silver.svg`;
+            }
             else {
-                profileTier.src = `assets/icons/dia.svg`;
+                profileTier.src = `assets/icons/bronz.svg`;
             }
 
             profileNickname.textContent = profileData.nickname;
