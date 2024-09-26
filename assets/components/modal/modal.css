@@ -77,3 +77,30 @@
     color: var(--main-color);
     outline: none;
 }
+
+#new_nickname_inputbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#new_nickname {
+    width: 150%;
+    height: 6vh;
+    border-radius: 15px;
+    background-color: rgba(171,171,171, 0.2);
+
+    font-size: 18px;
+    color: var(--main-text-color);
+
+    box-sizing: border-box;
+    padding: 0 1.5vw;
+    margin-bottom: 3vh;
+}
+
+#nickname-change-btn {
+    width: 80%;
+    height: 5vh;
+    padding: 1vh 1vw;
+}
