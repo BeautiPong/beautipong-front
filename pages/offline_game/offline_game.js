@@ -164,7 +164,7 @@ export default class offlineGamePage {
 
     // 패들 생성
     const paddleHeight = 0.2; // 패들의 높이
-    const paddleDepth = 10;  // 패들의 깊이 
+    const paddleDepth = 8;  // 패들의 깊이 
     const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);  // 패들의 크기 설정
     const paddleMaterial = new THREE.MeshPhongMaterial({ color: 0xFF897D });  // 패들 색상: 파란색
 
