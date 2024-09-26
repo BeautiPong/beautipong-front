@@ -247,13 +247,13 @@ export default class MyPage {
 
                 loadProfile();
                 this.myPageloadProfile();
+                modalDiv.remove();
             } else {
                 console.error('닉네임 변경 실패:', response.status);
                 const errorData = await response.json();
                 console.log(errorData);
                 this.handleNicknameError(errorData);
             }
-            modalDiv.remove();
         } catch (error) {
             console.error('로그인 요청 중 오류 발생:', error);
         }
@@ -290,8 +290,8 @@ export default class MyPage {
 	}
 
     handleNicknameError(errorData) {
-        const nicknameInput = document.querySelector('#nickname_set_input');
-        const nicknameErrorDiv = document.querySelector('#nickname-error-message');
+        const nicknameInput = document.querySelector('#new_nickname');
+        const nicknameErrorDiv = document.querySelector('#newnickname-error-message');
 
         nicknameInput.classList.remove('set-nickname__error');
         nicknameErrorDiv.innerText = '';
@@ -299,7 +299,7 @@ export default class MyPage {
         // 에러 메시지에 따른 처리
         switch (errorData.message) {
             case "닉네임을 입력해주세요." :
-                if (!document.querySelector('#nickname_set_input').value) {
+                if (!document.querySelector('#new_nickname').value) {
                     nicknameErrorDiv.innerText = `${errorData.message}`;
                     nicknameErrorDiv.classList.add('show');
                     nicknameInput.classList.add('set-nickname__error');

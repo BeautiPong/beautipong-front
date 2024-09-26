@@ -96,11 +96,16 @@
 
     box-sizing: border-box;
     padding: 0 1.5vw;
-    margin-bottom: 3vh;
+}
+
+#newnickname-error-message {
+    color: var(--refuse-button-color);
+    margin-top: 5px;
 }
 
 #nickname-change-btn {
     width: 80%;
     height: 5vh;
     padding: 1vh 1vw;
+    margin-top: 3vh;
 }

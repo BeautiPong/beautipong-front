@@ -20,6 +20,7 @@ export function createNicknameModal(message, buttonMsg) {
                 <p class="message">${message}</p>
                 <div id="new_nickname_inputbox">
                     <input type="text" id="new_nickname" name="nickname" required>
+                    <div id="newnickname-error-message"></div>
                     <button class="modal-confirm-btn" id="nickname-change-btn">${buttonMsg}</button>
                 </div>
             </div>
