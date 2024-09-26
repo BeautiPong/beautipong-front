@@ -26,14 +26,15 @@
 }
 
 .signup-image {
-    margin-top: 3vh;
+    width: 5vw;
     margin-bottom: 3vh;
 }
 
 .message {
     color: var(--main-text-color);
-    font-weight: 800;
-    margin-bottom: 2vh;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2.5vh;
 }
 
 .close {
@@ -59,10 +60,15 @@
     color: var(--refuse-button-color);
     border: none;
     border-radius: 15px;
-    padding: 1.5vh 5vw;
-    font-size: 16px;
+    padding: 1vh 2vw;
+
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
     border: 2px solid var(--refuse-button-color);
+
+    width: 25%;
+    height: 15%;
 }
 
 .modal-confirm-btn:hover,
