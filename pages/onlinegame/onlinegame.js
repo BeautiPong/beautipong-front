@@ -147,10 +147,12 @@ export default class OnlineGamePage {
 				const isWinner = (winner === this.userNickname);
 
 				const message = isWinner
-					? `승리! 내 스코어: ${yourScore}, 상대 스코어: ${opponentScore}, 점수: ${rankPoint}`
-					: `패배! 내 스코어: ${yourScore}, 상대 스코어: ${opponentScore}, 점수: ${rankPoint}`;
+					? `${yourScore} : ${opponentScore} 로 승리하셨군요! 축하드립니다 :)`
+					: `${yourScore} : ${opponentScore} 로 패배하셨군요! 좀 더 노력하세요 :(`;
 
-				this.showModal(message, 'OK');
+				const icon = isWinner ? 'winer' : 'lose';
+
+				this.showModal(message, '확인', icon);
 
 				this.socket.close();
 			}
@@ -192,9 +194,9 @@ export default class OnlineGamePage {
 	}
 
 	// 모달 창 생성 및 표시 함수
-	showModal(message, buttonMsg) {
+	showModal(message, buttonMsg, icon) {
 		// 모달 컴포넌트 불러오기
-		const modalHTML = createModal(message, buttonMsg);
+		const modalHTML = createModal(message, buttonMsg, icon);
 
 		// 새 div 요소를 생성하여 모달을 페이지에 추가
 		const modalDiv = document.createElement('div');
