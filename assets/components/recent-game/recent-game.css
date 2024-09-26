@@ -9,6 +9,9 @@
 
 .recent-game-record__img {
 	width: 30%;
+	height: auto;
+    aspect-ratio: 1 / 1;
+	object-fit: cover;
 	border-radius: 50%;
 }
 
