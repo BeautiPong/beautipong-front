@@ -36,10 +36,14 @@ export default class OauthRedirectPage {
 
 						connectNotificationWebSocket(data.access_token);
 						
-                        document.querySelector('.nav-container').style.display = 'block';
-                        const router = getRouter();
-                        router.navigate('/');
-                        loadProfile();
+                        if (localStorage.getItem('nickname')) {
+                            document.querySelector('.nav-container').style.display = 'block';
+                            router.navigate('/');
+                            loadProfile();
+                        } else {
+                            this.showModal('닉네임을 설정해주세요.', '확인');
+                            router.navigate('/nickname')
+                        }
                     }
                 } else {
                     console.error('42 토큰 요청 실패:', response.status, response.statusText);
