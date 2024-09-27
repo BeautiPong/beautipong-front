@@ -1,12 +1,14 @@
 import { refreshAccessToken } from '../../js/token.js';
 import { renderGameRecord } from '../../assets/components/recent-game/recent-game.js'
+import { createNicknameModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
-import {SERVER_IP} from "../../js/index.js";
+import { SERVER_IP } from "../../js/index.js";
+import { loadProfile } from '../../assets/components/nav/nav.js';
 
 export default class MyPage {
 
     constructor() {
-        this.loadProfile = this.loadProfile.bind(this);
+        this.myPageloadProfile = this.myPageloadProfile.bind(this);
     }
 
     render() {
@@ -57,57 +59,79 @@ export default class MyPage {
     }
 
     afterRender() {
-        this.loadProfile();
+        this.myPageloadProfile();
         this.loadRecentGame();
 
         const imgEditButton = document.getElementById('profileImageInput');
         const nicknameEditButton = document.getElementById('mypage__top__profile-info__nickname__edit');
 
         imgEditButton.addEventListener('change', (event) => this.handleImgEditBtn(event));
-        nicknameEditButton.addEventListener('click', (event) => this.handleNicknameEditBtn(event));
+        nicknameEditButton.addEventListener('click', (event) => 
+            this.showModal('수정할 닉네임을 입력해주세요!', '변경하기'));
     }
 
-    async loadProfile() {
+    async myPageloadProfile() {
+        const profileImg = document.getElementById('mypage__top__profile-info__img');
+        const profileNickname = document.getElementById('mypage__top__profile-info__nickname');
+        const profileTier = document.getElementById('mypage__game-info__tier');
+        const profileGameCnt = document.getElementById('mypage__game-info__gamecnt');
+        const profileWinRate = document.getElementById('mypage__game-info__winrate');
+        const profileScore = document.getElementById('mypage__game-info__score');
+
         try {
-            const profileImg = document.getElementById('mypage__top__profile-info__img');
-            const profileNickname = document.getElementById('mypage__top__profile-info__nickname');
-            const profileTier = document.getElementById('mypage__game-info__tier');
-            const profileGameCnt = document.getElementById('mypage__game-info__gamecnt');
-            const profileWinRate = document.getElementById('mypage__game-info__winrate');
-            const profileScore = document.getElementById('mypage__game-info__score');
+            let response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
     
-            // 로컬스토리지에서 프로필 정보 가져오기
-            const nickname = localStorage.getItem('nickname');
-            const score = localStorage.getItem('score');
-            const matchCnt = localStorage.getItem('match_cnt');
-            const winRate = localStorage.getItem('win_rate');
-            const img = localStorage.getItem('img');
+            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
     
-            // DOM 요소에 프로필 정보 설정
-            if (img === "null") {
-                profileImg.src = "assets/images/profile.svg";
-            } else {
-                profileImg.src = img;
+                // 새 액세스 토큰으로 다시 요청
+                response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
             }
     
-            profileNickname.textContent = nickname;
+            // 응답 처리
+            if (response.ok) {
+                const profileData = await response.json();
+                if (profileData.image) {
+                    profileImg.src = profileData.image;  // 백엔드에서 받은 이미지 URL 사용
+                } else {
+                    profileImg.src = "assets/images/profile.svg";  // 기본 이미지
+                }
     
-            if (score <= 1000) {
-                profileTier.src = `assets/icons/bronz.svg`;
-            } else if (score <= 1200) {
-                profileTier.src = `assets/icons/silver.svg`;
-            } else if (score <= 1500) {
-                profileTier.src = `assets/icons/gold.svg`;
-            } else if (score <= 2000) {
-                profileTier.src = `assets/icons/platinum.svg`;
+                if (profileData.score > 2000) {
+                    profileTier.src = `assets/icons/dia.svg`;
+                }
+                else if (profileData.score > 1500) {
+                    profileTier.src = `assets/icons/platinum.svg`;
+                }
+                else if (profileData.score > 1200) {
+                    profileTier.src = `assets/icons/gold.svg`;
+                }
+                else if (profileData.score > 1000) {
+                    profileTier.src = `assets/icons/silver.svg`;
+                }
+                else {
+                    profileTier.src = `assets/icons/bronz.svg`;
+                }
+    
+                profileNickname.textContent = profileData.nickname;
+                profileGameCnt.textContent = profileData.matchCnt ? matchCnt : '-';
+                profileWinRate.textContent = profileData.winRate ? winRate : '-';
+                profileScore.textContent = profileData.score;
+
             } else {
-                profileTier.src = `assets/icons/dia.svg`;
+                console.error('프로필 정보를 가져오지 못했습니다:', response.statusText);
             }
-    
-            profileGameCnt.textContent = matchCnt ? matchCnt : '-';
-            profileWinRate.textContent = winRate ? winRate : '-';
-            profileScore.textContent = score;
-    
         } catch (error) {
             console.error('프로필 정보 로딩 중 오류 발생:', error);
         }
@@ -156,46 +180,6 @@ export default class MyPage {
         }
     }
 
-    // async handleImgEditBtn(e) {
-    //     console.log(e.target.files);
-    //     const router = getRouter();
-    
-    //     const newProfileImg = e.target.files[0]; // 선택된 파일
-    //     if (!newProfileImg) {
-    //         alert('이미지를 선택해주세요.');
-    //         return;
-    //     }
-    
-    //     const formData = new FormData();
-    //     formData.append('img', newProfileImg);
-    
-    //     try {
-    //         const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-    //                 // 'Content-Type' 헤더는 설정하지 않음, 자동으로 multipart/form-data로 설정됨
-    //             },
-    //             body: formData
-    //         });
-    
-    //         if (response.ok) {
-    //             const updatedData = await response.json();
-    //             console.log(updatedData);
-    //             // document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
-    //             router.navigate('/mypage');
-    //             alert('프로필 이미지가 성공적으로 변경되었습니다.');
-    //         } else {
-    //             const errorData = await response.json();
-    //             console.error('프로필 이미지 변경 실패:', errorData);
-    //             alert('프로필 이미지 변경에 실패했습니다.');
-    //         }
-    //     } catch (error) {
-    //         console.error('프로필 이미지 변경 중 오류 발생:', error);
-    //         alert('프로필 이미지 변경 중 오류가 발생했습니다.');
-    //     }
-    // }
-
     async handleImgEditBtn(e) {
         console.log(e.target.files);
         const router = getRouter();
@@ -217,8 +201,7 @@ export default class MyPage {
             if (response.ok) {
                 const updatedData = await response.json();
                 console.log(updatedData);
-                document.getElementById('mypage__top__profile-info__img').src = updatedData.img;
-                router.navigate('/mypage');
+                // router.navigate('/mypage');
                 alert('프로필 이미지가 성공적으로 변경되었습니다.');
             } else {
                 const errorData = await response.json();
@@ -231,37 +214,109 @@ export default class MyPage {
         }
     }     
     
-    async handleNicknameImgEditBtn(event) {
+    async handleNicknameImgEditBtn(modalDiv) {
 
-        const newNickname = prompt('새로운 닉네임을 입력하세요:', '새로운 닉네임');
-        const router = getRouter();
+        // 폼 데이터를 수집합니다.
+        const formData = {
+            nickname: document.getElementById('new_nickname').value,
+        };
 
-        if (newNickname) {
-            // 닉네임이 변경된 경우 서버에 요청
-            try {
-                const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ nickname: newNickname })
-                });
+        if (!formData.nickname) {
+            this.handleNicknameError({ message: "닉네임을 입력해주세요." });
+            return;
+        }
 
-                if (response.ok) {
-                    const updatedData = await response.json();
-                    document.getElementById('mypage__top__profile-info__nickname').textContent = updatedData.nickname;
-                    alert('닉네임이 성공적으로 변경되었습니다.');
-                } else {
-                    const errorData = await response.json();
-                    console.error('닉네임 변경 실패:', errorData);
-                    alert('닉네임 변경에 실패했습니다.');
-                }
-            } catch (error) {
-                console.error('닉네임 변경 중 오류 발생:', error);
-                alert('닉네임 변경 중 오류가 발생했습니다.');
+        try {
+            // 백엔드로 POST 요청을 보냅니다.
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/nickname/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('temp_token') ? localStorage.getItem('temp_token') : localStorage.getItem('access_token')}`,
+                },
+                body: JSON.stringify(formData)
+            });
+
+            // 응답 처리
+            if (response.ok) {
+                const data = await response.json();
+                console.log('닉네임 변경 성공:', data);
+
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('refresh_token', data.refresh_token);
+
+                loadProfile();
+                this.myPageloadProfile();
+                modalDiv.remove();
+            } else {
+                console.error('닉네임 변경 실패:', response.status);
+                const errorData = await response.json();
+                console.log(errorData);
+                this.handleNicknameError(errorData);
             }
+        } catch (error) {
+            console.error('로그인 요청 중 오류 발생:', error);
         }
     }
-     
+
+    // 모달 창 생성 및 표시 함수
+	showModal(message, buttonMsg) {
+		// 모달 컴포넌트 불러오기
+		const modalHTML = createNicknameModal(message, buttonMsg);
+
+		// 새 div 요소를 생성하여 모달을 페이지에 추가
+		const modalDiv = document.createElement('div');
+		modalDiv.innerHTML = modalHTML;
+		document.body.appendChild(modalDiv);
+
+		// 닫기 버튼에 이벤트 리스너 추가
+		const closeBtn = modalDiv.querySelector('.close');
+		closeBtn.onclick = function() {
+			modalDiv.remove();
+		};
+
+		// 확인 버튼에 이벤트 리스너 추가
+		const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+		confirmBtn.onclick = () => {
+			this.handleNicknameImgEditBtn(modalDiv);
+		};
+
+		// 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+		window.onclick = function(event) {
+			if (event.target == modalDiv.querySelector('.modal')) {
+				modalDiv.remove();
+			}
+		};
+	}
+
+    handleNicknameError(errorData) {
+        const nicknameInput = document.querySelector('#new_nickname');
+        const nicknameErrorDiv = document.querySelector('#newnickname-error-message');
+
+        nicknameInput.classList.remove('set-nickname__error');
+        nicknameErrorDiv.innerText = '';
+
+        // 에러 메시지에 따른 처리
+        switch (errorData.message) {
+            case "닉네임을 입력해주세요." :
+                if (!document.querySelector('#new_nickname').value) {
+                    nicknameErrorDiv.innerText = `${errorData.message}`;
+                    nicknameErrorDiv.classList.add('show');
+                    nicknameInput.classList.add('set-nickname__error');
+
+                    // 사용자 입력 시 에러 상태 리셋
+                    nicknameInput.addEventListener('input', function () {
+                    nicknameErrorDiv.innerText = '';
+                    nicknameErrorDiv.classList.remove('show');
+                    nicknameInput.classList.remove('set-nickname__error');});
+                }
+                break ;
+
+            case "이미 사용 중인 닉네임입니다." :
+                nicknameErrorDiv.innerText = `${errorData.message}`;
+                nicknameErrorDiv.classList.add('show');
+                nicknameInput.classList.add('set-nickname__error');
+                break;
+        }
+    }
 }

@@ -44,20 +44,20 @@ export async function loadProfile() {
             console.log(profileData);
             // DOM 요소에 프로필 정보 설정
 
-            if (profileData.score <= 1000) {
-                profileTier.src = `assets/icons/bronz.svg`;
+            if (profileData.score > 2000) {
+                profileTier.src = `assets/icons/dia.svg`;
             }
-            else if (profileData.score <= 1200) {
-                profileTier.src = `assets/icons/silver.svg`;
-            }
-            else if (profileData.score <= 1500) {
-                profileTier.src = `assets/icons/gold.svg`;
-            }
-            else if (profileData.score <= 2000) {
+            else if (profileData.score > 1500) {
                 profileTier.src = `assets/icons/platinum.svg`;
             }
+            else if (profileData.score > 1200) {
+                profileTier.src = `assets/icons/gold.svg`;
+            }
+            else if (profileData.score > 1000) {
+                profileTier.src = `assets/icons/silver.svg`;
+            }
             else {
-                profileTier.src = `assets/icons/dia.svg`;
+                profileTier.src = `assets/icons/bronz.svg`;
             }
 
             profileNickname.textContent = profileData.nickname;
@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 페이지가 로드되면 현재 pathname에 맞는 버튼에 active 상태 설정
     setActiveButtonByPathname();
 
-    logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
+    logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인', 'exit'));
 
     navMain.addEventListener('click', () => {
         disconnectSpecificWebSocket();
@@ -180,9 +180,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 모달 창 생성 및 표시 함수
-function showModal(message, buttonMsg) {
+function showModal(message, buttonMsg, icon) {
     // 모달 컴포넌트 불러오기
-    const modalHTML = createModal(message, buttonMsg);
+    const modalHTML = createModal(message, buttonMsg, icon);
 
     // 새 div 요소를 생성하여 모달을 페이지에 추가
     const modalDiv = document.createElement('div');
