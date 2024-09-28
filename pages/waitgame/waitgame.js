@@ -104,6 +104,8 @@ export default class WaitGamePage {
             if(friendNickname)
             {
                 const myNickname = localStorage.getItem('nickname');
+                console.log("내 닉네임:", myNickname);
+                console.log("친구 닉네임:", friendNickname);
                 response = await fetch('http://localhost:8000/api/game/match/', {
                     method: 'POST',
                     headers: {
@@ -149,13 +151,14 @@ export default class WaitGamePage {
             }
 
             const data = await response.json();
-            console.log('랜덤 매칭 응답:', data);
+            console.log('매칭 응답:', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
             this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name);
+            console.log("매칭 성공: 웹소켓 연결을 시작");
 
         } catch (error) {
-            console.error('랜덤 매칭 중 오류가 발생했습니다:', error);
+            console.error('매칭 중 오류가 발생했습니다:', error);
         }
     }
 
@@ -301,7 +304,7 @@ export default class WaitGamePage {
                 li.addEventListener('click', () => {
                     console.log("친구 클릭");
                     this.sendInvite(friend.nickname, access_token); // 친구에게 초대 전송
-                    this.startMatch(friend.nickname); // 초대 후 매칭 시작
+                    // this.startMatch(friend.nickname); // 초대 후 매칭 시작
                     this.closeModal(); // 초대 후 모달 닫기
 
                 });

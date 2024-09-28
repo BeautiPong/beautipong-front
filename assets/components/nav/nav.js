@@ -271,6 +271,9 @@ export function connectNotificationWebSocket(accessToken) {
         const data = JSON.parse(event.data);
         if (data.type === 'invite_game') {
             const sender = data.sender;
+            const myNickname = data.receiver;
+            console.log("myNickname: ", myNickname);
+
             // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
             const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
 
@@ -292,11 +295,44 @@ export function connectNotificationWebSocket(accessToken) {
                 const waitGamePage = new WaitGamePage();
                 waitGamePage.startMatch(sender);
                 modalDiv.remove();
+                console.log("sender: ", myNickname);
+                console.log("receiver: ", sender);
+                const message = `${myNickname}님이 초대를 수락했습니다.`;
+                notificationWebSocket.send(JSON.stringify({
+                    type: 'access_invitation',
+                    sender: myNickname,
+                    receiver: sender,
+                    message: message
+                }));
             }
 
         }
-        else if (data.type === 'start_game_with_friend') {
+        else if (data.type === 'access_invitation') {
             // alert(`${data.sender}님과 게임을 시작합니다!`);
+            const sender = data.sender;
+            // const receiver = data.receiver;
+            const message = data.message;
+            const modalHTML = createModal(`${message}`, '게임시작');
+
+            // 새 div 요소를 생성하여 모달을 페이지에 추가
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+
+            // 닫기 버튼에 이벤트 리스너 추가
+            const closeBtn = modalDiv.querySelector('.close');
+            closeBtn.onclick = function() {
+                modalDiv.remove();
+            };
+
+            // 확인 버튼에 이벤트 리스너 추가 (게임 초대 수락)
+            const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+
+            confirmBtn.onclick = async function() {
+                const waitGamePage = new WaitGamePage();
+                waitGamePage.startMatch(sender);
+                modalDiv.remove();
+            }
         }
         hasNotification = true;
         updateNotificationDisplay();
