@@ -8,7 +8,7 @@ const profileNickname = document.getElementById('nav-profile__info__nickname');
 
 let notificationWebSocket = null;
 let hasNotification = false;
-
+let waitGamePage = null;
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
@@ -292,7 +292,9 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-                const waitGamePage = new WaitGamePage();
+                if(waitGamePage)
+                    waitGamePage.socket.close();
+                waitGamePage = new WaitGamePage();
                 waitGamePage.startMatch(sender);
                 modalDiv.remove();
                 console.log("sender: ", myNickname);
@@ -310,7 +312,7 @@ export function connectNotificationWebSocket(accessToken) {
         else if (data.type === 'access_invitation') {
             // alert(`${data.sender}님과 게임을 시작합니다!`);
             const sender = data.sender;
-            // const receiver = data.receiver;
+            const myNickname = data.receiver;
             const message = data.message;
             const modalHTML = createModal(`${message}`, '게임시작');
 
@@ -329,7 +331,9 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-                const waitGamePage = new WaitGamePage();
+                if(waitGamePage)
+                    waitGamePage.socket.close();
+                waitGamePage = new WaitGamePage();
                 waitGamePage.startMatch(sender);
                 modalDiv.remove();
             }
