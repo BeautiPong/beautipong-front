@@ -78,6 +78,8 @@ export default class MyPage {
         const profileWinRate = document.getElementById('mypage__game-info__winrate');
         const profileScore = document.getElementById('mypage__game-info__score');
 
+        console.log("GET API");
+
         try {
             let response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                 method: 'GET',
@@ -85,23 +87,25 @@ export default class MyPage {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-    
+            
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-    
+                
                 // 새 액세스 토큰으로 다시 요청
                 response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                     method: 'GET',
                     headers: {
+                        'Cache-Control': 'no-cache',
                         'Authorization': `Bearer ${newAccessToken}`,
                     },
                 });
             }
-    
+            
             // 응답 처리
             if (response.ok) {
                 const profileData = await response.json();
+                console.log(profileData);
                 if (profileData.image) {
                     profileImg.src = profileData.image;  // 백엔드에서 받은 이미지 URL 사용
                 } else {
@@ -186,13 +190,15 @@ export default class MyPage {
     
         var newProfileImg = e.target.files[0]; // 선택된 파일
         var formData = new FormData();
-        formData.append('img', newProfileImg);
+        formData.append('image', newProfileImg);
     
+        console.log("PATCH API");
         try {
             const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                    'Cache-Control': 'no-cache'
                     // 'Content-Type' 헤더는 FormData 사용 시 자동으로 설정됩니다.
                 },
                 body: formData
@@ -201,7 +207,9 @@ export default class MyPage {
             if (response.ok) {
                 const updatedData = await response.json();
                 console.log(updatedData);
-                // router.navigate('/mypage');
+                router.navigate('/mypage');
+                localStorage.setItem("img", updatedData.image_url);
+                
                 alert('프로필 이미지가 성공적으로 변경되었습니다.');
             } else {
                 const errorData = await response.json();

@@ -41,7 +41,7 @@ export async function loadProfile() {
             } else {
                 profileImg.src = "assets/images/profile.svg";  // 기본 이미지
             }
-            console.log(profileData);
+            console.log('nav : ', profileData);
             // DOM 요소에 프로필 정보 설정
 
             if (profileData.score > 2000) {
@@ -156,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navMain.addEventListener('click', () => {
         disconnectSpecificWebSocket();
+        loadProfile();
         router.navigate('/');
         setActiveNavButton(navMain);
     });
