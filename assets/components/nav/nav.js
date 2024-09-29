@@ -292,18 +292,18 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-                if(waitGamePage)
-                    waitGamePage.socket.close();
                 waitGamePage = new WaitGamePage();
-                waitGamePage.startMatch(sender);
+                waitGamePage.startMatch(sender,sender);
                 modalDiv.remove();
+                const router = getRouter();
+                router.navigate('/waitgame');
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
                 const message = `${myNickname}님이 초대를 수락했습니다.`;
                 notificationWebSocket.send(JSON.stringify({
                     type: 'access_invitation',
                     sender: myNickname,
-                    receiver: sender,
+                    receiver: sender, // 초대를 보낸 사람
                     message: message
                 }));
             }
@@ -311,10 +311,13 @@ export function connectNotificationWebSocket(accessToken) {
         }
         else if (data.type === 'access_invitation') {
             // alert(`${data.sender}님과 게임을 시작합니다!`);
+            const router = getRouter();
+            router.navigate('/waitgame');
+
             const sender = data.sender;
             const myNickname = data.receiver;
             const message = data.message;
-            const modalHTML = createModal(`${message}`, '게임시작');
+            const modalHTML = createModal(`${message}`, '확인');
 
             // 새 div 요소를 생성하여 모달을 페이지에 추가
             const modalDiv = document.createElement('div');
@@ -331,15 +334,19 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-                if(waitGamePage)
-                    waitGamePage.socket.close();
                 waitGamePage = new WaitGamePage();
-                waitGamePage.startMatch(sender);
+                waitGamePage.startMatch(sender,myNickname);
                 modalDiv.remove();
             }
         }
-        hasNotification = true;
-        updateNotificationDisplay();
+        else if(data.type === 'navigateToGamePage')
+        {
+            if(waitGamePage === null)
+                waitGamePage = new WaitGamePage();
+            waitGamePage.navigateToGamePage(data.room_name);
+        }
+        // hasNotification = true;
+        // updateNotificationDisplay();
     };
 
     notificationWebSocket.onclose = () => {

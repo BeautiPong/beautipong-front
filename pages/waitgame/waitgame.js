@@ -14,27 +14,33 @@ export default class WaitGamePage {
         return `
             <div class="game-div">
                 <div class="game-container">
-                    <div class="player-info">
-                        <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img">
-                        <div class="icon-nickname">
-                            <img src="assets/icons/bronz.svg" class="player-icon"></img>
-                            <p class="nickname">nickname</p>
+                    <!-- 세 요소를 감싸는 .game-main 컨테이너 추가 -->
+                    <div class="game-main">
+                        <div class="player-info">
+                            <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img">
+                            <div class="icon-nickname">
+                                <img src="assets/icons/bronz.svg" class="player-icon"></img>
+                                <p class="nickname">nickname</p>
+                            </div>
+                            <p class="score">10전 10승 0패</p>
                         </div>
-                        <p class="score">10전 10승 0패</p>
-                    </div>
-                    <div class="vs-text">
-                        <p>VS</p>
-                    </div>
-                    <div class="opponent-info">
-                        <div class="friend-modal" id="friendModal">
-                            <button class="close-modal" id="closeModal">&times;</button>
-                            <h2>친구 목록</h2>
-                            <ul class="friend-list" id="friendList"></ul>
+                        <div class="vs-text">
+                            <p>VS</p>
                         </div>
-                        <button class="invite-btn" id="inviteBtn">친구초대</button>
-                        <button class="random-btn" id="randomBtn">랜덤매칭</button>
-						<div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                        <div class="opponent-info">
+                            <div class="friend-modal" id="friendModal">
+                                <button class="close-modal" id="closeModal">&times;</button>
+                                <h2>친구 목록</h2>
+                                <ul class="friend-list" id="friendList"></ul>
+                            </div>
+                            <button class="invite-btn" id="inviteBtn">친구초대</button>
+                            <button class="random-btn" id="randomBtn">랜덤매칭</button>
+                            <div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                        </div>
                     </div>
+                    
+                    <!-- 게임 시작 버튼을 game-container 안에 추가 -->
+                    <button class="start-game-btn hidden" id="startGameBtn">게임 시작</button>
                 </div>
             </div>
         `;
@@ -93,7 +99,7 @@ export default class WaitGamePage {
         });
     }
 
-	async startMatch(friendNickname = null) {
+	async startMatch(friendNickname = null,host) {
         if(!friendNickname)
             this.showLoader(); // 로더를 표시하고 버튼을 숨김
 
@@ -114,7 +120,7 @@ export default class WaitGamePage {
                     },
                     body: JSON.stringify({
                         "myNickname": myNickname,
-                        "friendNickname": friendNickname
+                        "friendNickname": friendNickname,
                     })
                 });
             }
@@ -154,7 +160,7 @@ export default class WaitGamePage {
             console.log('매칭 응답:', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
-            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name);
+            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name,host);
             console.log("매칭 성공: 웹소켓 연결을 시작");
 
         } catch (error) {
@@ -162,12 +168,12 @@ export default class WaitGamePage {
         }
     }
 
-    connectWebSocket(jwtToken, waitingRoom = null, roomName = null) {
+    connectWebSocket(jwtToken, waitingRoom = null, roomName = null,host = null) {
 		let socketUrl;
 
 		// waitingRoom과 roomName이 있으면 해당 URL로 WebSocket 연결, 없으면 기본 URL로 연결
 		if (waitingRoom && roomName) {
-			socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/?token=${jwtToken}`;
+			socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
 		} else {
 			socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
 		}
@@ -187,7 +193,22 @@ export default class WaitGamePage {
 			// 게임 시작 이벤트 처리
 			if (data.type === 'game_start') {
 				if (data.room_name) {
-					this.navigateToGamePage(data.room_name, jwtToken);
+                    const startGameBtn = document.getElementById('startGameBtn');
+                    console.log("data.host:",data.host);
+                    if(data.host == localStorage.getItem('nickname'))
+                    {
+                        startGameBtn.classList.remove('hidden');
+                        startGameBtn.classList.add('show');
+                    }
+
+                    const guest = data.guest; // 친구의 닉네임 출력
+                    const room_name = data.room_name;                    
+					// this.navigateToGamePage(data.room_name, jwtToken);
+                    startGameBtn.addEventListener("click", (event) => {
+                        this.handleButtonClick(event, guest, room_name);
+                    });
+                    
+                    
 					WaitGamePage.socket.close();  // 매칭 컨슈머 연결 종료
 					setMatchingWebSocket(null);
 				} else {
@@ -202,8 +223,22 @@ export default class WaitGamePage {
 		};
 	}
 
+
+    // handleButtonClick 함수를 클래스의 메서드로 선언
+    handleButtonClick = (event, guest, room_name) => {
+        console.log("게임 시작 버튼 클릭");
+        const access_token = localStorage.getItem("access_token");
+        const notificationWebSocket = connectNotificationWebSocket(access_token);
+        notificationWebSocket.send(JSON.stringify({
+            type: 'navigateToGamePage',
+            guest: guest, // 친구의 닉네임
+            room_name: room_name, // 방 이름
+        }));
+        this.navigateToGamePage(room_name); // 여기서 this는 올바르게 바인딩됨
+    }
+    
     // 게임 페이지로 이동하기 전에 API 요청
-    async navigateToGamePage(roomName, jwtToken) {
+    async navigateToGamePage(roomName) {
 		// console.log('Room Name:', roomName);  // Debugging 추가
 		// console.log('JWT Token:', jwtToken);  // Debugging 추가
 
