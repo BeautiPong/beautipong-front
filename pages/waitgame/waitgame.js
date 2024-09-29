@@ -340,6 +340,14 @@ export default class WaitGamePage {
             // 매칭이 완료되었으므로 로더를 숨기고 상대방 정보를 보여줌
             this.hideLoader();
             document.getElementById('opponentDetails').classList.add('active'); // 상대방 정보 표시
+
+            if (data.room_name) {
+                // this.navigateToGamePage(data.room_name, jwtToken);
+                this.socket.close();  // 매칭 컨슈머 연결 종료
+                setMatchingWebSocket(null);
+            } else {
+                console.error('room_name is undefined');
+            }
         }
     }
 
