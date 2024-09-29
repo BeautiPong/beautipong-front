@@ -125,11 +125,7 @@
     cursor: pointer;
 }
 
-.hidden {
-    display: none;
-}
-
-.loader {
+.matchingLoader {
     width: 50px;
     padding: 8px;
     aspect-ratio: 1;
@@ -145,3 +141,48 @@
     animation: l3 1s infinite linear;
 }
 @keyframes l3 {to{transform: rotate(1turn)}}
+
+/* 게임 시작 컨테이너 */
+.gameStartContainer {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.7); /* 약간의 투명 배경 */
+    padding: 20px;
+    border-radius: 20px;
+    text-align: center;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    display: none; /* 처음에는 숨김 상태 */
+}
+
+/* 게임 시작 카운트다운 텍스트 */
+.gameStartText {
+    font-size: 24px;
+    color: white;
+    margin-bottom: 20px; /* 텍스트와 로더 사이 간격 */
+}
+
+/* 로더 스타일 */
+#gameStartLoader {
+    width: 360px;
+    height: 60px;
+    border-radius: 20px;
+    background: linear-gradient(orange 0 0) 0/100% no-repeat lightblue;
+    animation: l2 5s linear forwards; /* 5초 동안 로더가 애니메이션 */
+    position: relative;
+}
+
+/* 애니메이션 키프레임 */
+@keyframes l2 {
+    0% { background-size: 0% 100%; }  /* 시작 시 로더 크기 */
+    100% { background-size: 100% 100%; }  /* 5초 후 로더가 가득 참 */
+}
+
+/* 숨김 상태 설정 */
+.hidden {
+    display: none;
+}
