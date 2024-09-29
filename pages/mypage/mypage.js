@@ -78,8 +78,6 @@ export default class MyPage {
         const profileWinRate = document.getElementById('mypage__game-info__winrate');
         const profileScore = document.getElementById('mypage__game-info__score');
 
-        console.log("GET API");
-
         try {
             let response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                 method: 'GET',
@@ -192,7 +190,6 @@ export default class MyPage {
         var formData = new FormData();
         formData.append('image', newProfileImg);
     
-        console.log("PATCH API");
         try {
             const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
                 method: 'PATCH',

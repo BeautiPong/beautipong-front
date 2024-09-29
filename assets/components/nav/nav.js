@@ -156,7 +156,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navMain.addEventListener('click', () => {
         disconnectSpecificWebSocket();
-        loadProfile();
         router.navigate('/');
         setActiveNavButton(navMain);
     });
