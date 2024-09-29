@@ -12,32 +12,40 @@ export default class WaitGamePage {
     // 페이지 렌더링
     render() {
         return `
-            <div class="game-div">
-                <div class="game-container">
-                    <div class="player-info" id="playerInfo">
-                        <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
+        <div class="game-div">
+            <div class="game-container">
+                <div class="player-info" id="playerInfo">
+                    <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
+                    <div class="icon-nickname">
+                        <img src="assets/icons/bronz.svg" class="player-icon" id="playerIcon"></img>
+                        <p class="nickname" id="playerNickname">nickname</p>
+                    </div>
+                    <p class="score" id="playerScore">0전 0승 0패</p>
+                </div>
+                <div class="vs-text">
+                    <p>VS</p>
+                </div>
+                <div class="opponent-info" id="opponentInfo">
+                    <div class="friend-modal" id="friendModal">
+                        <button class="close-modal" id="closeModal">&times;</button>
+                        <h2>친구 목록</h2>
+                        <ul class="friend-list" id="friendList"></ul>
+                    </div>
+                    <button class="invite-btn" id="inviteBtn">친구초대</button>
+                    <button class="random-btn" id="randomBtn">랜덤매칭</button>
+                    <div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                    <div class="opponent-details hidden" id="opponentDetails">
+                        <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="opponentImage">
                         <div class="icon-nickname">
-                            <img src="assets/icons/bronz.svg" class="player-icon" id="playerIcon"></img>
-                            <p class="nickname" id="playerNickname">nickname</p>
+                            <img src="assets/icons/bronz.svg" class="player-icon" id="opponentIcon"></img>
+                            <p class="nickname" id="opponentNickname">nickname</p>
                         </div>
-                        <p class="score" id="playerScore">0전 0승 0패</p>
-                    </div>
-                    <div class="vs-text">
-                        <p>VS</p>
-                    </div>
-                    <div class="opponent-info">
-                        <div class="friend-modal" id="friendModal">
-                            <button class="close-modal" id="closeModal">&times;</button>
-                            <h2>친구 목록</h2>
-                            <ul class="friend-list" id="friendList"></ul>
-                        </div>
-                        <button class="invite-btn" id="inviteBtn">친구초대</button>
-                        <button class="random-btn" id="randomBtn">랜덤매칭</button>
-                        <div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                        <p class="score" id="opponentScore">0전 0승 0패</p>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
+    `;
     }
 
     // 사용자 정보 불러오기
@@ -101,16 +109,9 @@ export default class WaitGamePage {
         randomBtn.style.display = 'none';
     }
 
-    // 로더를 숨기고 버튼을 다시 표시하는 메서드
     hideLoader() {
         const loader = document.getElementById('loader');
-        const inviteBtn = document.getElementById('inviteBtn');
-        const randomBtn = document.getElementById('randomBtn');
-
-        // 로더를 숨기고 버튼을 다시 표시
         loader.classList.add('hidden');
-        inviteBtn.style.display = 'inline-block';
-        randomBtn.style.display = 'inline-block';
     }
 
     // 모달 열기
@@ -185,45 +186,7 @@ export default class WaitGamePage {
         }
     }
 
-    connectWebSocket(jwtToken, waitingRoom = null, roomName = null) {
-        let socketUrl;
 
-        // waitingRoom과 roomName이 있으면 해당 URL로 WebSocket 연결, 없으면 기본 URL로 연결
-        if (waitingRoom && roomName) {
-            socketUrl = `wss://${SERVER_IP}/ws/match/${waitingRoom}/${roomName}/?token=${jwtToken}`;
-        } else {
-            socketUrl = `wss://${SERVER_IP}/ws/match/?token=${jwtToken}`;
-        }
-
-        // WebSocket 연결 시작
-        this.socket = new WebSocket(socketUrl);
-        setMatchingWebSocket(this.socket);
-
-        this.socket.onopen = () => {
-            console.log("매칭 웹소켓 연결 성공");
-        };
-
-        this.socket.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            console.log("Received data:", data);
-
-            // 게임 시작 이벤트 처리
-            if (data.type === 'game_start') {
-                if (data.room_name) {
-                    this.navigateToGamePage(data.room_name, jwtToken);
-                    this.socket.close();  // 매칭 컨슈머 연결 종료
-                    setMatchingWebSocket(null);
-                } else {
-                    console.error('room_name is undefined');
-                }
-            }
-        };
-
-        this.socket.onclose = (e) => {
-            console.log('매칭 웹소켓 연결 종료');
-            setMatchingWebSocket(null);
-        };
-    }
 
     // 게임 페이지로 이동하기 전에 API 요청
     async navigateToGamePage(roomName, jwtToken) {
@@ -359,4 +322,88 @@ export default class WaitGamePage {
             message: message
         }));
     }
+
+    handleWebSocketMessage(e) {
+        const data = JSON.parse(e.data);
+        console.log("Received data:", data);
+
+        if (data.type === 'game_start') {
+            const roomName = data.room_name;
+            const myNickname = localStorage.getItem('nickname');
+            const nicknames = roomName.split('_');
+
+            const opponentNickname = nicknames[1] === myNickname ? nicknames[2] : nicknames[1];
+
+            // 상대방 정보를 가져와서 화면에 표시
+            this.fetchOpponentInfo(opponentNickname);
+
+            // 매칭이 완료되었으므로 로더를 숨기고 상대방 정보를 보여줌
+            this.hideLoader();
+            document.getElementById('opponentDetails').classList.add('active'); // 상대방 정보 표시
+        }
+    }
+
+// 상대방 정보 가져오기 함수
+    async fetchOpponentInfo(opponentNickname) {
+        try {
+            const accessToken = localStorage.getItem("access_token");
+
+            const response = await fetch(`https://${SERVER_IP}/api/user/info/${opponentNickname}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`, // JWT 토큰 추가
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('상대방 정보를 불러오지 못했습니다.');
+            }
+
+            const data = await response.json();
+            this.updateOpponentInfo(data); // 상대방 정보를 UI에 업데이트
+        } catch (error) {
+            console.error('상대방 정보 로드 중 오류 발생:', error);
+        }
+    }
+
+// 상대방 정보 업데이트 함수
+    updateOpponentInfo(data) {
+        const opponentImage = document.getElementById('opponentImage');
+        const opponentNickname = document.getElementById('opponentNickname');
+        const opponentScore = document.getElementById('opponentScore');
+
+        // 상대방 정보 업데이트
+        opponentImage.src = data.image || 'assets/images/profile.svg'; // 기본 프로필 이미지
+        opponentNickname.textContent = data.nickname; // 상대방 닉네임
+        opponentScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`; // 상대방 경기 전적
+    }
+
+    // WebSocket 연결
+    connectWebSocket(jwtToken, waitingRoom = null, roomName = null) {
+        let socketUrl;
+
+        if (waitingRoom && roomName) {
+            socketUrl = `wss://${SERVER_IP}/ws/match/${waitingRoom}/${roomName}/?token=${jwtToken}`;
+        } else {
+            socketUrl = `wss://${SERVER_IP}/ws/match/?token=${jwtToken}`;
+        }
+
+        this.socket = new WebSocket(socketUrl);
+        setMatchingWebSocket(this.socket);
+
+        this.socket.onopen = () => {
+            console.log("매칭 웹소켓 연결 성공");
+        };
+
+        this.socket.onmessage = (e) => {
+            this.handleWebSocketMessage(e); // 받은 메시지를 처리하는 함수 호출
+        };
+
+        this.socket.onclose = (e) => {
+            console.log('매칭 웹소켓 연결 종료');
+            setMatchingWebSocket(null);
+        };
+    }
+
 }
