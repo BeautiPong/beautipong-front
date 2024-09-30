@@ -46,7 +46,10 @@ export default class WaitGamePage {
         </div>
         <!-- 게임 시작 로더 -->
         <div class="gameStartContainer hidden" id="gameStartContainer">
-            <p class="gameStartText" id="gameStartText">5초 후 게임이 시작됩니다</p>
+            <p class="gameStartText" id="gameStartText">
+                <span id="gameCountDown">5</span>
+                 초 후 게임이 시작됩니다!
+            </p>
             <div id="gameStartLoader"></div>
         </div>
 
@@ -118,10 +121,10 @@ export default class WaitGamePage {
 
     showGameStartLoader() {
         const gameStartContainer = document.getElementById('gameStartContainer');
-        const gameStartText = document.getElementById('gameStartText');
+        const gameCountDown = document.getElementById('gameCountDown');
 
         let countdown = 5;
-        gameStartText.textContent = `${countdown}초 후 게임이 시작됩니다`;
+        gameCountDown.textContent = `${countdown}`;
 
         // 컨테이너를 표시 (flex로 설정하여 보이게 함)
         gameStartContainer.style.display = 'flex';
@@ -129,7 +132,7 @@ export default class WaitGamePage {
         // 1초마다 카운트다운 텍스트를 갱신
         const interval = setInterval(() => {
             countdown--;
-            gameStartText.textContent = `${countdown}초 후 게임이 시작됩니다`;
+            gameCountDown.textContent = `${countdown}`;
 
             if (countdown === 0) {
                 clearInterval(interval); // 카운트다운이 끝나면 인터벌을 제거

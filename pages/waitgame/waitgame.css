@@ -26,7 +26,7 @@
     font-size: 3rem;
     font-weight: bold;
 
-    padding: 0 5%;
+    padding: 0 3%;
 }
 
 .invite-btn, .random-btn {
@@ -142,7 +142,7 @@
     padding: 8px;
     aspect-ratio: 1;
     border-radius: 50%;
-    background: #25b09b;
+    background: #6ED087;
     --_m:
             conic-gradient(#0000 10%,#000),
             linear-gradient(#000 0 0) content-box;
@@ -157,25 +157,29 @@
 /* 게임 시작 컨테이너 */
 .gameStartContainer {
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.7); /* 약간의 투명 배경 */
-    padding: 20px;
-    border-radius: 20px;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8); /* 약간의 투명 배경 */
     text-align: center;
     z-index: 1000;
     display: flex;
     flex-direction: column;
     align-items: center;
-    display: none; /* 처음에는 숨김 상태 */
+    justify-content: center;
 }
 
 /* 게임 시작 카운트다운 텍스트 */
 .gameStartText {
-    font-size: 24px;
-    color: white;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--main-color);
     margin-bottom: 20px; /* 텍스트와 로더 사이 간격 */
+}
+
+#gameCountDown {
+    color: var(--refuse-button-color);
 }
 
 /* 로더 스타일 */
@@ -183,7 +187,7 @@
     width: 360px;
     height: 60px;
     border-radius: 20px;
-    background: linear-gradient(orange 0 0) 0/100% no-repeat lightblue;
+    background: linear-gradient(var(--refuse-button-color) 0 0) 0/100% no-repeat var(--main-color);
     animation: l2 5s linear forwards; /* 5초 동안 로더가 애니메이션 */
     position: relative;
 }
