@@ -41,7 +41,9 @@ export default class OauthRedirectPage {
                             router.navigate('/');
                             loadProfile();
                         } else {
+                            document.querySelector('.nav-container').style.display = 'none';
                             this.showModal('닉네임을 설정해주세요.', '확인');
+                            history.replaceState(null, '', '/nickname');
                             router.navigate('/nickname')
                         }
                     }
