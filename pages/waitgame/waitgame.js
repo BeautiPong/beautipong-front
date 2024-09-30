@@ -223,50 +223,50 @@ export default class WaitGamePage {
 
     // 게임 페이지로 이동하기 전에 API 요청
     async navigateToGamePage(roomName, jwtToken) {
-        // console.log('Room Name:', roomName);  // Debugging 추가
-        // console.log('JWT Token:', jwtToken);  // Debugging 추가
+		// console.log('Room Name:', roomName);  // Debugging 추가
+		// console.log('JWT Token:', jwtToken);  // Debugging 추가
 
-        try {
-            const accessToken = localStorage.getItem("access_token");
-            const response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
-                },
-            });
+		try {
+			const accessToken = localStorage.getItem("access_token");
+			const response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
+				},
+			});
 
-            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
-            if (response.status === 401) {
-                const newAccessToken = await refreshAccessToken();
+			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
+			if (response.status === 401) {
+				const newAccessToken = await refreshAccessToken();
 
-                // 새 액세스 토큰으로 다시 요청
-                response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${newAccessToken}`,
-                    },
-                });
-            }
+				// 새 액세스 토큰으로 다시 요청
+				response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': `Bearer ${newAccessToken}`,
+					},
+				});
+			}
 
-            if (!response.ok) {
-                throw new Error('게임 페이지 요청에 실패했습니다.');
-            }
+			if (!response.ok) {
+				throw new Error('게임 페이지 요청에 실패했습니다.');
+			}
 
-            const data = await response.json();
-            console.log('게임 페이지 응답:', data);
+			const data = await response.json();
+			console.log('게임 페이지 응답:', data);
 
-            const router = getRouter();
-            router.navigate('/online-game', {
-                roomName: data.room_name,
-                jwtToken: data.jwt_token
-            });
-        } catch (error) {
-            console.error('게임 페이지 요청 중 오류가 발생했습니다:', error);
-        }
-    }
-
+			const router = getRouter();
+			router.navigate('/online-game', {
+				roomName: data.room_name,
+				jwtToken: data.jwt_token
+			});
+            document.querySelector('.nav-container').style.display = 'none';
+		} catch (error) {
+			console.error('게임 페이지 요청 중 오류가 발생했습니다:', error);
+		}
+	}
 
     // 친구 목록 로드
     async loadFriends() {
