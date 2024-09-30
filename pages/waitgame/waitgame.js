@@ -11,8 +11,8 @@ export default class WaitGamePage {
 
     render() {
         return `
-        <div class="game-div">
-            <div class="game-container">
+        <div class="waitgame-div">
+            <div class="waitgame-container">
                 <div class="player-info" id="playerInfo">
                     <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
                     <div class="icon-nickname">
