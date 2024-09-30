@@ -77,6 +77,7 @@ export default class OfflineWaitGame {
             router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&matchType=${matchType}`);
         else
             router.navigate(`/offline_game?player1=${encodeURIComponent(this.playersNicknames.player1)}&player2=${encodeURIComponent(this.playersNicknames.player2)}&player3=${encodeURIComponent(this.playersNicknames.player3)}&player4=${encodeURIComponent(this.playersNicknames.player4)}&matchType=${matchType}`);
-    }
+        document.querySelector('.nav-container').style.display = 'none';
+        }
 
 }
