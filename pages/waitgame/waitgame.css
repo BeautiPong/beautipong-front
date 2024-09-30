@@ -67,14 +67,14 @@
     margin-top: 10px;
 }
 
-#playerNickname {
+#playerNickname, #opponentNickname {
     color: var(--main-text-color);
     font-size: 2rem;
     font-weight: 700;
     margin-left: 1vw;
 }
 
-#playerScore {
+#playerScore, #opponentScore {
     color: var(--main-text-color);
     font-size: 1.3rem;
     font-weight: 600;
