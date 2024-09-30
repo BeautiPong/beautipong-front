@@ -26,14 +26,15 @@
 }
 
 .signup-image {
-    margin-top: 3vh;
+    width: 5vw;
     margin-bottom: 3vh;
 }
 
 .message {
     color: var(--main-text-color);
-    font-weight: 800;
-    margin-bottom: 2vh;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 2.5vh;
 }
 
 .close {
@@ -59,10 +60,15 @@
     color: var(--refuse-button-color);
     border: none;
     border-radius: 15px;
-    padding: 1.5vh 5vw;
-    font-size: 16px;
+    padding: 1vh 2vw;
+
+    font-size: 18px;
+    font-weight: 600;
     cursor: pointer;
     border: 2px solid var(--refuse-button-color);
+
+    width: 25%;
+    height: 15%;
 }
 
 .modal-confirm-btn:hover,
@@ -70,4 +76,36 @@
     background-color: var(--refuse-button-color);
     color: var(--main-color);
     outline: none;
+}
+
+#new_nickname_inputbox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#new_nickname {
+    width: 150%;
+    height: 6vh;
+    border-radius: 15px;
+    background-color: rgba(171,171,171, 0.2);
+
+    font-size: 18px;
+    color: var(--main-text-color);
+
+    box-sizing: border-box;
+    padding: 0 1.5vw;
+}
+
+#newnickname-error-message {
+    color: var(--refuse-button-color);
+    margin-top: 5px;
+}
+
+#nickname-change-btn {
+    width: 80%;
+    height: 5vh;
+    padding: 1vh 1vw;
+    margin-top: 3vh;
 }
