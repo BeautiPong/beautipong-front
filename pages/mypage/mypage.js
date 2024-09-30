@@ -186,7 +186,7 @@ export default class MyPage {
     
         var newProfileImg = e.target.files[0]; // 선택된 파일
         var formData = new FormData();
-        formData.append('img', newProfileImg);
+        formData.append('image', newProfileImg);
     
         try {
             const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
@@ -203,6 +203,7 @@ export default class MyPage {
                 console.log(updatedData);
                 // router.navigate('/mypage');
                 alert('프로필 이미지가 성공적으로 변경되었습니다.');
+                loadProfile();
             } else {
                 const errorData = await response.json();
                 console.error('프로필 이미지 변경 실패:', errorData);

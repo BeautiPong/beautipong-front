@@ -1,6 +1,7 @@
 import { getRouter } from '../../js/router.js';
 import { createModal } from '../../assets/components/modal/modal.js';
-import {SERVER_IP} from "../../js/index.js";
+import { SERVER_IP } from "../../js/index.js";
+import { loadProfile } from '../../assets/components/nav/nav.js';
 
 export default class NicknamePage {
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
@@ -66,7 +67,7 @@ export default class NicknamePage {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('temp_token')}`,
+                    'Authorization': `Bearer ${localStorage.getItem('temp_token') ? localStorage.getItem('temp_token') : localStorage.getItem('access_token')}`,
                 },
                 body: JSON.stringify(formData)
             });
@@ -77,9 +78,13 @@ export default class NicknamePage {
                 console.log('회원가입 성공:', data);
 
                 localStorage.removeItem('temp_token');
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('refresh_token', data.refresh_token);
 
                 const router = getRouter();
-                router.navigate('/login');
+                router.navigate('/');
+                loadProfile();
+                document.querySelector('.nav-container').style.display = 'block';
                 showModal('회원가입이 완료되었습니다!', '확인');
             } else {
                 console.error('회원가입 실패:', response.status);
