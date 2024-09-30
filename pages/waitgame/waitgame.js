@@ -17,7 +17,7 @@ export default class WaitGamePage {
                     <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
                     <div class="icon-nickname">
                         <img src="assets/icons/bronz.svg" class="player-icon" id="playerIcon"></img>
-                        <p class="nickname" id="playerNickname">nickname</p>
+                        <p id="playerNickname">nickname</p>
                     </div>
                     <p class="score" id="playerScore">0전 0승 0패</p>
                 </div>

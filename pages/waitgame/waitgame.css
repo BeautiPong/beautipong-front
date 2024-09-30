@@ -12,7 +12,7 @@
     border-radius: 40px;
 
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     text-align: center;
 }
@@ -22,8 +22,11 @@
     align-items: center;
     justify-content: center;
     width: 5vw;
-    font-size: 4rem;
+    color: var(--main-text-color);
+    font-size: 3rem;
     font-weight: bold;
+
+    padding: 0 5%;
 }
 
 .invite-btn, .random-btn {
@@ -64,10 +67,18 @@
     margin-top: 10px;
 }
 
-.nickname {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-left: 10px;
+#playerNickname {
+    color: var(--main-text-color);
+    font-size: 2rem;
+    font-weight: 700;
+    margin-left: 1vw;
+}
+
+#playerScore {
+    color: var(--main-text-color);
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-top: 3vh;
 }
 
 .opponent-details {
