@@ -123,10 +123,11 @@ export default class MyPage {
                 else {
                     profileTier.src = `assets/icons/bronz.svg`;
                 }
-    
+                console.log(profileData.matchCnt);
+                console.log(profileData.match_cnt ? "true" : "false");
                 profileNickname.textContent = profileData.nickname;
-                profileGameCnt.textContent = profileData.matchCnt ? matchCnt : '-';
-                profileWinRate.textContent = profileData.winRate ? winRate : '-';
+                profileGameCnt.textContent = profileData.match_cnt ? profileData.match_cnt : '-';
+                profileWinRate.textContent = profileData.win_rate ? profileData.win_rate : '-';
                 profileScore.textContent = profileData.score;
 
             } else {
