@@ -186,7 +186,7 @@ export default class FriendPage {
                 }
             });
             const data = await response.json();
-
+            
             if (data.friends.length > 0) {
                 // 친구가 있으면 친구 정보 표시
                 friendListBox.innerHTML = '';
@@ -486,13 +486,13 @@ export default class FriendPage {
                             // 친구 정보를 보여주는 로직 추가
                             userFindBox.innerHTML = `
                                 <div class="user-find-box-detail">
-                                    <img class="find-friend-image" src="${data.image}">
+                                    <img class="find-friend-image" src="${data.image || '../../assets/images/profile.svg'}">
                                     <p class="find-friend-name">${data.name}</p>
                                     <button class="request-btn">
                                         <p class="request-btn-text">친구요청</p>
                                     </button>
                                 </div>
-                            `;
+                            `;  
 
                             sendFriendRequest(token, data.name, userFindBox);
                         } else {
