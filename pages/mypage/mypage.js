@@ -4,6 +4,7 @@ import { createNicknameModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { SERVER_IP } from "../../js/index.js";
 import { loadProfile } from '../../assets/components/nav/nav.js';
+import {createModal} from '../../assets/components/modal/modal.js';
 
 export default class MyPage {
 
@@ -67,7 +68,7 @@ export default class MyPage {
 
         imgEditButton.addEventListener('change', (event) => this.handleImgEditBtn(event));
         nicknameEditButton.addEventListener('click', (event) => 
-            this.showModal('수정할 닉네임을 입력해주세요!', '변경하기'));
+            this.showNickNameModal('수정할 닉네임을 입력해주세요!', '변경하기'));
     }
 
     async myPageloadProfile() {
@@ -196,7 +197,6 @@ export default class MyPage {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                     'Cache-Control': 'no-cache'
-                    // 'Content-Type' 헤더는 FormData 사용 시 자동으로 설정됩니다.
                 },
                 body: formData
             });
@@ -204,20 +204,49 @@ export default class MyPage {
             if (response.ok) {
                 const updatedData = await response.json();
                 console.log(updatedData);
-                router.navigate('/mypage');
                 localStorage.setItem("img", updatedData.image_url);
-                
-                alert('프로필 이미지가 성공적으로 변경되었습니다.');
+                loadProfile();
+                await this.myPageloadProfile();
+                this.showModal('프로필 이미지가 변경되었습니다.', '확인');
             } else {
                 const errorData = await response.json();
-                console.error('프로필 이미지 변경 실패:', errorData);
-                alert('프로필 이미지 변경에 실패했습니다.');
+                this.showModal('프로필 이미지가 변경에 실패했습니다. 다시 시도해주세요', '확인');
             }
         } catch (error) {
             console.error('프로필 이미지 변경 중 오류 발생:', error);
-            alert('프로필 이미지 변경 중 오류가 발생했습니다.');
+            this.showModal('프로필 이미지 변경 중 오류가 발생했습니다. 다시 시도해주세요', '확인');
         }
-    }     
+    }
+
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createModal(message, buttonMsg);
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function(event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
     
     async handleNicknameImgEditBtn(modalDiv) {
 
@@ -265,7 +294,7 @@ export default class MyPage {
     }
 
     // 모달 창 생성 및 표시 함수
-	showModal(message, buttonMsg) {
+	showNickNameModal(message, buttonMsg) {
 		// 모달 컴포넌트 불러오기
 		const modalHTML = createNicknameModal(message, buttonMsg);
 
