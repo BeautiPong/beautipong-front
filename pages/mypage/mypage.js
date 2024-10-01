@@ -207,21 +207,21 @@ export default class MyPage {
                 localStorage.setItem("img", updatedData.image_url);
                 loadProfile();
                 await this.myPageloadProfile();
-                this.showModal('프로필 이미지가 변경되었습니다.', '확인');
+                this.showModal('프로필 이미지가 성공적으로 변경되었습니다.', '확인');
             } else {
                 const errorData = await response.json();
-                this.showModal('프로필 이미지가 변경에 실패했습니다. 다시 시도해주세요', '확인');
+                this.showModal('프로필 이미지가 변경에 실패했습니다. 다시 시도해주세요', '확인', 'caution');
             }
         } catch (error) {
             console.error('프로필 이미지 변경 중 오류 발생:', error);
-            this.showModal('프로필 이미지 변경 중 오류가 발생했습니다. 다시 시도해주세요', '확인');
+            this.showModal('프로필 이미지 변경 중 오류가 발생했습니다. 다시 시도해주세요', '확인', 'caution');
         }
     }
 
     // 모달 창 생성 및 표시 함수
-    showModal(message, buttonMsg) {
+    showModal(message, buttonMsg, icon) {
         // 모달 컴포넌트 불러오기
-        const modalHTML = createModal(message, buttonMsg);
+        const modalHTML = createModal(message, buttonMsg, icon);
 
         // 새 div 요소를 생성하여 모달을 페이지에 추가
         const modalDiv = document.createElement('div');
