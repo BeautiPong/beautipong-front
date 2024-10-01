@@ -127,7 +127,7 @@ export default class MyPage {
                 console.log(profileData.match_cnt ? "true" : "false");
                 profileNickname.textContent = profileData.nickname;
                 profileGameCnt.textContent = profileData.match_cnt ? profileData.match_cnt : '-';
-                profileWinRate.textContent = profileData.win_rate ? profileData.win_rate : '-';
+                profileWinRate.textContent = profileData.match_cnt ? profileData.win_rate + '%' : '-';
                 profileScore.textContent = profileData.score;
 
             } else {
