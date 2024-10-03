@@ -85,10 +85,14 @@ export default class FriendPage {
         const friendListBox = document.querySelector('.friend-list-box');
         this.showFriendList(friendListBox);
 
-        // 친구함으로 이동 (버튼 클릭)
         const accepBtn = document.querySelector('.accept-friend-list');
+        const blockBtn = document.querySelector('.block-friend-text');
+
+        // 친구함으로 이동 (버튼 클릭)
         if (accepBtn) {
             accepBtn.addEventListener('click', async () => {
+                accepBtn.classList.add('click');
+                blockBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
                 this.showFriendList(friendListBox);
             });
@@ -97,9 +101,10 @@ export default class FriendPage {
         }
 
         // 차단함으로 이동 (버튼 클릭)
-        const blockBtn = document.querySelector('.block-friend-text');
         if (blockBtn) {
             blockBtn.addEventListener('click', async () => {
+                blockBtn.classList.add('click');
+                accepBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
                 this.updateBlockedFriendList(friendListBox);
             });
@@ -202,7 +207,7 @@ export default class FriendPage {
                     const score = friend.score;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, false);
+                    const friendComponent = createFriendList(image, nickname, is_active, false);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
@@ -213,9 +218,9 @@ export default class FriendPage {
                     friendListBox.appendChild(newFriendElement);
 
                     // 이벤트 리스너를 직접 추가
-                    const nicknameElement = newFriendElement.querySelector('.list-nickname');
-                    nicknameElement.addEventListener('click', () => {
-                        this.showChatBox(nickname);
+                    const chatRoomElement = newFriendElement.querySelector('.list-box');
+                    chatRoomElement.addEventListener('click', () => {
+                        this.showChatBox(image, nickname, match_cnt, win_cnt, score);
                     });
                 });
             } else {
@@ -229,7 +234,7 @@ export default class FriendPage {
 
 
     // 채팅방 만들기
-    async showChatBox(friendNickname) {
+    async showChatBox(image, friendNickname, match_cnt, win_cnt, score) {
         try {
             const token = localStorage.getItem('access_token');
             fetch(`https://${SERVER_IP}/api/chat/create/`, {
@@ -242,7 +247,7 @@ export default class FriendPage {
             })
             .then(response => response.json())
             .then(data => {
-                this.loadChatRoom(data.room_name, data.sender, token, friendNickname);
+                this.loadChatRoom(data.room_name, data.sender, token, friendNickname, image, match_cnt, win_cnt, score);
             });
         } catch (error) {
             console.error('채팅 내용을 불러오는 중 오류 발생:', error);
@@ -250,13 +255,16 @@ export default class FriendPage {
     }
 
     // 채팅방 불러오기
-    async loadChatRoom(roomName, myname, token, friendNickname) {
+    async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
         // 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
 
+            const lose_cnt = match_cnt - win_cnt;
+            const win_inform = `${win_cnt}승 ${lose_cnt}패`;
+
             chatContainer.innerHTML = `
-                ${createChatRoom("", friendNickname, "n승n패")}
+                ${createChatRoom(image, friendNickname, win_inform, score)}
             `;
 
             // 기존 대화 내용 불러오기
@@ -486,8 +494,11 @@ export default class FriendPage {
                             // 친구 정보를 보여주는 로직 추가
                             userFindBox.innerHTML = `
                                 <div class="user-find-box-detail">
-                                    <img class="find-friend-image" src="${data.image || '../../assets/images/profile.svg'}">
-                                    <p class="find-friend-name">${data.name}</p>
+                                    <div class="user-find-box-image-name">
+                                        <img class="find-friend-image" src="${data.image || '../../assets/images/profile.svg'}">
+                                        <p class="find-friend-name">${data.name}</p>
+                                    </div>
+
                                     <button class="request-btn">
                                         <p class="request-btn-text">친구요청</p>
                                     </button>

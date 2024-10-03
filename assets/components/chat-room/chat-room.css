@@ -55,11 +55,24 @@
     margin-bottom: 1.5vh;
 }
 
+.info {
+    display: flex;
+    flex-direction: row;
+
+    margin-bottom: 1vh;
+}
+
 .friend-win-text {
     color: var(--main-text-color);
-    font-size: 1vw;
+    font-size: 0.8vw;
     font-weight: 500;
-    margin-bottom: 1vh;
+}
+
+.friend-score-text {
+    color: var(--main-text-color);
+    font-size: 0.8vw;
+    font-weight: 500;
+    margin-right: 1vw;
 }
 
 .chat-box-down {
