@@ -2,7 +2,7 @@ import { createModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { loadProfile } from '../../assets/components/nav/nav.js';
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
-
+import { SERVER_IP } from "../../js/index.js";
 export default class OauthRedirectPage {
     render() {
         return `
@@ -18,7 +18,7 @@ export default class OauthRedirectPage {
         if (code) {
             // 'code'가 존재하는 경우, 서버로 POST 요청을 보내어 액세스 토큰을 요청합니다.
             try {
-                const response = await fetch(`https://localhost/api/user/get-token/?code=${code}`, {
+                const response = await fetch(`https://${SERVER_IP}/api/user/get-token/?code=${code}`, {
                     method: 'GET',
                 });
                 if (response.ok) {
@@ -36,10 +36,16 @@ export default class OauthRedirectPage {
 
 						connectNotificationWebSocket(data.access_token);
 						
-                        document.querySelector('.nav-container').style.display = 'block';
-                        const router = getRouter();
-                        router.navigate('/');
-                        loadProfile();
+                        if (localStorage.getItem('nickname')) {
+                            document.querySelector('.nav-container').style.display = 'block';
+                            router.navigate('/');
+                            loadProfile();
+                        } else {
+                            document.querySelector('.nav-container').style.display = 'none';
+                            this.showModal('닉네임을 설정해주세요.', '확인');
+                            history.replaceState(null, '', '/nickname');
+                            router.navigate('/nickname')
+                        }
                     }
                 } else {
                     console.error('42 토큰 요청 실패:', response.status, response.statusText);

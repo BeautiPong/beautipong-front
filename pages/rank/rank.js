@@ -1,5 +1,6 @@
 import { refreshAccessToken } from '../../js/token.js';
 import { renderUserRankInfo } from '../../assets/components/rank-info/rank-info.js'
+import {SERVER_IP} from "../../js/index.js";
 
 const Utils = {
     CHART_COLORS: {
@@ -95,7 +96,7 @@ export default class RankPage {
             const rankNumberElement = document.querySelector('.rank-number');
             const nicknameElement = document.getElementById('rank-data--nickname');
 
-            let response = await fetch(`http://localhost:8000/api/score/all/`, {
+            let response = await fetch(`https://${SERVER_IP}/api/score/all/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -105,7 +106,7 @@ export default class RankPage {
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                response = await fetch(`http://localhost:8000/api/score/all/`, {
+                response = await fetch(`https://${SERVER_IP}/api/score/all/`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,
@@ -193,7 +194,7 @@ export default class RankPage {
     
         try {
             // API 요청
-            let response = await fetch(`http://localhost:8000/api/user/info/${nickname}`, {
+            let response = await fetch(`https://${SERVER_IP}/api/user/info/${nickname}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -202,7 +203,7 @@ export default class RankPage {
     
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                response = await fetch(`http://localhost:8000/api/user/info/${nickname}`, {
+                response = await fetch(`https://${SERVER_IP}/api/user/info/${nickname}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,
@@ -298,7 +299,7 @@ export default class RankPage {
 
     async loadGameRecords(nickname) {
         try {
-            const response = await fetch(`http://localhost:8000/api/score/graph/${nickname}`, {
+            const response = await fetch(`https://${SERVER_IP}/api/score/graph/${nickname}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -307,7 +308,7 @@ export default class RankPage {
     
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                response = await fetch(`http://localhost:8000/api/score/graph/${nickname}`, {
+                response = await fetch(`https://${SERVER_IP}/api/score/graph/${nickname}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,

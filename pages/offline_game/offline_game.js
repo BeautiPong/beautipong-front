@@ -1,5 +1,6 @@
 import { getRouter } from '../../js/router.js';
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
+import {SERVER_IP} from "../../js/index.js";
 
 export default class offlineGamePage {
     render() {
@@ -7,15 +8,20 @@ export default class offlineGamePage {
             <div class="offline_game">
                 <div class="offline_game">
                     <div id="scoreboard">
-                        <div id="player1_score"></div>
-                        <div id="player2_score"></div>
+                        <div class="scoreboard__userinfo">
+                            <span class="player_nickname" id="player1_nickname"></span>
+                            <span class="player_score" id="player1_score"></span>
+                        </div>
+                        <span> : </span>
+                        <div class="scoreboard__userinfo">
+                            <span class="player_score" id="player2_score"></span>
+                            <span class="player_nickname" id="player2_nickname"></span>
+                        </div>
                     </div>
                 </div>
             </div>
         `;
     }
-
-
 
     async afterRender() {
 
@@ -52,7 +58,7 @@ export default class offlineGamePage {
         };
     try {
         // 백엔드로 POST 요청을 보냅니다.
-        const response = await fetch('https://localhost/api/game/offline/', {
+        const response = await fetch(`https://${SERVER_IP}/api/game/offline/`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -75,9 +81,9 @@ export default class offlineGamePage {
 }
     let socketUrl;
     if (matchType === '1vs1') {
-        socketUrl = 'wss://' + 'localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
+        socketUrl = 'wss://' + `${SERVER_IP}` + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
     } else if (matchType === 'tournament') {
-        socketUrl = 'wss://localhost' + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
+        socketUrl = `wss://${SERVER_IP}` + '/ws/game/offline/' + user1 + '/' + user2 + '/' + user3 + '/' + user4 + '/?token=' + token;
     }
 
     socket = new WebSocket(socketUrl);
@@ -86,10 +92,11 @@ export default class offlineGamePage {
     // 서버로부터 받아온 테이블, 패들 정보
     const tableWidth = 100;
     const tableLength = 50;
-    const paddleWidth = 10;
+    const paddleWidth = 3;
 
     // Three.js 기본 설정
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x9CD3E7);
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -97,37 +104,84 @@ export default class offlineGamePage {
 
     // 탁구대 생성
     const tableGeometry = new THREE.PlaneGeometry(tableWidth, tableLength);
-    const tableMaterial = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
+    const tableMaterial = new THREE.MeshPhongMaterial({ color: 0x6ED087 });
     const table = new THREE.Mesh(tableGeometry, tableMaterial);
     table.rotation.x = -Math.PI / 2;  // 테이블이 바닥에 놓이도록 설정
     table.position.y = 0;  // 테이블의 높이를 약간 조정
     scene.add(table);
 
+    // 흰색 테두리 생성
+    const borderThickness = 0.5;  // 테두리 두께
+    const borderColor = 0xffffff;  // 테두리 색상 (흰색)
+
+    // 상단 테두리
+    const topBorderGeometry = new THREE.PlaneGeometry(tableWidth, borderThickness);
+    const topBorderMaterial = new THREE.MeshPhongMaterial({ color: borderColor });
+    const topBorder = new THREE.Mesh(topBorderGeometry, topBorderMaterial);
+    topBorder.rotation.x = -Math.PI / 2;
+    topBorder.position.set(0, 0.01, -tableLength / 2);  // 테두리를 테이블 위로 살짝 올림
+    scene.add(topBorder);
+
+    // 하단 테두리
+    const bottomBorder = topBorder.clone();
+    bottomBorder.position.set(0, 0.01, tableLength / 2);
+    scene.add(bottomBorder);
+
+    // 좌측 테두리
+    const leftBorderGeometry = new THREE.PlaneGeometry(borderThickness, tableLength);
+    const leftBorderMaterial = new THREE.MeshPhongMaterial({ color: borderColor });
+    const leftBorder = new THREE.Mesh(leftBorderGeometry, leftBorderMaterial);
+    leftBorder.rotation.x = -Math.PI / 2;
+    leftBorder.position.set(-tableWidth / 2, 0.01, 0);
+    scene.add(leftBorder);
+
+    // 우측 테두리
+    const rightBorder = leftBorder.clone();
+    rightBorder.position.set(tableWidth / 2, 0.01, 0);
+    scene.add(rightBorder);
+
+    // 네트 생성
+    const netHeight = 3;  // 네트의 높이
+    const netWidth = 0.2;  // 네트의 두께
+    const netLength = tableLength;
+    const netColor = 0xFFFFFF;  // 네트 색상 (검은색)
+
+    // 네트의 geometry와 material 설정
+    const netGeometry = new THREE.BoxGeometry(netWidth, netHeight, netLength);
+    const netMaterial = new THREE.MeshPhongMaterial({ color: netColor, side: THREE.DoubleSide }); // 양면에서 네트를 볼 수 있도록 설정
+    const net = new THREE.Mesh(netGeometry, netMaterial);
+
+    // 네트 위치 설정 (테이블 세로 중간에 가로지르도록 배치)
+    net.position.set(0, netHeight / 2, 0);  // 세로 중간에 네트를 배치, 높이는 네트 높이의 절반만큼 올림
+    scene.add(net);
+
     // 공 생성
     const ballGeometry = new THREE.SphereGeometry(1, 32, 32);
-    const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xff0000 });
+    const ballMaterial = new THREE.MeshPhongMaterial({ color: 0xFFFFFF });
     const ball = new THREE.Mesh(ballGeometry, ballMaterial);
     ball.position.set(0, 1, 0);
     scene.add(ball);
 
     // 패들 생성
-    const paddleGeometry = new THREE.BoxGeometry(10, 1, paddleWidth);  // 패들의 크기 설정
-    const paddleMaterial = new THREE.MeshPhongMaterial({ color: 0x0000ff });  // 패들 색상: 파란색
+    const paddleHeight = 0.2; // 패들의 높이
+    const paddleDepth = 8;  // 패들의 깊이 
+    const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);  // 패들의 크기 설정
+    const paddleMaterial = new THREE.MeshPhongMaterial({ color: 0xFF897D });  // 패들 색상: 파란색
 
     const player1Paddle = new THREE.Mesh(paddleGeometry, paddleMaterial);
-    player1Paddle.position.set(-tableWidth / 2 + 5, 0.5, 0);  // player1 패들의 x 위치를 왼쪽 끝에 고정
+    player1Paddle.position.set(-tableWidth / 2 + paddleWidth / 2, paddleHeight / 2, 0); // player1 패들의 x 위치를 왼쪽 끝에 고정
     scene.add(player1Paddle);
 
     const player2Paddle = new THREE.Mesh(paddleGeometry, paddleMaterial);
-    player2Paddle.position.set(tableWidth / 2 - 5, 0.5, 0);  // player2 패들의 x 위치를 오른쪽 끝에 고정
+    player2Paddle.position.set(tableWidth / 2 - paddleWidth / 2, paddleHeight / 2, 0);  // player2 패들의 x 위치를 오른쪽 끝에 고정
     scene.add(player2Paddle);
 
     // 조명 추가
     const ambientLight = new THREE.AmbientLight(0x404040);  // 부드러운 환경광 추가
     scene.add(ambientLight);
 
-    const light = new THREE.DirectionalLight(0xffffff, 1.5);  // 강한 직사광 조명 추가
-    light.position.set(0, 100, 100);  // 조명 위치를 조정하여 테이블 위로 내려오게 설정
+    const light = new THREE.DirectionalLight(0xffffff, 1.2);  // 강한 직사광 조명 추가
+    light.position.set(0, 40, 50);  // 조명 위치를 조정하여 테이블 위로 내려오게 설정
     scene.add(light);
 
     // 카메라 설정
@@ -162,8 +216,10 @@ export default class offlineGamePage {
             player2Paddle.position.z = player2_paddle_z;
 
             // 점수 업데이트
-            document.getElementById('player1_score').textContent = `${data.state.player1}: ${data.state.player1_score}`;
-            document.getElementById('player2_score').textContent = `${data.state.player2}: ${data.state.player2_score}`;
+            document.getElementById('player1_nickname').textContent = `${data.state.player1}`;
+            document.getElementById('player2_nickname').textContent = `${data.state.player2}`;
+            document.getElementById('player1_score').textContent = `${data.state.player1_score}`;
+            document.getElementById('player2_score').textContent = `${data.state.player2_score}`;
         }
 
         else if (data.type === 'game_end') {
@@ -202,9 +258,12 @@ export default class offlineGamePage {
             rendererDom.remove();
             console.log("Three.js 캔버스 제거");
         }
+
         const router = getRouter();
-        if (router)
+        if (router) {
+            document.querySelector('.nav-container').style.display = 'block';
             router.navigate('/');
+        }
     }
 
     // 페이지를 떠날 때 정리 작업 추가
