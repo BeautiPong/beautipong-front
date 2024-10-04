@@ -1,6 +1,8 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js'
 
+export const SERVER_IP = 'localhost';
+
 // 로그인 상태 확인 함수
 function checkLoginStatus() {
   const token = localStorage.getItem('access_token');

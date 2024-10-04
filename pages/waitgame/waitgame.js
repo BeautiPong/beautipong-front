@@ -1,7 +1,7 @@
 import { getRouter } from '../../js/router.js';
 import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
-
+import {SERVER_IP} from "../../js/index.js";
 
 export default class WaitGamePage {
     constructor() {
@@ -36,6 +36,14 @@ export default class WaitGamePage {
                             <button class="invite-btn" id="inviteBtn">친구초대</button>
                             <button class="random-btn" id="randomBtn">랜덤매칭</button>
                             <div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                            <div class="opponent-details hidden" id="opponentDetails">
+                                <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="opponentImage">
+                                <div class="icon-nickname">
+                                    <img src="assets/icons/bronz.svg" class="player-icon" id="opponentIcon"></img>
+                                    <p class="nickname" id="opponentNickname">nickname</p>
+                                </div>
+                                <p class="score" id="opponentScore">0전 0승 0패</p>
+                            </div>
                         </div>
                     </div>
                     
@@ -70,9 +78,14 @@ export default class WaitGamePage {
 
         // 로더를 숨기고 버튼을 다시 표시
         loader.classList.add('hidden');
-        inviteBtn.style.display = 'inline-block';
-        randomBtn.style.display = 'inline-block';
+        inviteBtn.style.display = 'none';
+        randomBtn.style.display = 'none';
     }
+
+    // hidematchLoader() {
+    //     const matchingLoader = document.getElementById('matchingLoader');
+    //     matchingLoader.classList.add('hidden');
+    // }
 
     // 모달 열기
     openModal() {
@@ -202,8 +215,14 @@ export default class WaitGamePage {
                     }
 
                     const guest = data.guest; // 친구의 닉네임 출력
-                    const room_name = data.room_name;                    
-					// this.navigateToGamePage(data.room_name, jwtToken);
+                    const room_name = data.room_name;
+
+                    this.fetchOpponentInfo(guest); 
+                    this.hideLoader();
+
+                    document.getElementById('opponentDetails').classList.remove('hidden');
+                    document.getElementById('opponentDetails').classList.add('active');
+                    
                     startGameBtn.addEventListener("click", (event) => {
                         this.handleButtonClick(event, guest, room_name);
                     });
@@ -237,6 +256,39 @@ export default class WaitGamePage {
         this.navigateToGamePage(room_name); // 여기서 this는 올바르게 바인딩됨
     }
     
+    async fetchOpponentInfo(opponentNickname) {
+        try {
+            const accessToken = localStorage.getItem("access_token");
+            const response = await fetch(`http://${SERVER_IP}:8000/api/user/info/${opponentNickname}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('상대방 정보를 불러오지 못했습니다.');
+            }
+
+            const data = await response.json();
+            console.log('상대방 정보:', data);
+            this.updateOpponentInfo(data);
+        } catch (error) {
+            console.error('상대방 정보 로드 중 오류 발생:', error);
+        }
+    }
+
+    updateOpponentInfo(data) {
+        const opponentImage = document.getElementById('opponentImage');
+        const opponentNickname = document.getElementById('opponentNickname');
+        const opponentScore = document.getElementById('opponentScore');
+
+        opponentImage.src = data.image || 'assets/images/profile.svg';
+        opponentNickname.textContent = data.nickname;
+        opponentScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+    }
+
     // 게임 페이지로 이동하기 전에 API 요청
     async navigateToGamePage(roomName) {
 		// console.log('Room Name:', roomName);  // Debugging 추가
