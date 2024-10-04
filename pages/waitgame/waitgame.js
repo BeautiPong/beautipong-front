@@ -207,8 +207,9 @@ export default class WaitGamePage {
 			if (data.type === 'game_start') {
 				if (data.room_name) {
                     const startGameBtn = document.getElementById('startGameBtn');
+                    const myNickname = localStorage.getItem('nickname');
                     console.log("data.host:",data.host);
-                    if(data.host == localStorage.getItem('nickname'))
+                    if(data.host == myNickname)
                     {
                         startGameBtn.classList.remove('hidden');
                         startGameBtn.classList.add('show');
@@ -217,7 +218,9 @@ export default class WaitGamePage {
                     const guest = data.guest; // 친구의 닉네임 출력
                     const room_name = data.room_name;
 
-                    this.fetchOpponentInfo(guest); 
+                    const opponentNickname = data.host === myNickname ? guest : data.host;
+
+                    this.fetchOpponentInfo(opponentNickname); 
                     this.hideLoader();
 
                     document.getElementById('opponentDetails').classList.remove('hidden');
