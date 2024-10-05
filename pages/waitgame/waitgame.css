@@ -1,11 +1,11 @@
-.game-div {
+.waitgame-div {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
 }
 
-.game-container {
+.waitgame-container {
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -106,7 +106,7 @@
     display: none;
 }
 
-.loader {
+.matchingLoader {
 	width: 50px;
 	padding: 8px;
 	aspect-ratio: 1;
@@ -124,7 +124,7 @@
   @keyframes l3 {to{transform: rotate(1turn)}}
 
 /* game-container 내부 정렬 */
-.game-container {
+.waitgame-container {
     display: flex;
     flex-direction: column;
     align-items: center; /* 모든 요소들을 수평 중앙 정렬 */

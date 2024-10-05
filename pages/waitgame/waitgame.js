@@ -4,25 +4,21 @@ import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js
 import {SERVER_IP} from "../../js/index.js";
 
 export default class WaitGamePage {
-    constructor() {
-        this.socket = null; // WebSocket 인스턴스를 저장할 변수
-    }
     static socket = null;
 
     // 페이지 렌더링
     render() {
         return `
-            <div class="game-div">
-                <div class="game-container">
-                    <!-- 세 요소를 감싸는 .game-main 컨테이너 추가 -->
+            <div class="waitgame-div">
+                <div class="waitgame-container">
                     <div class="game-main">
                         <div class="player-info">
-                            <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img">
+                            <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
                             <div class="icon-nickname">
                                 <img src="assets/icons/bronz.svg" class="player-icon"></img>
-                                <p class="nickname">nickname</p>
+                                <p id="playerNickname">nickname</p>
                             </div>
-                            <p class="score">10전 10승 0패</p>
+                            <p class="score" id="playerScore">10전 10승 0패</p>
                         </div>
                         <div class="vs-text">
                             <p>VS</p>
@@ -35,7 +31,7 @@ export default class WaitGamePage {
                             </div>
                             <button class="invite-btn" id="inviteBtn">친구초대</button>
                             <button class="random-btn" id="randomBtn">랜덤매칭</button>
-                            <div class="loader hidden" id="loader"></div> <!-- 로더는 처음엔 hidden -->
+                            <div class="matchingLoader hidden" id="matchingLoader"></div> <!-- 로더는 처음엔 hidden -->
                             <div class="opponent-details hidden" id="opponentDetails">
                                 <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="opponentImage">
                                 <div class="icon-nickname">
@@ -51,41 +47,117 @@ export default class WaitGamePage {
                     <button class="start-game-btn hidden" id="startGameBtn">게임 시작</button>
                 </div>
             </div>
+        </div>
+
+        <div class="gameStartContainer hidden" id="gameStartContainer">
+            <p class="gameStartText" id="gameStartText">
+                <span id="gameCountDown">5</span>
+                초 후 게임이 시작됩니다!
+            </p>
+            <div id="gameStartLoader"></div>
+        </div>
+
         `;
     }
 
-    // afterRender() {
-    //     const accessToken = localStorage.getItem("access_token");
-    // }
+    async loadUserInfo() {
+        try {
+            const accessToken = localStorage.getItem("access_token");
 
+            const response = await fetch(`http://${SERVER_IP}/api/user/profile/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
 
-	showLoader() {
-        const loader = document.getElementById('loader');
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
+                response = await fetch(`http://${SERVER_IP}/api/user/profile/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
+            }
+
+            if (!response.ok) {
+                throw new Error('사용자 정보를 불러오지 못했습니다.');
+            }
+
+            const data = await response.json();
+            this.updatePlayerInfo(data);
+        } catch (error) {
+            console.error('사용자 정보 로드 중 오류 발생:', error);
+        }
+    }
+
+    updatePlayerInfo(data) {
+        const playerImage = document.getElementById('playerImage');
+        const playerNickname = document.getElementById('playerNickname');
+        const playerScore = document.getElementById('playerScore');
+
+        if (!data.image) {
+            playerImage.src = 'assets/images/profile.svg';
+        } else {
+            playerImage.src = data.image;
+        }
+        playerNickname.textContent = data.nickname;
+        playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+    }
+
+	showmatchLoader() {
+        const matchingLoader = document.getElementById('matchingLoader');
         const inviteBtn = document.getElementById('inviteBtn');
         const randomBtn = document.getElementById('randomBtn');
         // console.log("loader", loader, "inviteBtn", inviteBtn, "randomBtn", randomBtn);
         // 로더를 표시하고 버튼들을 숨김
-        loader.classList.remove('hidden');
+        matchingLoader.classList.remove('hidden');
         inviteBtn.style.display = 'none';
         randomBtn.style.display = 'none';
     }
 
-    // 로더를 숨기고 버튼을 다시 표시하는 메서드
-    hideLoader() {
-        const loader = document.getElementById('loader');
+    hidematchLoader() {
+        const matchingLoader = document.getElementById('matchingLoader');
         const inviteBtn = document.getElementById('inviteBtn');
         const randomBtn = document.getElementById('randomBtn');
 
         // 로더를 숨기고 버튼을 다시 표시
-        loader.classList.add('hidden');
+        matchingLoader.classList.add('hidden');
         inviteBtn.style.display = 'none';
         randomBtn.style.display = 'none';
     }
 
-    // hidematchLoader() {
-    //     const matchingLoader = document.getElementById('matchingLoader');
-    //     matchingLoader.classList.add('hidden');
-    // }
+    showGameStartLoader() {
+        const gameStartContainer = document.getElementById('gameStartContainer');
+        const gameCountDown = document.getElementById('gameCountDown');
+
+        let countdown = 5;
+        gameCountDown.textContent = `${countdown}`;
+
+        // 컨테이너를 표시 (flex로 설정하여 보이게 함)
+        gameStartContainer.style.display = 'flex';
+
+        // 1초마다 카운트다운 텍스트를 갱신
+        const interval = setInterval(() => {
+            countdown--;
+            gameCountDown.textContent = `${countdown}`;
+
+            if (countdown === 0) {
+                clearInterval(interval); // 카운트다운이 끝나면 인터벌을 제거
+            }
+        }, 1000);
+    }
+
+    hideGameStartLoader() {
+        const gameStartContainer = document.querySelector('.gameStartContainer');
+        if (gameStartContainer) {
+            gameStartContainer.classList.add('hidden');
+        }
+    }
+
 
     // 모달 열기
     openModal() {
@@ -99,7 +171,7 @@ export default class WaitGamePage {
 
     bindEvents() {
         document.getElementById('randomBtn').addEventListener('click', () => {
-            this.startMatch(); // 랜덤 매칭 시작
+            this.startRandomMatch(); // 랜덤 매칭 시작
         });
 
         document.getElementById('inviteBtn').addEventListener('click', () => {
@@ -110,6 +182,8 @@ export default class WaitGamePage {
         document.getElementById('closeModal').addEventListener('click', () => {
             this.closeModal(); // 모달 닫기
         });
+
+        this.loadUserInfo();
     }
 
 	async startMatch(friendNickname = null,host) {
