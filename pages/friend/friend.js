@@ -6,6 +6,7 @@ import {createUserSearchModal} from '../../assets/components/user-search-modal/u
 import { getRouter } from '../../../js/router.js';
 import {createModal} from '../../assets/components/modal/modal.js';
 import {SERVER_IP} from "../../js/index.js";
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 let chatSocket = null;
 
@@ -191,7 +192,7 @@ export default class FriendPage {
                 }
             });
             const data = await response.json();
-            
+
             if (data.friends.length > 0) {
                 // 친구가 있으면 친구 정보 표시
                 friendListBox.innerHTML = '';
@@ -503,7 +504,7 @@ export default class FriendPage {
                                         <p class="request-btn-text">친구요청</p>
                                     </button>
                                 </div>
-                            `;  
+                            `;
 
                             sendFriendRequest(token, data.name, userFindBox);
                         } else {
@@ -525,13 +526,10 @@ export default class FriendPage {
     async showFriendRequest() {
 
         const token = localStorage.getItem('access_token');
-
-        // 웹소켓 연결 설정
-        const notificationSocket = new WebSocket(
-            `wss://${SERVER_IP}/ws/user/?token=${token}`
-        );
+        const notificationSocket = connectNotificationWebSocket(token);
 
         notificationSocket.onmessage = (e) => {
+
             const data = JSON.parse(e.data);
 
             const friendReq = document.querySelector('.friend-request-box');
@@ -540,8 +538,7 @@ export default class FriendPage {
                 friendReq.innerHTML = '';
                 this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
             }
-            else if (data.tag === 'accept')
-            {
+            else if (data.tag === 'accept') {
                 const router = getRouter();
                 router.navigate('/friend');
             }
@@ -651,6 +648,7 @@ export default class FriendPage {
     }
 
     async afterRender() {
+        this.showFriendRequest();
         this.handlePage();
     }
 }
