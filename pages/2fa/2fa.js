@@ -2,7 +2,7 @@ import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import {loadProfile} from '../../assets/components/nav/nav.js';
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
-
+import {SERVER_IP} from "../../js/index.js";
 
 export default class TwoFactorPage {
     constructor() {
@@ -110,7 +110,7 @@ export default class TwoFactorPage {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/otp/generate/', {
+            const response = await fetch(`https://${SERVER_IP}/api/otp/generate/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tempToken}`, // 헤더에 temp_token 포함
@@ -140,7 +140,7 @@ export default class TwoFactorPage {
         const tempToken = localStorage.getItem('temp_token');
 
         try {
-            const response = await fetch('http://localhost:8000/api/otp/verify/', {
+            const response = await fetch(`https://${SERVER_IP}/api/otp/verify/`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${tempToken}`,

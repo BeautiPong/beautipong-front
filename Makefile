@@ -1,6 +1,6 @@
 # 변수 정의
 DOCKER_COMPOSE = docker-compose
-DOCKER_COMPOSE_FILE = docker-compose.yml
+DOCKER_COMPOSE_FILE = ../backend/docker-compose.yml
 
 .PHONY: build up down logs
 

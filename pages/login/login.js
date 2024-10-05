@@ -1,4 +1,5 @@
 import { getRouter } from '../../js/router.js';
+import { SERVER_IP } from "../../js/index.js";
 
 export default class LoginPage {
     // handleEnterKey를 클래스 속성으로 선언하여 두 함수 모두 접근 가능하게 만듭니다.
@@ -57,7 +58,7 @@ export default class LoginPage {
         // 42 OAuth 로그인 버튼에 클릭 이벤트 리스너 추가
         const login42Button = document.getElementById('start-with__42logo');
         login42Button.addEventListener('click', async () => {
-            window.location.href = 'http://localhost:8000/api/user/login/';
+            window.location.href = `https://${SERVER_IP}/api/user/login/`;
         });
     }
 
@@ -77,7 +78,7 @@ export default class LoginPage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/pre-login/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/pre-login/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

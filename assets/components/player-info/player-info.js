@@ -1,3 +1,6 @@
+import {SERVER_IP} from '../../../js/index.js';
+import {refreshAccessToken} from "../../../js/token.js";
+
 export default class PlayerInfo {
     constructor() {
         this.playerData = null; // 초기에는 null로 설정
@@ -8,7 +11,7 @@ export default class PlayerInfo {
         try {
             const accessToken = localStorage.getItem("access_token");
 
-            let response = await fetch(`http://localhost:8000/api/user/info/${username}`, {
+            let response = await fetch(`https://${SERVER_IP}/api/user/info/${username}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
@@ -20,7 +23,7 @@ export default class PlayerInfo {
                 const newAccessToken = await refreshAccessToken();
 
                 // 새 액세스 토큰으로 다시 요청
-                response = await fetch(`http://localhost:8000/api/user/info/${username}`, {
+                response = await fetch(`https://${SERVER_IP}/api/user/info/${username}`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${newAccessToken}`,

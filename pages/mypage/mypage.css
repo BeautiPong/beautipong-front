@@ -61,6 +61,8 @@
     height: auto;
     border-radius: 50%;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, 0.1);
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 }
 
 #mypage__top__profile-info__edit {
@@ -164,7 +166,8 @@
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    /* align-items: flex-start; */
     gap: 5%;
 
     padding: 5% 15%;

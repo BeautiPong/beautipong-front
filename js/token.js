@@ -1,3 +1,5 @@
+import { SERVER_IP } from "./index.js";
+
 const getRefreshToken = () => localStorage.getItem('refresh_token');
 
 // 액세스 토큰 갱신 함수
@@ -5,7 +7,7 @@ export async function refreshAccessToken() {
   try {
     const refreshToken = getRefreshToken();
     console.log(refreshToken);
-    const response = await fetch('http://localhost:8000/api/user/token/reissue', {
+    const response = await fetch(`https://${SERVER_IP}/api/user/token/reissue`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

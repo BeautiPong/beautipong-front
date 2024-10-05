@@ -1,8 +1,16 @@
 import {createModal} from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
+import { SERVER_IP } from "../../js/index.js";
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class SignupPage {
+    handleEnterKey = (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            this.handleFormBtn(event);
+        }
+    };
+
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
     render() {
         return `
@@ -91,6 +99,17 @@ export default class SignupPage {
             return;
         }
 
+        // 한글 입력 방지
+        const koreanPattern = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+        if (koreanPattern.test(nickname)) {
+            this.handleSignupError({ message: "닉네임에 한글을 사용할 수 없습니다." });
+            return;
+        }
+        if (koreanPattern.test(userID)) {
+            this.handleSignupError({ message: "아이디에 한글을 사용할 수 없습니다." });
+            return;
+        }
+
 
         const formData = {
             userID,
@@ -101,7 +120,7 @@ export default class SignupPage {
 
         try {
             // 백엔드로 POST 요청을 보냅니다.
-            const response = await fetch('http://localhost:8000/api/user/account/join/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/join/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -121,7 +140,7 @@ export default class SignupPage {
             } else {
                 const errorData = await response.json();
                 this.handleSignupError(errorData);
-            
+
             }
 
         } catch (error) {
@@ -159,6 +178,7 @@ export default class SignupPage {
         switch (errorData.message) {
             case "이미 존재하는 닉네임입니다.":
             case "닉네임 필드를 입력해주세요.":
+            case "닉네임에 한글을 사용할 수 없습니다.":
                 nickname_label.innerText = `${errorData.message}`;
                 nickname_label.classList.add("form-error-label");
                 nickname.classList.add("form-error");
@@ -172,6 +192,7 @@ export default class SignupPage {
                 break;
             case "이미 존재하는 아이디입니다.":
             case "아이디 필드를 입력해주세요.":
+            case "아이디에 한글을 사용할 수 없습니다.":
                 userID_label.innerText = `${errorData.message}`;
                 userID_label.classList.add("form-error-label");
                 userID.classList.add("form-error");
@@ -206,5 +227,7 @@ export default class SignupPage {
 
         const signupForm = document.getElementById('signup-form');
         signupForm.addEventListener('submit', this.handleFormBtn.bind(this));
+
+        signupForm.addEventListener('keydown', (event) => this.handleEnterKey(event));
     }
 }

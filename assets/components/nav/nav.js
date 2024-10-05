@@ -1,6 +1,8 @@
 import { createModal } from '../modal/modal.js';
 import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
+import { SERVER_IP } from "../../../js/index.js";
+
 import WaitGamePage from "../../../pages/waitgame/waitgame.js";
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
@@ -12,7 +14,7 @@ let waitGamePage = null;
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
-        let response = await fetch('http://localhost:8000/api/user/profile/', {
+        let response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -24,7 +26,7 @@ export async function loadProfile() {
             const newAccessToken = await refreshAccessToken();
 
             // 새 액세스 토큰으로 다시 요청
-            response = await fetch('http://localhost:8000/api/user/profile/', {
+            response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${newAccessToken}`,
@@ -35,28 +37,28 @@ export async function loadProfile() {
         // 응답 처리
         if (response.ok) {
             const profileData = await response.json();
-            // console.log(profileData);
-            // DOM 요소에 프로필 정보 설정
-            if (profileData.img) {
-                profileImg.src = profileData.img;
+            if (profileData.image) {
+                profileImg.src = profileData.image;  // 백엔드에서 받은 이미지 URL 사용
             } else {
-                profileImg.src = "assets/images/profile.svg";
+                profileImg.src = "assets/images/profile.svg";  // 기본 이미지
             }
+            console.log('nav : ', profileData);
+            // DOM 요소에 프로필 정보 설정
 
-            if (profileData.score <= 1000) {
-                profileTier.src = `assets/icons/bronz.svg`;
+            if (profileData.score > 2000) {
+                profileTier.src = `assets/icons/dia.svg`;
             }
-            else if (profileData.score <= 1200) {
-                profileTier.src = `assets/icons/silver.svg`;
-            }
-            else if (profileData.score <= 1500) {
-                profileTier.src = `assets/icons/gold.svg`;
-            }
-            else if (profileData.score <= 2000) {
+            else if (profileData.score > 1500) {
                 profileTier.src = `assets/icons/platinum.svg`;
             }
+            else if (profileData.score > 1200) {
+                profileTier.src = `assets/icons/gold.svg`;
+            }
+            else if (profileData.score > 1000) {
+                profileTier.src = `assets/icons/silver.svg`;
+            }
             else {
-                profileTier.src = `assets/icons/dia.svg`;
+                profileTier.src = `assets/icons/bronz.svg`;
             }
 
             profileNickname.textContent = profileData.nickname;
@@ -133,7 +135,26 @@ document.addEventListener('DOMContentLoaded', () => {
         activeButton.classList.add('nav__select');
     }
 
-    logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인'));
+    // 현재 경로에 따라 active 상태 적용
+    function setActiveButtonByPathname() {
+        const currentPath = window.location.pathname;
+
+        if (currentPath === '/') {
+            setActiveNavButton(navMain);
+        } else if (currentPath === '/mypage') {
+            setActiveNavButton(navMypage);
+        } else if (currentPath === '/friend') {
+            setActiveNavButton(navFriend);
+        } else if (currentPath === '/rank') {
+            setActiveNavButton(navRank);
+        }
+    }
+
+    // 페이지가 로드되면 현재 pathname에 맞는 버튼에 active 상태 설정
+    setActiveButtonByPathname();
+
+    logoutBtn.addEventListener('click', () => showModal('정말 로그아웃하시겠습니까?', '확인', 'exit'));
+
     navMain.addEventListener('click', () => {
         disconnectSpecificWebSocket();
         router.navigate('/');
@@ -159,11 +180,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 // 모달 창 생성 및 표시 함수
-function showModal(message, buttonMsg) {
+function showModal(message, buttonMsg, icon) {
     // 모달 컴포넌트 불러오기
-    const modalHTML = createModal(message, buttonMsg);
+    const modalHTML = createModal(message, buttonMsg, icon);
 
     // 새 div 요소를 생성하여 모달을 페이지에 추가
     const modalDiv = document.createElement('div');
@@ -184,7 +204,7 @@ function showModal(message, buttonMsg) {
                 refresh_token: localStorage.getItem('refresh_token'),
             };
 
-            const response = await fetch('http://localhost:8000/api/user/account/logout/', {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/logout/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +219,7 @@ function showModal(message, buttonMsg) {
                 formData.refresh_token = newAccessToken;
 
                 // 새 액세스 토큰으로 다시 요청
-                response = await fetch('http://localhost:8000/api/user/account/logout/', {
+                response = await fetch(`https://${SERVER_IP}/api/user/account/logout/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -216,8 +236,6 @@ function showModal(message, buttonMsg) {
                 modalDiv.remove();
 
                 disconnectNotificationWebSocket();
-
-                localStorage.clear();
 
                 // 로그인 페이지로 리다이렉트
                 const router = getRouter();
@@ -259,7 +277,7 @@ export function connectNotificationWebSocket(accessToken) {
     }
 
     // 웹소켓 연결이 닫혀 있는 경우 새로 열기
-    notificationWebSocket = new WebSocket(`ws://localhost:8000/ws/user/?token=${accessToken}`);
+    notificationWebSocket = new WebSocket(`wss://${SERVER_IP}/ws/user/?token=${accessToken}`);
 
     notificationWebSocket.onopen = () => {
         console.log('알림 WebSocket 연결 성공');
@@ -351,6 +369,8 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onclose = () => {
         notificationWebSocket = null;
+        localStorage.clear();
+        router.navigate('/');
         console.log('알림 WebSocket 연결 종료');
     };
 
