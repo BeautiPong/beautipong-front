@@ -52,10 +52,9 @@
 }
 
 .friend-request-noti {
-    color: var(--refuse-button-color);
+    color: var(--sub-text-color);
     font-weight: 600;
     margin-bottom: 0.5vh;
-    margin-left: 1vw;
 
     visibility: hidden;
 }
@@ -66,6 +65,14 @@
 
 .friend-search-icon {
     cursor: pointer;
+    color: var(--main-text-color);
+}
+
+.block-friend-text.click {
+    color: var(--main-text-color);
+}
+
+.accept-friend-list.click {
     color: var(--main-text-color);
 }
 
@@ -121,14 +128,18 @@
 
 .accept-friend-list {
     cursor: pointer;
-    color: var(--main-text-color);
-    width: 3vw;
+    color: var(--sub-text-color);
+    font-size: x-large;
+    font-weight: 600;
+
+    margin-right: 0.5vw;
 }
 
 .block-friend-text {
     cursor: pointer;
-    color: var(--main-text-color);
-    width: 3vw;
+    color: var(--sub-text-color);
+    font-size: x-large;
+    font-weight: 600;
 }
 
 .friend-list-text {
