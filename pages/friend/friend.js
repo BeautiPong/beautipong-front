@@ -257,7 +257,7 @@ export default class FriendPage {
 
     // 채팅방 불러오기
     async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
-        // 메시지 보내기
+        // 채팅 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
 
@@ -275,12 +275,12 @@ export default class FriendPage {
             if(chatSocket === null)
             {
                 chatSocket = new WebSocket(
-                    `wss://${SERVER_IP}:8000/ws/chat/${roomName}/?token=${token}`
+                    `wss://${SERVER_IP}/ws/chat/${roomName}/?token=${token}`
                 );
             }
 
             chatSocket.onopen = function(e) {
-                console.log('WebSocket connection established.');
+                console.log('ChatSocket connection established.');
             };
 
             chatSocket.onmessage = function(e) {
