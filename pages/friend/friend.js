@@ -532,15 +532,19 @@ export default class FriendPage {
 
             const data = JSON.parse(e.data);
 
-            const friendReq = document.querySelector('.friend-request-box');
+            if (data.type === 'status_message') {
+                console.log("프론트에서 친구 스태이터스 ");
+            } else {
+                const friendReq = document.querySelector('.friend-request-box');
 
-            if (data.tag === 'request' && friendReq) {
-                friendReq.innerHTML = '';
-                this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-            }
-            else if (data.tag === 'accept') {
-                const router = getRouter();
-                router.navigate('/friend');
+                if (data.tag === 'request' && friendReq) {
+                    friendReq.innerHTML = '';
+                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                }
+                else if (data.tag === 'accept') {
+                    const router = getRouter();
+                    router.navigate('/friend');
+                }
             }
         };
     }
