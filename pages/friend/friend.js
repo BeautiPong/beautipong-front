@@ -204,11 +204,11 @@ export default class FriendPage {
                     const image = friend.image || '../../assets/images/profile.svg';
                     const match_cnt = friend.match_cnt;
                     const win_cnt = friend.win_cnt;
-                    const is_active = friend.is_active;
+                    const is_online = friend.is_online;
                     const score = friend.score;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, is_active, false);
+                    const friendComponent = createFriendList(image, nickname, is_online, false);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
