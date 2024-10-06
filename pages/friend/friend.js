@@ -533,7 +533,8 @@ export default class FriendPage {
             const data = JSON.parse(e.data);
 
             if (data.type === 'status_message') {
-                console.log("프론트에서 친구 스태이터스 ");
+                const friendListBox = document.querySelector('.friend-list-box');
+                this.showFriendList(friendListBox);
             } else {
                 const friendReq = document.querySelector('.friend-request-box');
 
