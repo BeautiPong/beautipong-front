@@ -313,6 +313,9 @@ export function connectNotificationWebSocket(accessToken) {
         else if (data.type === 'start_game_with_friend') {
             // alert(`${data.sender}님과 게임을 시작합니다!`);
         }
+        else if (data.type === 'status_message') {
+            console.log(data.message);
+        }
         hasNotification = true;
         updateNotificationDisplay();
     };
