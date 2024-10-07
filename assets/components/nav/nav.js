@@ -3,13 +3,14 @@ import { getRouter } from '../../../js/router.js';
 import { refreshAccessToken } from '../../../js/token.js';
 import { SERVER_IP } from "../../../js/index.js";
 
+import WaitGamePage from "../../../pages/waitgame/waitgame.js";
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
 
 let notificationWebSocket = null;
 let hasNotification = false;
-
+let waitGamePage = null;
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
@@ -288,6 +289,9 @@ export function connectNotificationWebSocket(accessToken) {
         const data = JSON.parse(event.data);
         if (data.type === 'invite_game') {
             const sender = data.sender;
+            const myNickname = data.receiver;
+            console.log("myNickname: ", myNickname);
+
             // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
             const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
 
@@ -306,15 +310,70 @@ export function connectNotificationWebSocket(accessToken) {
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
 
             confirmBtn.onclick = async function() {
-
+                waitGamePage = new WaitGamePage();
+                waitGamePage.startMatch(sender,sender);
+                modalDiv.remove();
+                const router = getRouter();
+                router.navigate('/waitgame');
+                console.log("sender: ", myNickname);
+                console.log("receiver: ", sender);
+                const message = `${myNickname}님이 초대를 수락했습니다.`;
+                notificationWebSocket.send(JSON.stringify({
+                    type: 'access_invitation',
+                    sender: myNickname,
+                    receiver: sender, // 초대를 보낸 사람
+                    message: message
+                }));
             }
 
         }
-        else if (data.type === 'start_game_with_friend') {
+        else if (data.type === 'access_invitation') {
             // alert(`${data.sender}님과 게임을 시작합니다!`);
+            const router = getRouter();
+            router.navigate('/waitgame');
+
+            const sender = data.sender;
+            const myNickname = data.receiver;
+            const message = data.message;
+            const modalHTML = createModal(`${message}`, '확인');
+
+            // 새 div 요소를 생성하여 모달을 페이지에 추가
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+
+            // 닫기 버튼에 이벤트 리스너 추가
+            const closeBtn = modalDiv.querySelector('.close');
+            closeBtn.onclick = function() {
+                modalDiv.remove();
+            };
+
+            // 확인 버튼에 이벤트 리스너 추가 (게임 초대 수락)
+            const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+
+            confirmBtn.onclick = async function() {
+                waitGamePage = new WaitGamePage();
+                waitGamePage.startMatch(sender,myNickname);
+                modalDiv.remove();
+            }
         }
-        hasNotification = true;
-        updateNotificationDisplay();
+        else if(data.type === 'navigateToGamePage')
+        {
+            if(waitGamePage === null)
+                waitGamePage = new WaitGamePage();
+
+            waitGamePage.showGameStartLoader();
+
+            setTimeout(() => {
+                if (data.room_name) {
+                    waitGamePage.navigateToGamePage(data.room_name, data.jwtToken);
+                } else {
+                    console.error('room_name is undefined');
+                }
+            }, 5000);
+        }
+        // hasNotification = true;
+        // updateNotificationDisplay();
     };
 
     notificationWebSocket.onclose = () => {
