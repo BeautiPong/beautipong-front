@@ -255,82 +255,27 @@ export default class WaitGamePage {
         }
     }
 
-    connectWebSocket(jwtToken, waitingRoom = null, roomName = null,host = null) {
-		let socketUrl;
-
-		// waitingRoom과 roomName이 있으면 해당 URL로 WebSocket 연결, 없으면 기본 URL로 연결
-		if (waitingRoom && roomName) {
-			socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
-		} else {
-			socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
-		}
-
-		// WebSocket 연결 시작
-		WaitGamePage.socket = new WebSocket(socketUrl);
-		setMatchingWebSocket(WaitGamePage.socket);
-
-		WaitGamePage.socket.onopen = () => {
-			console.log("매칭 웹소켓 연결 성공");
-		};
-
-		WaitGamePage.socket.onmessage = (e) => {
-			const data = JSON.parse(e.data);
-			console.log("Received data:", data);
-
-			// 게임 시작 이벤트 처리
-			if (data.type === 'game_start') {
-				if (data.room_name) {
-                    const startGameBtn = document.getElementById('startGameBtn');
-                    const myNickname = localStorage.getItem('nickname');
-                    console.log("data.host:",data.host);
-                    if(data.host == myNickname)
-                    {
-                        startGameBtn.classList.remove('hidden');
-                        startGameBtn.classList.add('show');
-                    }
-
-                    const guest = data.guest; // 친구의 닉네임 출력
-                    const room_name = data.room_name;
-
-                    const opponentNickname = data.host === myNickname ? guest : data.host;
-
-                    this.fetchOpponentInfo(opponentNickname); 
-                    this.hideLoader();
-
-                    document.getElementById('opponentDetails').classList.remove('hidden');
-                    document.getElementById('opponentDetails').classList.add('active');
-                    
-                    startGameBtn.addEventListener("click", (event) => {
-                        this.handleButtonClick(event, guest, room_name);
-                    });
-                    
-                    
-					WaitGamePage.socket.close();  // 매칭 컨슈머 연결 종료
-					setMatchingWebSocket(null);
-				} else {
-					console.error('room_name is undefined');
-				}
-			}
-		};
-
-		WaitGamePage.socket.onclose = (e) => {
-			console.log('매칭 웹소켓 연결 종료');
-			setMatchingWebSocket(null);
-		};
-	}
-
 
     // handleButtonClick 함수를 클래스의 메서드로 선언
-    handleButtonClick = (event, guest, room_name) => {
+    handleButtonClick = (event, data) => {
         console.log("게임 시작 버튼 클릭");
         const access_token = localStorage.getItem("access_token");
         const notificationWebSocket = connectNotificationWebSocket(access_token);
         notificationWebSocket.send(JSON.stringify({
             type: 'navigateToGamePage',
-            guest: guest, // 친구의 닉네임
-            room_name: room_name, // 방 이름
+            guest: data.guest, // 친구의 닉네임
+            room_name: data.room_name, // 방 이름
         }));
-        this.navigateToGamePage(room_name); // 여기서 this는 올바르게 바인딩됨
+        
+        this.showGameStartLoader();
+
+        setTimeout(() => {
+            if (data.room_name) {
+                this.navigateToGamePage(data.room_name, data.jwtToken);
+            } else {
+                console.error('room_name is undefined');
+            }
+        }, 5000);
     }
     
     async fetchOpponentInfo(opponentNickname) {
@@ -501,10 +446,22 @@ export default class WaitGamePage {
         const data = JSON.parse(e.data);
         console.log("Received data:", data);
 
-        if (data.type === 'game_start') {
+        if (data.type === 'game_start' && data.room_name) {
             const roomName = data.room_name;
             const myNickname = localStorage.getItem('nickname');
             const nicknames = roomName.split('_');
+            const startGameBtn = document.getElementById('startGameBtn');
+
+            if(data.host == myNickname)
+            {
+                startGameBtn.classList.remove('hidden');
+                startGameBtn.classList.add('show');
+            }
+
+            startGameBtn.addEventListener("click", (event) => {
+                this.handleButtonClick(event, data);
+            });
+
             WaitGamePage.socket.close();
             setMatchingWebSocket(null);
             const opponentNickname = nicknames[1] === myNickname ? nicknames[2] : nicknames[1];
@@ -516,16 +473,11 @@ export default class WaitGamePage {
             document.getElementById('opponentDetails').classList.remove('hidden');
             document.getElementById('opponentDetails').classList.add('active');
 
-            this.showGameStartLoader();
 
-            setTimeout(() => {
-                if (data.room_name) {
-                    this.navigateToGamePage(data.room_name, data.jwtToken);
-                } else {
-                    console.error('room_name is undefined');
-                }
-            }, 5000);
         }
+        else
+            console.error('room_name is undefined');
+		
     }
 
 

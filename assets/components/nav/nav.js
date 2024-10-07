@@ -361,7 +361,16 @@ export function connectNotificationWebSocket(accessToken) {
         {
             if(waitGamePage === null)
                 waitGamePage = new WaitGamePage();
-            waitGamePage.navigateToGamePage(data.room_name);
+
+            waitGamePage.showGameStartLoader();
+
+            setTimeout(() => {
+                if (data.room_name) {
+                    waitGamePage.navigateToGamePage(data.room_name, data.jwtToken);
+                } else {
+                    console.error('room_name is undefined');
+                }
+            }, 5000);
         }
         // hasNotification = true;
         // updateNotificationDisplay();
