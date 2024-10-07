@@ -201,11 +201,11 @@ export default class FriendPage {
                     const image = friend.image || '../../assets/images/profile.svg';
                     const match_cnt = friend.match_cnt;
                     const win_cnt = friend.win_cnt;
-                    const is_active = friend.is_active;
+                    const is_online = friend.is_online;
                     const score = friend.score;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, is_active, false);
+                    const friendComponent = createFriendList(image, nickname, is_online, false);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
@@ -529,15 +529,29 @@ export default class FriendPage {
 
             const data = JSON.parse(e.data);
 
-            const friendReq = document.querySelector('.friend-request-box');
+            if (data.type === 'status_message') {
+                if (data.type === 'status_message') {
+                    const activeClass = data.status === 'online' ? 'true' : 'false'; // 상태에 따라 activeClass 설정
+        
+                    // 친구 리스트에서 해당 친구의 상태 업데이트
+                    const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
+        
+                    if (friendStatusElement) {
+                        // 현재 상태에 따라 클래스 변경
+                        friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
+                    }
+                }
+            } else {
+                const friendReq = document.querySelector('.friend-request-box');
 
-            if (data.tag === 'request' && friendReq) {
-                friendReq.innerHTML = '';
-                this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-            }
-            else if (data.tag === 'accept') {
-                const router = getRouter();
-                router.navigate('/friend');
+                if (data.tag === 'request' && friendReq) {
+                    friendReq.innerHTML = '';
+                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                }
+                else if (data.tag === 'accept') {
+                    const router = getRouter();
+                    router.navigate('/friend');
+                }
             }
         };
     }
