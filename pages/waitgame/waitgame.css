@@ -6,6 +6,9 @@
 }
 
 .waitgame-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
     background-color: rgba(255, 255, 255, 0.3);
     width: 75vw;
     height: 90vh;
@@ -170,6 +173,52 @@
     justify-content: center;
 }
 
+
+
+/* game-container 내부 정렬 */
+.waitgame-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 모든 요소들을 수평 중앙 정렬 */
+    gap: 20px; /* 요소 사이 간격 */
+    height: 100%; /* 전체 높이를 차지하도록 설정 */
+}
+
+/* 세 요소를 가로 정렬 */
+.game-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-around; /* 요소 사이 균등 분배 */
+    flex-grow: 1; /* 가로 공간을 균등하게 분배 */
+    width: 100%; /* 컨테이너 전체 너비 사용 */
+    margin-bottom: auto; /* 하단 여백 설정 */
+}
+
+/* player-info, vs-text, opponent-info 비율 조정 */
+.player-info, .vs-text, .opponent-info {
+    flex: 1; /* 동일한 비율로 공간을 차지 */
+    max-width: 30%; /* 최대 너비 제한 */
+    text-align: center; /* 가운데 정렬 */
+}
+
+/* 게임 시작 버튼 스타일 */
+.start-game-btn {
+    margin-top: auto; /* 버튼이 가장 아래에 위치하도록 설정 */
+    padding: 15px 30px;
+    font-size: 150%;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #000;
+    border-radius: 20px;
+    color: var(--main-text-color);
+    cursor: pointer;
+    align-self: center; /* 수평 중앙 정렬 */
+}
+
+/* 버튼 hover 효과 */
+.start-game-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
 /* 게임 시작 카운트다운 텍스트 */
 .gameStartText {
     font-size: 28px;
