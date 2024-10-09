@@ -70,7 +70,9 @@ h1 {
 
 .mode-btn-img{
     width:50%;
-    height: 60%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     margin-top: 20%;
     margin-bottom: 20%;
 }
