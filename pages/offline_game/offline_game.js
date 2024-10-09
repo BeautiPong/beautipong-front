@@ -1,7 +1,7 @@
 import('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js')
 import { SERVER_IP } from "../../js/index.js";
 import { getRouter } from '../../js/router.js';
-import { createModal } from '../../assets/components/modal/modal.js';
+import { createModal, createTournamentModal } from '../../assets/components/modal/modal.js';
 
 export default class offlineGamePage {
     render() {
@@ -225,6 +225,7 @@ export default class offlineGamePage {
 
             else if (data.type === 'game_end') {
                 socket.send(JSON.stringify({ type: 'game_end_ack' }));
+                localStorage.setItem(`${currentMatch}_loser`, data.loser);
                 
                 // 경기가 끝났을 때 다음 경기 준비
                 if (currentMatch < totalMatches && matchType === 'tournament') {
@@ -235,10 +236,14 @@ export default class offlineGamePage {
                         const message = `${data.winner} 님이 ${data.win_score} : ${data.lose_score} 로 승리하셨군요! 축하드립니다 :)`;
                         showModal(message, '확인');
                     }
-                    // else if (matchType === 'tournament') {
-
-                    // }
-                    console.log(data);
+                    else if (matchType === 'tournament') {
+                        const third1 = localStorage.getItem('1_loser');
+                        const third2 = localStorage.getItem('2_loser');
+                        showTournamentModal(data.winner, data.loser, third1, third2);
+                    }
+                    localStorage.removeItem('1_loser');
+                    localStorage.removeItem('2_loser');
+                    localStorage.removeItem('3_loser');
                     cleanUp(); // 모든 경기가 끝났을 때 정리 작업 수행
                 }
             }
@@ -249,6 +254,37 @@ export default class offlineGamePage {
         {
             // 모달 컴포넌트 불러오기
             const modalHTML = createModal(message, buttonMsg, 'winer');
+
+            // 새 div 요소를 생성하여 모달을 페이지에 추가
+            const modalDiv = document.createElement('div');
+            modalDiv.innerHTML = modalHTML;
+            document.body.appendChild(modalDiv);
+
+            // 닫기 버튼에 이벤트 리스너 추가
+            const closeBtn = modalDiv.querySelector('.close');
+            closeBtn.onclick = function() {
+                modalDiv.remove();
+            };
+
+            // 확인 버튼에 이벤트 리스너 추가
+            const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+            confirmBtn.onclick = function() {
+                modalDiv.remove();
+            };
+
+            // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+            window.onclick = function(event) {
+                if (event.target == modalDiv.querySelector('.modal')) {
+                    modalDiv.remove();
+                }
+            };
+        }
+
+        // 모달 창 생성 및 표시 함수
+        function showTournamentModal(winner, second, third1, third2)
+        {
+            // 모달 컴포넌트 불러오기
+            const modalHTML = createTournamentModal(winner, second, third1, third2);
 
             // 새 div 요소를 생성하여 모달을 페이지에 추가
             const modalDiv = document.createElement('div');
