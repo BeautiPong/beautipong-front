@@ -10,10 +10,10 @@
     flex-direction: column;
     align-items: center;
     margin-bottom: 5%;
-    width: 15.5vw;
+    width: 16vw;
     height: 50vh;
     background-color: rgba(255, 255, 255, 0.8); /* 반투명 흰색 배경 */
-    border-radius: 5%;
+    border-radius: 20px;
     text-align: center;
     justify-content: center;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, .1);
@@ -22,6 +22,9 @@
 
 .offline-player-img {
     width: 60%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
     border-radius: 50%;
     margin-bottom: 10%;
     box-shadow: 4px 4px 2px 0px rgba(0, 0, 0, .1);
