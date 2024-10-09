@@ -2,7 +2,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
 }
 
 .offline-game-container {
@@ -10,11 +10,11 @@
     flex-direction: column; /* 세로 방향으로 배치 */
     justify-content: center; /* 상단 정렬 */
     align-items: center;
+
+    background-color: rgba(255, 255, 255, 0.3);
     width: 75vw;
-    height: 95vh;
-    background-color: rgba(255, 255, 255, 0.3); 
-    border-radius: 5%;
-    padding: 20px;
+    height: 90vh;
+    border-radius: 40px;
 }
 
 .offline-game-player-cards {
