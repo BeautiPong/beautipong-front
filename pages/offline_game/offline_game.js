@@ -273,27 +273,8 @@ export default class offlineGamePage {
         console.log("in before");
     });
 
-
     // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
     window.addEventListener('popstate', cleanUp);
-
-
-    const nav__logout = document.getElementById('nav__logout');
-    nav__logout.addEventListener('click', cleanUp);
-    const nav__main = document.getElementById('nav__main');
-    nav__main.addEventListener('click', cleanUp);
-    const nav__mypage = document.getElementById('nav__mypage');
-    nav__mypage.addEventListener('click', cleanUp);
-    const nav__friend = document.getElementById('nav__friend');
-    nav__friend.addEventListener('click', cleanUp);
-    const nav__rank = document.getElementById('nav__rank');
-    nav__rank.addEventListener('click', cleanUp);
-
-
-
-    // socket.onopen = function() {
-    //     console.log("WebSocket connection opened");
-    // };
 
     socket.onclose = function(event) {
         socket = null;
