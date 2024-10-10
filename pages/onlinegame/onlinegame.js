@@ -9,17 +9,30 @@ export default class OnlineGamePage {
     }
 
     // 페이지를 렌더링하는 메서드
-    render() {
-        return `
-            <div class="game-div">
-                <div class="game-container">
-                    <canvas id="gameCanvas"></canvas>
-                </div>
-            </div>
-        `;
-    }
+	render() {
+		return `
+		<div class="game-div">
+			<div id="scoreboard">
+				<div class="scoreboard__userinfo">
+					<span class="player_nickname" id="player1_nickname">player1</span>
+					<span class="player_score" id="player1_score">0</span>
+				</div>
+				<span> : </span>
+				<div class="scoreboard__userinfo">
+					<span class="player_score" id="player2_score">0</span>
+					<span class="player_nickname" id="player2_nickname">player2</span>
+				</div>
+			</div>
+			<div class="game-container">
+				<canvas id="gameCanvas"></canvas>
+			</div>
+		</div>
+		`;
+	}
 
-    // WebSocket 연결을 설정하고 게임 초기화를 담당하는 메서드
+
+
+	// WebSocket 연결을 설정하고 게임 초기화를 담당하는 메서드
     async afterRender(roomName, jwtToken) {
 	
 		if (!roomName || !jwtToken) {
@@ -183,15 +196,18 @@ export default class OnlineGamePage {
 	
 		this.socket.onmessage = (event) => {
 			const data = JSON.parse(event.data);
-	
 			// 서버에서 받은 데이터를 처리
 			if (data.type === 'assign_role') {
-				console.log("서버로부터 받은 데이터:", data);
 				this.playerRole = data.role;
 			} else if (data.type === 'game_state') {
 				this.updateGameState(data, gameinfo);
+
+				document.getElementById('player1_nickname').textContent = data.player1;
+				document.getElementById('player2_nickname').textContent = data.player2;
+				document.getElementById('player1_score').textContent = data.scores.player1;
+				document.getElementById('player2_score').textContent = data.scores.player2;
+
 			} else if (data.type === 'game_over') {
-				console.log(data);
 				const winner = data.winner;  // 게임 승자
 				const player1 = data.player1;
 				const player2 = data.player2;
