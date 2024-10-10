@@ -17,10 +17,10 @@ export default class OnlineGamePage {
 	        <!-- 조작키 표시 영역 수정 -->
 	        <div class="split-controls">
 	            <div class="left-control">
-	                <p>A (←)</p>
+	                <p>left(←)</p>
 	            </div>
 	            <div class="right-control">
-	                <p>D (→)</p>
+	                <p>right(→)</p>
 	            </div>
 	        </div>
 	    </div>
@@ -371,10 +371,10 @@ export default class OnlineGamePage {
   handleKeyPress(event) {
     let direction = null;
 
-    if (event.code === 'KeyA') {
-      direction = 'left';
-    } else if (event.code === 'KeyD') {
-      direction = 'right';
+    if (event.code === 'ArrowLeft') {
+        direction = 'left';
+    } else if (event.code === 'ArrowRight') {
+        direction = 'right';
     }
 
     // WebSocket 연결이 아직 열려 있는지 확인 후 메시지 전송
