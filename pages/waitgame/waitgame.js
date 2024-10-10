@@ -481,43 +481,6 @@ export default class WaitGamePage {
         }));
     }
 
-
-
-    handleWebSocketMessage(e) {
-        const data = JSON.parse(e.data);
-        console.log("Received data:", data);
-
-        if (data.type === 'game_start') {
-            const roomName = data.room_name;
-            const myNickname = localStorage.getItem('nickname');
-            const nicknames = roomName.split('_');
-            this.socket.close();
-            setMatchingWebSocket(null);
-            const opponentNickname = nicknames[1] === myNickname ? nicknames[2] : nicknames[1];
-
-            this.fetchOpponentInfo(opponentNickname);
-
-            this.hidematchLoader();
-
-            document.getElementById('opponentDetails').classList.remove('hidden');
-            document.getElementById('opponentDetails').classList.add('active');
-
-            this.showGameStartLoader();
-
-            setTimeout(() => {
-                if (data.room_name) {
-                    this.navigateToGamePage(data.room_name, data.jwtToken);
-                } else {
-                    console.error('room_name is undefined');
-                }
-            }, 5000);
-        }
-    }
-
-
-
-
-
     handleWebSocketMessage(e) {
         const data = JSON.parse(e.data);
         console.log("Received data:", data);
@@ -575,7 +538,6 @@ export default class WaitGamePage {
             }, 5000);
         }
     }
-
 
     async fetchOpponentInfo(opponentNickname) {
         try {
