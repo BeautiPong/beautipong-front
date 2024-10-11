@@ -219,6 +219,14 @@ export default class FriendPage {
                     const newFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(newFriendElement);
 
+                    // 아직 읽지 않은 메시지가 있나 확인
+                    // 여기에 나와 친구의 채팅방에서 내가 읽지 않은 메시지가 있는지 확인하는 api 호출
+                    const messageStatusElement = document.querySelector(`#${nickname}_message`);
+                    // NEW 문구 표시
+                    if (messageStatusElement) {
+                        messageStatusElement.style.display = 'inline';
+                    }
+
                     // 이벤트 리스너를 직접 추가
                     const chatRoomElement = newFriendElement.querySelector('.list-box');
                     chatRoomElement.addEventListener('click', () => {
@@ -261,7 +269,6 @@ export default class FriendPage {
 
         // NEW 문구 숨김
         const messageStatusElement = document.querySelector(`#${friendNickname}_message`);
-
         if (messageStatusElement) {
             messageStatusElement.style.display = 'none';  // NEW 문구 숨김
         }
@@ -562,9 +569,9 @@ export default class FriendPage {
             }
             else if (data.type === 'notify_message') {
                 const messageStatusElement = document.querySelector(`#${data.sender}_message`);
-
+                // NEW 문구 표시
                 if (messageStatusElement) {
-                    messageStatusElement.style.display = 'inline';  // NEW 문구 표시
+                    messageStatusElement.style.display = 'inline';
                 }
             }
             else {
