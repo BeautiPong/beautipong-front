@@ -9,6 +9,7 @@ import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 let chatSocket = null;
+let notificationSocket = null;
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -257,6 +258,14 @@ export default class FriendPage {
 
     // 채팅방 불러오기
     async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
+
+        // NEW 문구 숨김
+        const messageStatusElement = document.querySelector(`#${friendNickname}_message`);
+
+        if (messageStatusElement) {
+            messageStatusElement.style.display = 'none';  // NEW 문구 숨김
+        }
+
         // 채팅 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
@@ -318,6 +327,12 @@ export default class FriendPage {
                     'message': message,
                     'sender' : myname,
                     'roomName': roomName
+                }));
+                notificationSocket.send(JSON.stringify({
+                    'type': 'notify_message_sent',
+                    'sender': myname,
+                    'receiver': friendNickname,
+                    'message': '새로운 메시지가 도착했습니다!'
                 }));
                 messageInputDom.value = '';
             }
@@ -526,7 +541,7 @@ export default class FriendPage {
     async showFriendRequest() {
 
         const token = localStorage.getItem('access_token');
-        const notificationSocket = connectNotificationWebSocket(token);
+        notificationSocket = connectNotificationWebSocket(token);
 
         notificationSocket.onmessage = (e) => {
 
@@ -544,7 +559,15 @@ export default class FriendPage {
                         friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
                     }
                 }
-            } else {
+            }
+            else if (data.type === 'notify_message') {
+                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
+
+                if (messageStatusElement) {
+                    messageStatusElement.style.display = 'inline';  // NEW 문구 표시
+                }
+            }
+            else {
                 const friendReq = document.querySelector('.friend-request-box');
 
                 if (data.tag === 'request' && friendReq) {

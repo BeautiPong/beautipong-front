@@ -71,6 +71,11 @@
     background-color: var(--refuse-button-color);
 }
 
+.message-status {
+    color: var(--main-color);
+    margin-left: 1vw;
+}
+
 .block-none {
     display: none;
 
