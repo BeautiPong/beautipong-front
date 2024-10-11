@@ -2,19 +2,29 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 }
 
 .waitgame-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
     background-color: rgba(255, 255, 255, 0.3);
     width: 75vw;
     height: 90vh;
     border-radius: 40px;
+}
 
+.game-main {
     display: flex;
-    justify-content: center;
+    flex-direction: row;
     align-items: center;
-    text-align: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100%;
 }
 
 .vs-text {
@@ -170,6 +180,24 @@
     justify-content: center;
 }
 
+/* 게임 시작 버튼 스타일 */
+.start-game-btn {
+    margin-top: auto; /* 버튼이 가장 아래에 위치하도록 설정 */
+    padding: 15px 30px;
+    font-size: 150%;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 2px solid #000;
+    border-radius: 20px;
+    color: var(--main-text-color);
+    cursor: pointer;
+    align-self: center; /* 수평 중앙 정렬 */
+}
+
+/* 버튼 hover 효과 */
+.start-game-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
 /* 게임 시작 카운트다운 텍스트 */
 .gameStartText {
     font-size: 28px;

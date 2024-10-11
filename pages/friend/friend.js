@@ -6,9 +6,7 @@ import {createUserSearchModal} from '../../assets/components/user-search-modal/u
 import { getRouter } from '../../../js/router.js';
 import {createModal} from '../../assets/components/modal/modal.js';
 import {SERVER_IP} from "../../js/index.js";
-
-let chatSocket = null;
-
+import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
@@ -191,7 +189,7 @@ export default class FriendPage {
                 }
             });
             const data = await response.json();
-            
+
             if (data.friends.length > 0) {
                 // 친구가 있으면 친구 정보 표시
                 friendListBox.innerHTML = '';
@@ -203,11 +201,11 @@ export default class FriendPage {
                     const image = friend.image || '../../assets/images/profile.svg';
                     const match_cnt = friend.match_cnt;
                     const win_cnt = friend.win_cnt;
-                    const is_active = friend.is_active;
+                    const is_online = friend.is_online;
                     const score = friend.score;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, is_active, false);
+                    const friendComponent = createFriendList(image, nickname, is_online, false);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
@@ -256,7 +254,7 @@ export default class FriendPage {
 
     // 채팅방 불러오기
     async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
-        // 메시지 보내기
+        // 채팅 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
 
@@ -274,12 +272,12 @@ export default class FriendPage {
             if(chatSocket === null)
             {
                 chatSocket = new WebSocket(
-                    `wss://${SERVER_IP}:8000/ws/chat/${roomName}/?token=${token}`
+                    `wss://${SERVER_IP}/ws/chat/${roomName}/?token=${token}`
                 );
             }
 
             chatSocket.onopen = function(e) {
-                console.log('WebSocket connection established.');
+                console.log('ChatSocket connection established.');
             };
 
             chatSocket.onmessage = function(e) {
@@ -503,7 +501,7 @@ export default class FriendPage {
                                         <p class="request-btn-text">친구요청</p>
                                     </button>
                                 </div>
-                            `;  
+                            `;
 
                             sendFriendRequest(token, data.name, userFindBox);
                         } else {
@@ -525,25 +523,35 @@ export default class FriendPage {
     async showFriendRequest() {
 
         const token = localStorage.getItem('access_token');
-
-        // 웹소켓 연결 설정
-        const notificationSocket = new WebSocket(
-            `wss://${SERVER_IP}/ws/user/?token=${token}`
-        );
+        const notificationSocket = connectNotificationWebSocket(token);
 
         notificationSocket.onmessage = (e) => {
+
             const data = JSON.parse(e.data);
 
-            const friendReq = document.querySelector('.friend-request-box');
+            if (data.type === 'status_message') {
+                if (data.type === 'status_message') {
+                    const activeClass = data.status === 'online' ? 'true' : 'false'; // 상태에 따라 activeClass 설정
+        
+                    // 친구 리스트에서 해당 친구의 상태 업데이트
+                    const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
+        
+                    if (friendStatusElement) {
+                        // 현재 상태에 따라 클래스 변경
+                        friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
+                    }
+                }
+            } else {
+                const friendReq = document.querySelector('.friend-request-box');
 
-            if (data.tag === 'request' && friendReq) {
-                friendReq.innerHTML = '';
-                this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-            }
-            else if (data.tag === 'accept')
-            {
-                const router = getRouter();
-                router.navigate('/friend');
+                if (data.tag === 'request' && friendReq) {
+                    friendReq.innerHTML = '';
+                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                }
+                else if (data.tag === 'accept') {
+                    const router = getRouter();
+                    router.navigate('/friend');
+                }
             }
         };
     }
@@ -651,6 +659,7 @@ export default class FriendPage {
     }
 
     async afterRender() {
+        this.showFriendRequest();
         this.handlePage();
     }
 }

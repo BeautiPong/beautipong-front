@@ -44,6 +44,13 @@ export default class OfflineWaitGame {
 
         const container = document.querySelector('.offline-game-player-cards'); // 카드들이 들어갈 컨테이너 div
 
+        // matchType에 따른 gap 설정
+        if (matchType === '1vs1') {
+            container.style.gap = '8%'; // 1대1일 때 gap 설정
+        } else if (matchType === 'tournament') {
+            container.style.gap = '2%'; // 토너먼트일 때 gap 설정
+        }
+
         playersData.forEach((playerData, index) => {
             const playerInfo = new OfflinePlayerInfo(index + 1, playerData);
             container.insertAdjacentHTML('beforeend', playerInfo.render());
