@@ -42,9 +42,12 @@ export default class WaitGamePage {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- 게임 시작 버튼을 game-container 안에 추가 -->
                     <button class="start-game-btn hidden" id="startGameBtn">게임 시작</button>
+                    <div class="waiting-message hidden" id="waitingMessage">
+                      <p>방장이 게임 시작을 누를 때까지 잠시만 기다려주세요!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,6 +59,8 @@ export default class WaitGamePage {
             </p>
             <div id="gameStartLoader"></div>
         </div>
+
+
 
         `;
     }
@@ -496,6 +501,11 @@ export default class WaitGamePage {
                 startGameBtn.classList.remove('hidden');
                 startGameBtn.classList.add('show');
             }
+            else
+            {
+              console.log("방장이 아닙니다.");
+              document.getElementById("waitingMessage").classList.remove("hidden");
+            }
 
             startGameBtn.addEventListener("click", (event) => {
                 this.handleButtonClick(event, data);
@@ -537,6 +547,8 @@ export default class WaitGamePage {
                 }
             }, 5000);
         }
+        else
+            console.error('room_name is undefined');
     }
 
     async fetchOpponentInfo(opponentNickname) {
