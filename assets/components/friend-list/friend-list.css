@@ -75,7 +75,7 @@
     display: none;
 
     cursor: pointer;
-    color: var(--main-text-color);
+    color: var(--sub-text-color);
 }
 
 .list-container.blocked .block-none {
