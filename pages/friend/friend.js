@@ -85,6 +85,7 @@ export default class FriendPage {
 
         const accepBtn = document.querySelector('.accept-friend-list');
         const blockBtn = document.querySelector('.block-friend-text');
+        accepBtn.classList.add('click');
 
         // 친구함으로 이동 (버튼 클릭)
         if (accepBtn) {
