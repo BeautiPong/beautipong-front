@@ -36,7 +36,7 @@ export default class OauthRedirectPage {
 
 						connectNotificationWebSocket(data.access_token);
 						
-                        if (localStorage.getItem('nickname')) {
+                        if (data.nickname) {
                             document.querySelector('.nav-container').style.display = 'block';
                             router.navigate('/');
                             loadProfile();
