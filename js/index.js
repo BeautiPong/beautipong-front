@@ -57,7 +57,7 @@ updateNavVisibility();
 
 function updateNavVisibility() {
   const currentPath = window.location.pathname;
-  if (currentPath === '/login' || currentPath === '/signup' || currentPath === '/2fa' || currentPath === '/nickname') {
+  if (currentPath === '/login' || currentPath === '/signup' || currentPath === '/2fa' || currentPath === '/nickname' || currentPath === '/42oauth-redirect') {
     navContainer.style.display = 'none';
   } else {
     navContainer.style.display = 'block';
