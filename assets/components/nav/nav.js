@@ -373,12 +373,13 @@ export function connectNotificationWebSocket(accessToken) {
         const opponentNickname = localStorage.getItem('opponent');
 
         if(myNickname === data.remainder && opponentNickname!=null && opponentNickname === data.leaver){
-            // const matchingLoader = document.getElementById('matchingLoader');
             const opponentDetails = document.getElementById('opponentDetails');
             const inviteBtn = document.getElementById('inviteBtn');
             const randomBtn = document.getElementById('randomBtn');
             const startGameBtn = document.getElementById('startGameBtn');
-            if(matchingLoader !== null && inviteBtn !== null && randomBtn !== null){
+            const waitingMessage =  document.getElementById("waitingMessage");
+            
+            if(inviteBtn !== null && randomBtn !== null){
                 // matchingLoader.classList.remove('hidden');
                 // matchingLoader.classList.add('hidden');
                 opponentDetails.style.display = 'none';
@@ -386,6 +387,8 @@ export function connectNotificationWebSocket(accessToken) {
                 randomBtn.style.display = 'inline-block';
                 startGameBtn.classList.remove('show');
                 startGameBtn.classList.add('hidden');
+                waitingMessage.classList.remove('show');
+                waitingMessage.classList.add('hidden');
                 localStorage.removeItem('opponent');
              }
         }
