@@ -170,6 +170,7 @@ export default class FriendPage {
                     }
                     const router = getRouter();
                     router.navigate('/friend');
+                    // connectNotificationWebSocket(token);
                 } catch (error) {
                     console.error('Fetch error:', error);
                 }
