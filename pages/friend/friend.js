@@ -519,41 +519,27 @@ export default class FriendPage {
         });
     }
 
-    // 친구 요청 웹소켓
     async showFriendRequest() {
+        const friendReq = document.querySelector('.friend-request-box');
 
-        const token = localStorage.getItem('access_token');
-        const notificationSocket = connectNotificationWebSocket(token);
+        const notificationSocket = connectNotificationWebSocket();
 
-        notificationSocket.onmessage = (e) => {
 
-            const data = JSON.parse(e.data);
+        if (friendReq) {
+            const getNotificationsMessage = {
+                type: 'get_notifications'
+            };
 
-            if (data.type === 'status_message') {
-                if (data.type === 'status_message') {
-                    const activeClass = data.status === 'online' ? 'true' : 'false'; // 상태에 따라 activeClass 설정
-        
-                    // 친구 리스트에서 해당 친구의 상태 업데이트
-                    const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
-        
-                    if (friendStatusElement) {
-                        // 현재 상태에 따라 클래스 변경
-                        friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
-                    }
-                }
-            } else {
-                const friendReq = document.querySelector('.friend-request-box');
+            const statusMessage = {
+                type: 'notify_status_message',
+                status: 'online'
+            };
 
-                if (data.tag === 'request' && friendReq) {
-                    friendReq.innerHTML = '';
-                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-                }
-                else if (data.tag === 'accept') {
-                    const router = getRouter();
-                    router.navigate('/friend');
-                }
-            }
-        };
+            notificationSocket.send(JSON.stringify(getNotificationsMessage));
+            notificationSocket.send(JSON.stringify(statusMessage));
+
+            console.log('알림 요청 및 상태 메시지가 전송되었습니다.');
+        }
     }
 
     // 친구 차단 해제
