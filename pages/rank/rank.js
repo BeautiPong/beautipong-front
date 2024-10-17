@@ -170,15 +170,7 @@ export default class RankPage {
     updateUserRankInfo(userData) {
         const rankNumberElement = document.querySelector('.rank-number');
         const nicknameElement = document.getElementById('rank-data--nickname');
-        // const profileImg = document.querySelector('.user-rank-info-image');
-        // 유저 정보 업데이트
         nicknameElement.textContent = userData.nickname;
-
-        // if (userData.image) {
-        //     profileImg.src = userData.image;
-        // } else {
-        //     profileImg.src = "assets/images/profile.svg";  // 기본 이미지
-        // }
 
         if (!userData.rank)
             rankNumberElement.textContent = '-';
