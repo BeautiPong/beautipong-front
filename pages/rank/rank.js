@@ -56,7 +56,7 @@ export default class RankPage {
                 <section class="rank__right-section">
                     <div class="rank__right-section__user-info">
                         <div class="rank__right-section__user-info--img">
-                            <img src="assets/images/profile.svg" alt="profile_img"/>
+                            <img src="assets/images/profile.svg" alt="profile_img" id="rank__right-section__user-image"/>
                         </div>
                         <div class="rank__right-section__user-info--text">
                             <div class="rank-star-container">
@@ -170,9 +170,16 @@ export default class RankPage {
     updateUserRankInfo(userData) {
         const rankNumberElement = document.querySelector('.rank-number');
         const nicknameElement = document.getElementById('rank-data--nickname');
-
+        // const profileImg = document.querySelector('.user-rank-info-image');
         // 유저 정보 업데이트
         nicknameElement.textContent = userData.nickname;
+
+        // if (userData.image) {
+        //     profileImg.src = userData.image;
+        // } else {
+        //     profileImg.src = "assets/images/profile.svg";  // 기본 이미지
+        // }
+
         if (!userData.rank)
             rankNumberElement.textContent = '-';
         else
@@ -215,12 +222,20 @@ export default class RankPage {
                 const data = await response.json();
                 const winRate = data.win_rate;
                 const lose_cnt = data.match_cnt - data.win_cnt;
+                const user_image = data.image;
 
                 const gameCountElement = document.querySelector('.user-dash-board__rate--text span:nth-of-type(1)');
                 const gameStateElement = document.querySelector('.user-dash-board__rate--text span:nth-of-type(2)');
+                const userImage = document.getElementById('rank__right-section__user-image');
                 gameCountElement.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${lose_cnt}패`;
                 gameStateElement.textContent = `승률 ${winRate}%`
-    
+
+                if (user_image) {
+                    userImage.src = user_image;
+                } else {
+                    userImage.src = "assets/images/profile.svg";  // 기본 이미지
+                }
+
                 // 새 차트 생성
                 this.stateChartInstance = new Chart(ctx, {
                     type: 'bar',
