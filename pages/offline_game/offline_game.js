@@ -19,6 +19,17 @@ export default class offlineGamePage {
                             <span class="player_nickname" id="player2_nickname"></span>
                         </div>
                     </div>
+                    <!-- 조작키 표시 영역 -->
+                    <div class="controls">
+                        <div class="left-controls">
+                            <p>W (↑)</p>
+                            <p>S (↓)</p>
+                        </div>
+                        <div class="right-controls">
+                            <p>O (↑)</p>
+                            <p>L (↓)</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
