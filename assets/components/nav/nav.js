@@ -4,6 +4,7 @@ import { refreshAccessToken } from '../../../js/token.js';
 import { SERVER_IP } from "../../../js/index.js";
 
 import WaitGamePage from "../../../pages/waitgame/waitgame.js";
+import FriendPage from "../../../pages/friend/friend.js";
 const profileImg = document.getElementById('nav-profile__img');
 const profileTier = document.getElementById('nav-profile__info__tier');
 const profileNickname = document.getElementById('nav-profile__info__nickname');
@@ -169,6 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     navFriend.addEventListener('click', () => {
         disconnectSpecificWebSocket();
+        hasNotification = false;
+        updateNotificationDisplay();
         router.navigate('/friend');
         setActiveNavButton(navFriend);
     });
@@ -372,8 +375,39 @@ export function connectNotificationWebSocket(accessToken) {
                 }
             }, 5000);
         }
-        // hasNotification = true;
-        // updateNotificationDisplay();
+        else if (data.type === 'status_message') {
+            const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
+            if (friendStatusElement) {
+                const activeClass = data.status === 'online' ? 'true' : 'false';
+                friendStatusElement.className = `list-online-status ${activeClass}`;
+            }
+        }
+        else if (data.type === 'request_fr') {
+            if (window.location.pathname === '/friend') {
+                const friendReqBox = document.querySelector('.friend-request-box');
+                if (friendReqBox) {
+                    friendReqBox.innerHTML = '';
+                    const friendPageInstance = new FriendPage();
+                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+                }
+            } else{
+                hasNotification = true;
+                updateNotificationDisplay();
+            }
+
+            const friendReq = document.querySelector('.friend-request-box');
+
+            if (data.tag === 'request' && friendReq) {
+                friendReq.innerHTML = '';
+
+                const friendPageInstance = new FriendPage();
+                friendPageInstance.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+            }
+            else if (data.tag === 'accept') {
+                const router = getRouter();
+                router.navigate('/friend');
+            }
+        }
     };
 
     notificationWebSocket.onclose = () => {
