@@ -11,43 +11,75 @@
     color: var(--main-color);
     font-size: 26px; /* Adjust the font size for better visibility */
     z-index: 10;
-
+  
     box-sizing: border-box;
     padding: 0 1%;
-}
-
-.scoreboard__userinfo {
+  }
+  
+  .scoreboard__userinfo {
     display: flex;
     justify-content: center;
     align-items: center;
     width: 40%;
     height: 100%;
-}
-
-.player_nickname {
+  }
+  
+  .player_nickname {
     text-align: center;
     height: 80%;
     flex: 1.5;
     border-radius: 20px;
     font-weight: 500;
-
+  
     background-color: var(--main-color);
-    color: #9CD3E7;
-
+    color: #9cd3e7;
+  
     padding-top: 6%;
-}
-
-.player_score {
+  }
+  
+  .player_score {
     flex: 1;
-
+  
     font-size: 40px;
     font-weight: 600;
-}
-
-#player1_score {
+  }
+  
+  #player1_score {
     text-align: right;
-}
-
-#player2_score {
+  }
+  
+  #player2_score {
     text-align: left;
-}
+  }
+  
+  .controls {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transform: translateY(-50%);
+    z-index: 5;
+  }
+  
+  .left-controls,
+  .right-controls {
+    background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경으로 대비를 높임 */
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 24px;
+    color: #ffffff; /* 흰색 텍스트 */
+    text-align: center;
+    width: 100px;
+  }
+  
+  .left-controls {
+    position: absolute;
+    left: 10%;
+  }
+  
+  .right-controls {
+    position: absolute;
+    right: 10%;
+  }
