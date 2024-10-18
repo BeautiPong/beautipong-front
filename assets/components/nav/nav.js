@@ -318,6 +318,8 @@ export function connectNotificationWebSocket(accessToken) {
                 modalDiv.remove();
                 const router = getRouter();
                 router.navigate('/waitgame');
+                document.getElementById("waitingMessage").classList.remove("hidden");
+
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
                 const message = `${myNickname}님이 초대를 수락했습니다.`;
