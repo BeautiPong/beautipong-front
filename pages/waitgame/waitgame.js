@@ -217,7 +217,10 @@ export default class WaitGamePage {
         const nav__friend = document.getElementById('nav__friend');
         nav__friend.addEventListener('click', cleanUp);
         const nav__rank = document.getElementById('nav__rank');
-        nav__rank.addEventListener('click', cleanUp);    
+        nav__rank.addEventListener('click', cleanUp);
+
+        window.addEventListener('popstate', cleanUp);
+        window.addEventListener('beforeunload', cleanUp);
     }
 
     async startRandomMatch() {
