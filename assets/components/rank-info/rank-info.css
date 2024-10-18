@@ -62,3 +62,9 @@
 	height: 50%;
 	padding-left: 1%;
 }
+
+.user-rank-info-image {
+    height: auto;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+}
