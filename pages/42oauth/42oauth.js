@@ -6,7 +6,7 @@ import { SERVER_IP } from "../../js/index.js";
 export default class OauthRedirectPage {
     render() {
         return `
-            <h1></h1>
+            <h1 style="display: flex; justify-content: center; align-items: center; height: 100vh;">Loading...</h1>
         `;
     }
 
@@ -36,7 +36,7 @@ export default class OauthRedirectPage {
 
 						connectNotificationWebSocket(data.access_token);
 						
-                        if (localStorage.getItem('nickname')) {
+                        if (data.nickname) {
                             document.querySelector('.nav-container').style.display = 'block';
                             router.navigate('/');
                             loadProfile();
@@ -57,8 +57,8 @@ export default class OauthRedirectPage {
     }
 
 
-     // 모달 창 생성 및 표시 함수
-     showModal(message, buttonMsg) {
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
         // 모달 컴포넌트 불러오기
         const modalHTML = createModal(message, buttonMsg);
 
