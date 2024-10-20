@@ -59,7 +59,18 @@ export default class OnlineGamePage {
 		}
 
 		this.initGame(gameinfo); // 게임 초기화 메서드 호출
-		this.connectWebSocket(roomName, jwtToken, gameinfo); // WebSocket 연결 설정
+		this.connectWebSocket(roomName, jwtToken, gameinfo);
+
+		window.addEventListener('popstate', () => {
+			this.handlePopState();
+		});
+
+		window.onbeforeunload = () => {
+			this.disconnectWebSocket();
+		};
+	}
+	handlePopState() {
+		this.disconnectWebSocket();
 	}
 
     // 게임을 초기화하는 메서드
