@@ -65,14 +65,20 @@ z-index: 5;
 
 .left-controls,
 .right-controls {
-background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경으로 대비를 높임 */
+background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경으로 대비를 높임 */
 padding: 20px;
 border-radius: 10px;
-font-size: 24px;
-color: #ffffff; /* 흰색 텍스트 */
+font-size: 20px;
+color: var(--main-color);
 text-align: center;
-width: 100px;
+width: 80px;
 }
+
+.left-controls p:first-of-type,
+.right-controls p:first-of-type {
+  margin-bottom: 10px;
+}
+
 
 .left-controls {
 position: absolute;
