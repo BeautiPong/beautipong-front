@@ -25,6 +25,15 @@ export default class OnlineGamePage {
 			</div>
 			<div class="game-container">
 				<canvas id="gameCanvas"></canvas>
+				<!-- 조작키 표시 영역 수정 -->
+				<div class="split-controls">
+					<div class="left-control">
+						<p>left (←)</p>
+					</div>
+					<div class="right-control">
+						<p>right (→)</p>
+					</div>
+				</div>
 			</div>
 		</div>
 		`;
@@ -314,9 +323,9 @@ export default class OnlineGamePage {
 	handleKeyPress(event) {
 		let direction = null;
 	
-		if (event.code === 'KeyA') {
+		if (event.code === 'ArrowLeft') {
 			direction = 'left';
-		} else if (event.code === 'KeyD') {
+		} else if (event.code === 'ArrowRight') {
 			direction = 'right';
 		}
 	
