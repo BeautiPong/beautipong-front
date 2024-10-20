@@ -72,21 +72,19 @@ canvas {
 .split-controls {
     position: absolute;
     bottom: 10%; /* 하단에서 10% 위치에 배치 */
-    left: 50%;
-    transform: translateX(-50%);
     display: flex;
-    justify-content: space-between;
-    width: 200px;
+    justify-content: center;
+    width: 100%;
     z-index: 10;
-  }
-  
-  .left-control, .right-control {
-    background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+}
+
+.left-control, .right-control {
+    background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경 */
     padding: 10px 20px;
     border-radius: 10px;
-    font-size: 18px;
-    color: #ffffff;
+    font-size: 20px;
+    color: var(--main-color);
     text-align: center;
     width: 90px;
     margin: 0 10px;
-  }
+}

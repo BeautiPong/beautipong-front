@@ -28,10 +28,10 @@ export default class OnlineGamePage {
 				<!-- 조작키 표시 영역 수정 -->
 				<div class="split-controls">
 					<div class="left-control">
-						<p>left(←)</p>
+						<p>left (←)</p>
 					</div>
 					<div class="right-control">
-						<p>right(→)</p>
+						<p>right (→)</p>
 					</div>
 				</div>
 			</div>
