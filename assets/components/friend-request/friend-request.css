@@ -5,21 +5,20 @@
     align-items: center;
 
     background-color: rgba(255,255,255, 0.4);
-    width: 35vw;
+    width: 30vw;
     height: 8vh;
     border-radius: 20px;
 
-    transition: border 0.3s ease;
+    /* transition: border 0.3s ease; */
     box-sizing: border-box;
 
     margin-bottom: 0.5vh;
 }
 
-.request-container:hover {
+/* .request-container:hover {
     background-color: rgba(255,255,255, 0.7);
-    /* border: 5px solid var(--refuse-button-color); */
     border: 5px solid var(--sub-text-color);
-}
+} */
 
 .request-box {
     display: flex;
@@ -35,9 +34,11 @@
     border-radius: 50%;
 
     width: 55px;
-    height: 55px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 
-    margin-right: 1vw;
+    /* margin-right: 1vw; */
 }
 
 .nickname {
@@ -54,7 +55,7 @@
     border-radius: 50%;
     display: inline-block;
     
-    margin-right: 9vw;
+    margin-right: 5vw;
 }
 
 .online-status.true {
@@ -67,34 +68,42 @@
 
 .request-accept-btn {
     border: 3px solid var(--main-color);
+    background-color: rgba(110, 208, 135, 0.6);
 
-    width: 4.5vw;
+    width: 4vw;
     height: 5vh;
     border-radius: 20px;
     cursor: pointer;
 
-    margin-right: 1vw;
+    margin-right: 0.5vw;
+}
+
+.request-accept-btn:hover {
+    background-color: var(--accept-button-color);
 }
 
 .accept-text {
-    color: var(--sub-text-color);
+    color: var(--main-color);
     font-weight: 500;
     font-size: 1vw;
 }
 
 .request-refuse-btn {
     border: 3px solid var(--main-color);
+    background-color: rgba(255, 137, 125, 0.7);
 
-    width: 4.5vw;
+    width: 4vw;
     height: 5vh;
     border-radius: 20px;
     cursor: pointer;
+}
 
-    margin-left: auto;
+.request-refuse-btn:hover {
+    background-color: var(--refuse-button-color);
 }
 
 .refuse-text {
-    color: var(--sub-text-color);
+    color: var(--main-color);
     font-weight: 500;
     font-size: 1vw;
 }
