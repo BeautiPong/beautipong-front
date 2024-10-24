@@ -1,53 +1,91 @@
 #scoreboard {
-    position: absolute;
-    top: 15%; /* Adjust the spacing from the top */
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 35%; /* Increase the width for better spacing */
-    height: 5%;
-    color: var(--main-color);
-    font-size: 26px; /* Adjust the font size for better visibility */
-    z-index: 10;
+  position: absolute;
+  top: 15%; /* Adjust the spacing from the top */
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 35%; /* Increase the width for better spacing */
+  height: 5%;
+  color: var(--main-color);
+  font-size: 26px; /* Adjust the font size for better visibility */
+  z-index: 10;
 
-    box-sizing: border-box;
-    padding: 0 1%;
+  box-sizing: border-box;
+  padding: 0 1%;
 }
 
 .scoreboard__userinfo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40%;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40%;
+  height: 100%;
 }
 
 .player_nickname {
-    text-align: center;
-    height: 80%;
-    flex: 1.5;
-    border-radius: 20px;
-    font-weight: 500;
+  text-align: center;
+  height: 80%;
+  flex: 1.5;
+  border-radius: 20px;
+  font-weight: 500;
 
-    background-color: var(--main-color);
-    color: #9CD3E7;
+  background-color: var(--main-color);
+  color: #9CD3E7;
 
-    padding-top: 6%;
+  padding-top: 6%;
 }
 
 .player_score {
-    flex: 1;
+  flex: 1;
 
-    font-size: 40px;
-    font-weight: 600;
+  font-size: 40px;
+  font-weight: 600;
 }
 
 #player1_score {
-    text-align: right;
+  text-align: right;
 }
 
 #player2_score {
-    text-align: left;
+  text-align: left;
+}
+
+.controls {
+position: absolute;
+top: 50%;
+width: 100%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+transform: translateY(-50%);
+z-index: 5;
+}
+
+.left-controls,
+.right-controls {
+background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경으로 대비를 높임 */
+padding: 20px;
+border-radius: 10px;
+font-size: 20px;
+color: var(--main-color);
+text-align: center;
+width: 80px;
+}
+
+.left-controls p:first-of-type,
+.right-controls p:first-of-type {
+  margin-bottom: 10px;
+}
+
+
+.left-controls {
+position: absolute;
+left: 10%;
+}
+
+.right-controls {
+position: absolute;
+right: 10%;
 }
