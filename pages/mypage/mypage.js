@@ -208,6 +208,7 @@ export default class MyPage {
                 localStorage.setItem("img", updatedData.image_url);
                 loadProfile();
                 await this.myPageloadProfile();
+                await this.loadRecentGame();
                 this.showModal('프로필 이미지가 성공적으로 변경되었습니다.', '확인');
             } else {
                 const errorData = await response.json();
@@ -281,7 +282,8 @@ export default class MyPage {
                 localStorage.setItem('refresh_token', data.refresh_token);
 
                 loadProfile();
-                this.myPageloadProfile();
+                await this.myPageloadProfile();
+                await this.loadRecentGame();
                 modalDiv.remove();
             } else {
                 console.error('닉네임 변경 실패:', response.status);
