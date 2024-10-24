@@ -53,9 +53,16 @@
     height: 20px;
     border-radius: 50%;
     display: inline-block;
-    background-color: var(--accept-button-color);
-
+    
     margin-right: 9vw;
+}
+
+.online-status.true {
+    background-color: var(--accept-button-color);
+}
+
+.online-status.false {
+    background-color: var(--refuse-button-color);
 }
 
 .request-accept-btn {
