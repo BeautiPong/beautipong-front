@@ -9,6 +9,7 @@ import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 
 let chatSocket = null;
+let notificationSocket = null;
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
@@ -218,6 +219,14 @@ export default class FriendPage {
                     const newFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(newFriendElement);
 
+                    // 아직 읽지 않은 메시지가 있나 확인
+                    // 여기에 나와 친구의 채팅방에서 내가 읽지 않은 메시지가 있는지 확인하는 api 호출
+                    const messageStatusElement = document.querySelector(`#${nickname}_message`);
+                    // NEW 문구 표시
+                    if (messageStatusElement) {
+                        messageStatusElement.style.display = 'inline';
+                    }
+
                     // 이벤트 리스너를 직접 추가
                     const chatRoomElement = newFriendElement.querySelector('.list-box');
                     chatRoomElement.addEventListener('click', () => {
@@ -257,6 +266,13 @@ export default class FriendPage {
 
     // 채팅방 불러오기
     async loadChatRoom(roomName, myname, token, friendNickname, image, match_cnt, win_cnt, score) {
+
+        // NEW 문구 숨김
+        const messageStatusElement = document.querySelector(`#${friendNickname}_message`);
+        if (messageStatusElement) {
+            messageStatusElement.style.display = 'none';  // NEW 문구 숨김
+        }
+
         // 채팅 메시지 보내기
         try {
             const chatContainer = document.querySelector('.chat-box');
@@ -318,6 +334,12 @@ export default class FriendPage {
                     'message': message,
                     'sender' : myname,
                     'roomName': roomName
+                }));
+                notificationSocket.send(JSON.stringify({
+                    'type': 'notify_message_sent',
+                    'sender': myname,
+                    'receiver': friendNickname,
+                    'message': '새로운 메시지가 도착했습니다!'
                 }));
                 messageInputDom.value = '';
             }
@@ -526,7 +548,7 @@ export default class FriendPage {
     async showFriendRequest() {
 
         const token = localStorage.getItem('access_token');
-        const notificationSocket = connectNotificationWebSocket(token);
+        notificationSocket = connectNotificationWebSocket(token);
 
         notificationSocket.onmessage = (e) => {
 
@@ -535,16 +557,24 @@ export default class FriendPage {
             if (data.type === 'status_message') {
                 if (data.type === 'status_message') {
                     const activeClass = data.status === 'online' ? 'true' : 'false'; // 상태에 따라 activeClass 설정
-        
+
                     // 친구 리스트에서 해당 친구의 상태 업데이트
                     const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
-        
+
                     if (friendStatusElement) {
                         // 현재 상태에 따라 클래스 변경
                         friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
                     }
                 }
-            } else {
+            }
+            else if (data.type === 'notify_message') {
+                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
+                // NEW 문구 표시
+                if (messageStatusElement) {
+                    messageStatusElement.style.display = 'inline';
+                }
+            }
+            else {
                 const friendReq = document.querySelector('.friend-request-box');
 
                 if (data.tag === 'request' && friendReq) {

@@ -11,6 +11,7 @@ export function createFriendList(image, nickname, is_active, isBlocked) {
                 <div class="name-status">
                     <p class="list-nickname">${nickname}</p>
                     <p class="list-online-status ${activeClass}" id="${nickname}" ></p>
+                    <p class="message-status" id="${nickname}_message" style="display: none;"> NEW✨</p>
                 </div>
                 ${blockText}
         </div>
