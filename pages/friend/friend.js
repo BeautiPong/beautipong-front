@@ -226,6 +226,7 @@ export default class FriendPage {
                     });
                 });
             } else {
+                friendListBox.classList.add('friend-list-box');
                 friendListBox.innerHTML = '<p>친구가 없습니다..</p>';
             }
         } catch (error) {
@@ -623,7 +624,7 @@ export default class FriendPage {
                 });
 
             } else {
-                // 차단된 친구가 없으면 다음 문구 표시
+                friendListBox.classList.add('friend-list-box');
                 friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
             }
         } catch (error) {
