@@ -46,7 +46,7 @@ export default class WaitGamePage {
                     <!-- 게임 시작 버튼을 game-container 안에 추가 -->
                     <button class="start-game-btn hidden" id="startGameBtn">게임 시작</button>
                     <div class="waiting-message hidden" id="waitingMessage">
-                      <p>방장이 게임 시작을 누를 때까지 잠시만 기다려주세요!</p>
+                      <p>방장이 들어올 때 까지 잠시만 기다려주세요!</p>
                     </div>
                 </div>
             </div>
@@ -59,9 +59,6 @@ export default class WaitGamePage {
             </p>
             <div id="gameStartLoader"></div>
         </div>
-
-
-
         `;
     }
 
@@ -197,6 +194,39 @@ export default class WaitGamePage {
         });
 
         this.loadUserInfo();
+
+        function cleanUp() {
+          if(localStorage.getItem('opponent') === null) return;
+    
+          console.log('클린업 함수 실행');
+          const access_token = localStorage.getItem('access_token');
+          const notificationWebSocket = connectNotificationWebSocket(access_token);
+          const myNickname = localStorage.getItem('nickname');
+          const opponentNickname = localStorage.getItem('opponent');
+          console.log("opponentNickname: ", opponentNickname);
+          notificationWebSocket.send(
+            JSON.stringify({
+              type: 'leaveWaitingRoom',
+              leaver: myNickname, // 내 닉네임
+              remainder: opponentNickname, // 친구의 닉네임
+            })
+          );
+          localStorage.removeItem('opponent');
+        }
+    
+        const nav__logout = document.getElementById('nav__logout');
+        nav__logout.addEventListener('click', cleanUp);
+        const nav__main = document.getElementById('nav__main');
+        nav__main.addEventListener('click', cleanUp);
+        const nav__mypage = document.getElementById('nav__mypage');
+        nav__mypage.addEventListener('click', cleanUp);
+        const nav__friend = document.getElementById('nav__friend');
+        nav__friend.addEventListener('click', cleanUp);
+        const nav__rank = document.getElementById('nav__rank');
+        nav__rank.addEventListener('click', cleanUp);
+
+        window.addEventListener('popstate', cleanUp);
+        window.addEventListener('beforeunload', cleanUp);
     }
 
     async startRandomMatch() {
@@ -505,9 +535,15 @@ export default class WaitGamePage {
             if (data.host == myNickname) {
                 startGameBtn.classList.remove('hidden');
                 startGameBtn.classList.add('show');
-            } else {
-                console.log("방장이 아닙니다.");
-                document.getElementById("waitingMessage").classList.remove("hidden");
+
+            }
+            else
+            {
+              console.log("방장이 아닙니다.");
+            //   document.getElementById("waitingMessage").classList.remove("hidden");
+            const messageParagraph = document.querySelector('#waitingMessage p');
+
+            messageParagraph.textContent = "방장이 게임 시작을 누를 때까지 잠시만 기다려주세요!";
             }
 
             startGameBtn.addEventListener("click", (event) => {

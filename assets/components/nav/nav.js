@@ -295,11 +295,15 @@ export function connectNotificationWebSocket(accessToken) {
             const myNickname = data.receiver;
             console.log("myNickname: ", myNickname);
 
+            const modalId = 'game-invite-modal'; // 모달에 고유 id를 부여
+            if (document.getElementById(modalId)) 
+                return;
             // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
             const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
 
             // 새 div 요소를 생성하여 모달을 페이지에 추가
             const modalDiv = document.createElement('div');
+            modalDiv.id = modalId;
             modalDiv.innerHTML = modalHTML;
             document.body.appendChild(modalDiv);
 
@@ -318,6 +322,8 @@ export function connectNotificationWebSocket(accessToken) {
                 modalDiv.remove();
                 const router = getRouter();
                 router.navigate('/waitgame');
+                document.getElementById("waitingMessage").classList.remove("hidden");
+                localStorage.setItem('opponent', sender);
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
                 const message = `${myNickname}님이 초대를 수락했습니다.`;
@@ -357,6 +363,7 @@ export function connectNotificationWebSocket(accessToken) {
             confirmBtn.onclick = async function() {
                 waitGamePage = new WaitGamePage();
                 waitGamePage.startMatch(sender,myNickname);
+                localStorage.setItem('opponent', sender);
                 modalDiv.remove();
             }
         }
@@ -374,6 +381,32 @@ export function connectNotificationWebSocket(accessToken) {
                     console.error('room_name is undefined');
                 }
             }, 5000);
+        }
+        else if (data.type === 'leaveWaitingRoom') {
+            console.log('leaveWaitingRoom');
+            const myNickname = localStorage.getItem('nickname');
+            const opponentNickname = localStorage.getItem('opponent');
+    
+            if(myNickname === data.remainder && opponentNickname!=null && opponentNickname === data.leaver){
+                const opponentDetails = document.getElementById('opponentDetails');
+                const inviteBtn = document.getElementById('inviteBtn');
+                const randomBtn = document.getElementById('randomBtn');
+                const startGameBtn = document.getElementById('startGameBtn');
+                const waitingMessage =  document.getElementById("waitingMessage");
+                
+                if(inviteBtn !== null && randomBtn !== null){
+                    // matchingLoader.classList.remove('hidden');
+                    // matchingLoader.classList.add('hidden');
+                    opponentDetails.style.display = 'none';
+                    inviteBtn.style.display = 'inline-block';
+                    randomBtn.style.display = 'inline-block';
+                    startGameBtn.classList.remove('show');
+                    startGameBtn.classList.add('hidden');
+                    waitingMessage.classList.remove('show');
+                    waitingMessage.classList.add('hidden');
+                    localStorage.removeItem('opponent');
+                 }
+            }
         }
         else if (data.type === 'status_message') {
             const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
