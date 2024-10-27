@@ -295,11 +295,15 @@ export function connectNotificationWebSocket(accessToken) {
             const myNickname = data.receiver;
             console.log("myNickname: ", myNickname);
 
+            const modalId = 'game-invite-modal'; // 모달에 고유 id를 부여
+            if (document.getElementById(modalId)) 
+                return;
             // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
             const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
 
             // 새 div 요소를 생성하여 모달을 페이지에 추가
             const modalDiv = document.createElement('div');
+            modalDiv.id = modalId;
             modalDiv.innerHTML = modalHTML;
             document.body.appendChild(modalDiv);
 
