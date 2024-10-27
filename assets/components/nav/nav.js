@@ -318,6 +318,7 @@ export function connectNotificationWebSocket(accessToken) {
                 modalDiv.remove();
                 const router = getRouter();
                 router.navigate('/waitgame');
+                document.getElementById("waitingMessage").classList.remove("hidden");
                 localStorage.setItem('opponent', sender);
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
