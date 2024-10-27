@@ -66,9 +66,8 @@ export default class FriendPage {
                 data.friends.forEach(friend => {
                     const image = friend.image || '../../assets/images/profile.svg';
                     const nickname = friend.nickname;
-                    const is_online = friend.is_online;
 
-                    this.updateFriendRequest(friendReq, image, nickname, is_online);
+                    this.updateFriendRequest(friendReq, image, nickname);
 
                 });
             } else {
@@ -124,11 +123,11 @@ export default class FriendPage {
     }
 
     // 친구 요청 확인
-    async updateFriendRequest(friendReq, image, sender, is_online) {
+    async updateFriendRequest(friendReq, image, sender) {
         const token = localStorage.getItem('access_token');
 
         const requestContainer = document.createElement('div');
-        requestContainer.innerHTML = createFriendRequest(image, sender, is_online);
+        requestContainer.innerHTML = createFriendRequest(image, sender);
         friendReq.appendChild(requestContainer);
 
         const reqNotMsg = document.querySelector('.friend-request-noti');

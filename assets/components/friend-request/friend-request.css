@@ -38,7 +38,7 @@
     aspect-ratio: 1 / 1;
     object-fit: cover;
 
-    /* margin-right: 1vw; */
+    margin-left: 1vw;
 }
 
 .nickname {
@@ -49,21 +49,8 @@
     margin-right: 0.5vw;
 }
 
-.online-status {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: inline-block;
-    
-    margin-right: 5vw;
-}
-
-.online-status.true {
-    background-color: var(--accept-button-color);
-}
-
-.online-status.false {
-    background-color: var(--refuse-button-color);
+.friend-accept-refuse-btn {
+    margin-left: 5vw;
 }
 
 .request-accept-btn {

@@ -22,7 +22,6 @@
 .list-box {
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-items: center;
 
     width: 90%;
@@ -37,7 +36,8 @@
     aspect-ratio: 1 / 1;
     object-fit: cover;
 
-    margin-right: 1vw;
+    margin-left: 1vw;
+    margin-right: 2vw;
 }
 
 .name-status {
