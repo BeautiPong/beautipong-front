@@ -188,6 +188,39 @@ export default class WaitGamePage {
         });
 
         this.loadUserInfo();
+
+        function cleanUp() {
+          if(localStorage.getItem('opponent') === null) return;
+    
+          console.log('클린업 함수 실행');
+          const access_token = localStorage.getItem('access_token');
+          const notificationWebSocket = connectNotificationWebSocket(access_token);
+          const myNickname = localStorage.getItem('nickname');
+          const opponentNickname = localStorage.getItem('opponent');
+          console.log("opponentNickname: ", opponentNickname);
+          notificationWebSocket.send(
+            JSON.stringify({
+              type: 'leaveWaitingRoom',
+              leaver: myNickname, // 내 닉네임
+              remainder: opponentNickname, // 친구의 닉네임
+            })
+          );
+          localStorage.removeItem('opponent');
+        }
+    
+        const nav__logout = document.getElementById('nav__logout');
+        nav__logout.addEventListener('click', cleanUp);
+        const nav__main = document.getElementById('nav__main');
+        nav__main.addEventListener('click', cleanUp);
+        const nav__mypage = document.getElementById('nav__mypage');
+        nav__mypage.addEventListener('click', cleanUp);
+        const nav__friend = document.getElementById('nav__friend');
+        nav__friend.addEventListener('click', cleanUp);
+        const nav__rank = document.getElementById('nav__rank');
+        nav__rank.addEventListener('click', cleanUp);
+
+        window.addEventListener('popstate', cleanUp);
+        window.addEventListener('beforeunload', cleanUp);
     }
 
     async startRandomMatch() {
