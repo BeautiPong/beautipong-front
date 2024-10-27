@@ -11,6 +11,15 @@ import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js
 let chatSocket = null;
 let notificationSocket = null;
 
+// chatSocket 연결 종료 함수
+function closeChatSocket() {
+    if (chatSocket) {
+        chatSocket.close();
+        chatSocket = null;  // 소켓을 닫은 후 변수 초기화
+        console.log("Chat socket closed by user action.");
+    }
+}
+
 // MainPage 클래스를 상속하는 새로운 클래스 정의
 export default class FriendPage {
     // render 메서드를 정의하여 HTML 콘텐츠를 반환
@@ -93,6 +102,7 @@ export default class FriendPage {
         // 친구함으로 이동 (버튼 클릭)
         if (accepBtn) {
             accepBtn.addEventListener('click', async () => {
+                closeChatSocket();
                 accepBtn.classList.add('click');
                 blockBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
@@ -105,6 +115,7 @@ export default class FriendPage {
         // 차단함으로 이동 (버튼 클릭)
         if (blockBtn) {
             blockBtn.addEventListener('click', async () => {
+                closeChatSocket();
                 blockBtn.classList.add('click');
                 accepBtn.classList.remove('click');
                 friendListBox.innerHTML = '';
@@ -118,6 +129,7 @@ export default class FriendPage {
         const searchBtn = document.querySelector('.friend-search-icon');
         if (searchBtn) {
             searchBtn.addEventListener('click', async () => {
+                closeChatSocket();
                 this.showUserSearchModal();
                 this.showFriendRequest();
             });
@@ -199,7 +211,7 @@ export default class FriendPage {
                 friendListBox.innerHTML = '';
                 friendListBox.classList.remove('friend-list-box');
 
-                data.friends.forEach(friend => {
+                for (const friend of data.friends) {
 
                     const nickname = friend.nickname;
                     const image = friend.image || '../../assets/images/profile.svg';
@@ -219,20 +231,37 @@ export default class FriendPage {
                     const newFriendElement = tempElement.firstElementChild;
                     friendListBox.appendChild(newFriendElement);
 
-                    // 아직 읽지 않은 메시지가 있나 확인
-                    // 여기에 나와 친구의 채팅방에서 내가 읽지 않은 메시지가 있는지 확인하는 api 호출
-                    const messageStatusElement = document.querySelector(`#${nickname}_message`);
-                    // NEW 문구 표시
-                    if (messageStatusElement) {
-                        messageStatusElement.style.display = 'inline';
+                    // 아직 읽지 않은 메시지가 있는지 확인
+                    const unreadResponse = await fetch(`https://${SERVER_IP}/api/chat/unread/${nickname}/`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (unreadResponse.ok) {
+                        const unreadData = await unreadResponse.json();
+
+                        console.log("읽지 않은 메시지가 있는지:", unreadData.has_unread);
+                        
+                        // 읽지 않은 메시지가 있으면 NEW 문구 표시
+                        if (unreadData.has_unread) {
+                            const messageStatusElement = newFriendElement.querySelector(`#${nickname}_message`);
+                            if (messageStatusElement) {
+                                messageStatusElement.style.display = 'inline';
+                            }
+                        }
+                    } else {
+                        console.error("Error checking unread message status:", unreadResponse.status);
                     }
 
                     // 이벤트 리스너를 직접 추가
                     const chatRoomElement = newFriendElement.querySelector('.list-box');
                     chatRoomElement.addEventListener('click', () => {
+                        closeChatSocket();
                         this.showChatBox(image, nickname, match_cnt, win_cnt, score);
                     });
-                });
+                };
             } else {
                 friendListBox.innerHTML = '<p>친구가 없습니다..</p>';
             }
@@ -315,6 +344,29 @@ export default class FriendPage {
                 chatSocket = null;
                 console.error('Chat socket closed unexpectedly');
             };
+
+
+            // ------------------------------------------------------------------
+            // 페이지가 언로드될 때 WebSocket 닫기
+            window.addEventListener('beforeunload', () => {
+                if (chatSocket) {
+                    chatSocket.close();
+                    console.log("Chat socket closed on unload.");
+                }
+            });
+
+            // 추가된 코드: 사용자 지정 이벤트 리스너로 WebSocket 닫기
+            function closeChatSocket() {
+                if (chatSocket) {
+                    chatSocket.close();
+                    console.log("Chat socket closed by user action.");
+                }
+            }
+
+            // 다른 페이지로 이동 시 WebSocket 닫기
+            window.addEventListener("pagehide", closeChatSocket);
+            window.addEventListener("unload", closeChatSocket);
+            // ------------------------------------------------------------------
 
             document.querySelector('#chat-message-input').focus();
 
