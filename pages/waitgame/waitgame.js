@@ -1,6 +1,6 @@
-import { getRouter } from '../../js/router.js';
-import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
-import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+import {getRouter} from '../../js/router.js';
+import {setMatchingWebSocket} from './../../assets/components/nav/nav.js';
+import {connectNotificationWebSocket} from '../../assets/components/nav/nav.js';
 import {SERVER_IP} from "../../js/index.js";
 import {refreshAccessToken} from "../../js/token.js";
 
@@ -101,14 +101,23 @@ export default class WaitGamePage {
         const playerNickname = document.getElementById('playerNickname');
         const playerScore = document.getElementById('playerScore');
 
-        if (!data.image) {
-            playerImage.src = 'assets/images/profile.svg';
-        } else {
-            playerImage.src = data.image;
+        if (playerImage) {
+            if (!data.image) {
+                playerImage.src = 'assets/images/profile.svg';
+            } else {
+                playerImage.src = data.image;
+            }
         }
-        playerNickname.textContent = data.nickname;
-        playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+
+        if (playerNickname) {
+            playerNickname.textContent = data.nickname;
+        }
+
+        if (playerScore) {
+            playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+        }
     }
+
 
     showmatchLoader() {
         const matchingLoader = document.getElementById('matchingLoader');
@@ -259,16 +268,15 @@ export default class WaitGamePage {
         }
     }
 
-    async startMatch(friendNickname = null,host) {
-        if(!friendNickname)
+    async startMatch(friendNickname = null, host) {
+        if (!friendNickname)
             this.showLoader(); // 로더를 표시하고 버튼을 숨김
 
         try {
             const accessToken = localStorage.getItem("access_token");
 
             let response;
-            if(friendNickname)
-            {
+            if (friendNickname) {
                 const myNickname = localStorage.getItem('nickname');
                 console.log("내 닉네임:", myNickname);
                 console.log("친구 닉네임:", friendNickname);
@@ -284,9 +292,7 @@ export default class WaitGamePage {
                         "friendNickname": friendNickname,
                     })
                 });
-            }
-            else
-            {
+            } else {
                 response = await fetch('http://localhost:8000/api/game/match/', {
                     method: 'POST',
                     headers: {
@@ -321,7 +327,7 @@ export default class WaitGamePage {
             console.log('매칭 응답:', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
-            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name,host);
+            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name, host);
             console.log("매칭 성공: 웹소켓 연결을 시작");
 
         } catch (error) {
@@ -526,10 +532,10 @@ export default class WaitGamePage {
             const nicknames = roomName.split('_');
             const startGameBtn = document.getElementById('startGameBtn');
 
-            if(data.host == myNickname)
-            {
+            if (data.host == myNickname) {
                 startGameBtn.classList.remove('hidden');
                 startGameBtn.classList.add('show');
+
             }
             else
             {
@@ -554,8 +560,7 @@ export default class WaitGamePage {
 
             document.getElementById('opponentDetails').classList.remove('hidden');
             document.getElementById('opponentDetails').classList.add('active');
-        }
-        else if (data.type === 'game_start' && data.room_name) {
+        } else if (data.type === 'game_start' && data.room_name) {
             const roomName = data.room_name;
             const myNickname = localStorage.getItem('nickname');
             const nicknames = roomName.split('_');
@@ -579,8 +584,7 @@ export default class WaitGamePage {
                     console.error('room_name is undefined');
                 }
             }, 5000);
-        }
-        else
+        } else
             console.error('room_name is undefined');
     }
 
@@ -617,7 +621,7 @@ export default class WaitGamePage {
         opponentScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
     }
 
-    connectWebSocket(jwtToken, waitingRoom = null, roomName = null,host = null) {
+    connectWebSocket(jwtToken, waitingRoom = null, roomName = null, host = null) {
         let socketUrl;
 
         if (waitingRoom && roomName) {

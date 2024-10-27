@@ -65,15 +65,15 @@ export default class FriendPage {
                 friendReq.classList.add('has-friend-requests');
                 data.friends.forEach(friend => {
                     const image = friend.image || '../../assets/images/profile.svg';
-                    const nickname = friend.nickname
+                    const nickname = friend.nickname;
 
-                    this.updateFriendRequest(friendReq, image, nickname)
+                    this.updateFriendRequest(friendReq, image, nickname);
 
                 });
             } else {
                 friendReq.classList.remove('has-friend-requests');
                 friendReq.classList.add('no-friend-requests');
-                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다..';
+                friendReq.innerHTML = '<p>새로운 친구 요청이 없습니다.';
             }
         } catch (error) {
             console.error('친구 요청 목록을 불러오는 중 오류 발생:', error);
@@ -221,7 +221,7 @@ export default class FriendPage {
                     });
                 });
             } else {
-                friendListBox.innerHTML = '<p>친구가 없습니다..</p>';
+                friendListBox.innerHTML = '<p>친구가 없습니다.</p>';
             }
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류 발생:', error);
@@ -613,7 +613,7 @@ export default class FriendPage {
 
             } else {
                 // 차단된 친구가 없으면 다음 문구 표시
-                friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
+                friendListBox.innerHTML = '<p>차단된 친구가 없습니다.</p>';
             }
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류 발생:', error);
