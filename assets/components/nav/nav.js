@@ -319,7 +319,7 @@ export function connectNotificationWebSocket(accessToken) {
                 const router = getRouter();
                 router.navigate('/waitgame');
                 document.getElementById("waitingMessage").classList.remove("hidden");
-
+                localStorage.setItem('opponent', sender);
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
                 const message = `${myNickname}님이 초대를 수락했습니다.`;
@@ -359,6 +359,7 @@ export function connectNotificationWebSocket(accessToken) {
             confirmBtn.onclick = async function() {
                 waitGamePage = new WaitGamePage();
                 waitGamePage.startMatch(sender,myNickname);
+                localStorage.setItem('opponent', sender);
                 modalDiv.remove();
             }
         }
@@ -376,6 +377,32 @@ export function connectNotificationWebSocket(accessToken) {
                     console.error('room_name is undefined');
                 }
             }, 5000);
+        }
+        else if (data.type === 'leaveWaitingRoom') {
+            console.log('leaveWaitingRoom');
+            const myNickname = localStorage.getItem('nickname');
+            const opponentNickname = localStorage.getItem('opponent');
+    
+            if(myNickname === data.remainder && opponentNickname!=null && opponentNickname === data.leaver){
+                const opponentDetails = document.getElementById('opponentDetails');
+                const inviteBtn = document.getElementById('inviteBtn');
+                const randomBtn = document.getElementById('randomBtn');
+                const startGameBtn = document.getElementById('startGameBtn');
+                const waitingMessage =  document.getElementById("waitingMessage");
+                
+                if(inviteBtn !== null && randomBtn !== null){
+                    // matchingLoader.classList.remove('hidden');
+                    // matchingLoader.classList.add('hidden');
+                    opponentDetails.style.display = 'none';
+                    inviteBtn.style.display = 'inline-block';
+                    randomBtn.style.display = 'inline-block';
+                    startGameBtn.classList.remove('show');
+                    startGameBtn.classList.add('hidden');
+                    waitingMessage.classList.remove('show');
+                    waitingMessage.classList.add('hidden');
+                    localStorage.removeItem('opponent');
+                 }
+            }
         }
         else if (data.type === 'status_message') {
             const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
