@@ -23,11 +23,18 @@
 .request-box {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
 
     width: 90%;
     height: 70%;
+}
+
+.request-box__userinfo {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 70%;
 }
 
 .profile-image {
@@ -39,6 +46,7 @@
     object-fit: cover;
 
     margin-left: 1vw;
+    margin-right: 2vw;
 }
 
 .nickname {
@@ -50,14 +58,17 @@
 }
 
 .friend-accept-refuse-btn {
-    margin-left: 5vw;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 30%;
 }
 
 .request-accept-btn {
     border: 3px solid var(--main-color);
     background-color: rgba(110, 208, 135, 0.6);
 
-    width: 4vw;
+    width: 3.8vw;
     height: 5vh;
     border-radius: 20px;
     cursor: pointer;
@@ -79,7 +90,7 @@
     border: 3px solid var(--main-color);
     background-color: rgba(255, 137, 125, 0.7);
 
-    width: 4vw;
+    width: 3.8vw;
     height: 5vh;
     border-radius: 20px;
     cursor: pointer;
