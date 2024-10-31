@@ -382,6 +382,12 @@ export function connectNotificationWebSocket(accessToken) {
                 }
             }, 5000);
         }
+        else if (data.type === 'notify_message')
+        {
+            console.log(data);
+        }
+        // hasNotification = true;
+        // updateNotificationDisplay();
         else if (data.type === 'leaveWaitingRoom') {
             console.log('leaveWaitingRoom');
             const myNickname = localStorage.getItem('nickname');
