@@ -52,6 +52,7 @@ export default class MyPage {
                         <p id="mypage__bottom__title">최근 경기 기록</p>
                         <div id="mypage__bottom__content">
                         </div>
+                        <button id="delete-account-btn" class="delete-account-btn">회원탈퇴</button>
                     </section>
                 </div>
             </div>
@@ -65,10 +66,63 @@ export default class MyPage {
 
         const imgEditButton = document.getElementById('profileImageInput');
         const nicknameEditButton = document.getElementById('mypage__top__profile-info__nickname__edit');
+        const deleteAccountButton = document.getElementById('delete-account-btn');
 
         imgEditButton.addEventListener('change', (event) => this.handleImgEditBtn(event));
-        nicknameEditButton.addEventListener('click', (event) => 
+        nicknameEditButton.addEventListener('click', () =>
             this.showNickNameModal('수정할 닉네임을 입력해주세요!', '변경하기'));
+        deleteAccountButton.addEventListener('click', () =>
+            this.showDeleteAccountModal('정말로 회원 탈퇴하시겠습니까?', '탈퇴하기')
+        );
+    }
+
+    showDeleteAccountModal(message, buttonMsg) {
+        const modalHTML = createModal(message, buttonMsg, 'caution');
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function() {
+            modalDiv.remove();
+        };
+
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.classList.add('delete-text');
+        confirmBtn.onclick = async () => {
+            await this.handleAccountDeletion();
+            modalDiv.remove();
+        };
+
+        window.onclick = function(event) {
+            if (event.target === modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
+
+    async handleAccountDeletion() {
+        try {
+            const response = await fetch(`https://${SERVER_IP}/api/user/account/delete/`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+
+            if (response.ok) {
+                console.log('회원 탈퇴 성공');
+                localStorage.clear();
+                const router = getRouter();
+                router.navigate('/login');
+            } else {
+                console.error('회원 탈퇴 실패:', response.statusText);
+                this.showModal('회원 탈퇴에 실패했습니다. 다시 시도해주세요.', '확인', 'caution');
+            }
+        } catch (error) {
+            console.error('회원 탈퇴 중 오류 발생:', error);
+            this.showModal('회원 탈퇴 중 오류가 발생했습니다. 다시 시도해주세요.', '확인', 'caution');
+        }
     }
 
     async myPageloadProfile() {
