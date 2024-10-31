@@ -139,7 +139,6 @@ export default class FriendPage {
 
     // 친구 요청 확인
     async updateFriendRequest(friendReq, image, sender) {
-        console.log("sender:" + sender);
         const token = localStorage.getItem('access_token');
 
         const requestContainer = document.createElement('div');
@@ -171,7 +170,7 @@ export default class FriendPage {
             });
         }
         // 거절 버튼에 이벤트 리스너 추가
-        const refuseButton = friendReq.querySelector('.request-refuse-btn');
+        const refuseButton = requestContainer.querySelector('.request-refuse-btn');
         if (refuseButton) {
             refuseButton.addEventListener('click', async function () {
                 try {
