@@ -81,7 +81,6 @@ export default class FriendPage {
                     const nickname = friend.nickname;
 
                     this.updateFriendRequest(friendReq, image, nickname);
-
                 });
             } else {
                 friendReq.classList.remove('has-friend-requests');
@@ -131,7 +130,7 @@ export default class FriendPage {
             searchBtn.addEventListener('click', async () => {
                 closeChatSocket();
                 this.showUserSearchModal();
-                this.showFriendRequest();
+                // this.showFriendRequest();
             });
         } else {
             console.error('block-icon 요소를 찾을 수 없습니다.');
@@ -614,13 +613,15 @@ export default class FriendPage {
                 const friendReq = document.querySelector('.friend-request-box');
               
                 if (data.tag === 'request' && friendReq) {
-                      friendReq.innerHTML = '';
-                      this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-                  }
-                  else if (data.tag === 'accept') {
-                      const router = getRouter();
-                      router.navigate('/friend');
-                  }
+                    friendReq.innerHTML = '';
+                    friendReq.classList.remove('no-friend-requests');
+                    friendReq.classList.add('has-friend-requests');
+                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                }
+                else if (data.tag === 'accept') {
+                    const router = getRouter();
+                    router.navigate('/friend');
+                }
             }
         };
 
