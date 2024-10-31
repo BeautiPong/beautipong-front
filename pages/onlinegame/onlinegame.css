@@ -67,3 +67,24 @@ canvas {
     display: block;
     z-index: 1;
 }
+
+/* 조작키 스타일 */
+.split-controls {
+    position: absolute;
+    bottom: 10%; /* 하단에서 10% 위치에 배치 */
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    z-index: 10;
+}
+
+.left-control, .right-control {
+    background-color: rgba(0, 0, 0, 0.3); /* 어두운 배경 */
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 20px;
+    color: var(--main-color);
+    text-align: center;
+    width: 90px;
+    margin: 0 10px;
+}

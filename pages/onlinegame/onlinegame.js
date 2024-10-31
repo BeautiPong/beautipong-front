@@ -25,6 +25,15 @@ export default class OnlineGamePage {
 			</div>
 			<div class="game-container">
 				<canvas id="gameCanvas"></canvas>
+				<!-- 조작키 표시 영역 수정 -->
+				<div class="split-controls">
+					<div class="left-control">
+						<p>left (←)</p>
+					</div>
+					<div class="right-control">
+						<p>right (→)</p>
+					</div>
+				</div>
 			</div>
 		</div>
 		`;
@@ -50,7 +59,18 @@ export default class OnlineGamePage {
 		}
 
 		this.initGame(gameinfo); // 게임 초기화 메서드 호출
-		this.connectWebSocket(roomName, jwtToken, gameinfo); // WebSocket 연결 설정
+		this.connectWebSocket(roomName, jwtToken, gameinfo);
+
+		window.addEventListener('popstate', () => {
+			this.handlePopState();
+		});
+
+		window.onbeforeunload = () => {
+			this.disconnectWebSocket();
+		};
+	}
+	handlePopState() {
+		this.disconnectWebSocket();
 	}
 
     // 게임을 초기화하는 메서드
@@ -314,9 +334,9 @@ export default class OnlineGamePage {
 	handleKeyPress(event) {
 		let direction = null;
 	
-		if (event.code === 'KeyA') {
+		if (event.code === 'ArrowLeft') {
 			direction = 'left';
-		} else if (event.code === 'KeyD') {
+		} else if (event.code === 'ArrowRight') {
 			direction = 'right';
 		}
 	

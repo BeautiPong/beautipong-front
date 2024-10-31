@@ -2,7 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
 }
 
 .friend-container {
@@ -13,6 +14,9 @@
     width: 75vw;
     height: 90vh;
     border-radius: 40px;
+
+    box-sizing: border-box;
+    padding: 2% 6%;
 }
 
 .friend-list-container {
@@ -52,9 +56,10 @@
 }
 
 .friend-request-noti {
-    color: var(--sub-text-color);
-    font-weight: 600;
-    margin-bottom: 0.5vh;
+    color: var(--error-message-color);
+    font-weight: 500;
+    margin-left: 0.5vw;
+    margin-bottom: 0.7vh;
 
     visibility: hidden;
 }
@@ -161,9 +166,8 @@
 
 .chat-container {
     width: 40vw;
-    /* border: 1px solid var(--error-message-color); */
     border-radius: 40px;
-    padding: 3vw 3vh;
+    padding: 2vw 3vh;
 }
 
 .chat-box {
@@ -179,6 +183,12 @@
 }
 
 .chat-box-text {
-    color: var(--sub-text-color);
+    color: var(--main-text-color);
     font-size: 1vw;
+    font-weight: 500;
+}
+
+.find-friend-name {
+    font-size: 1vw;
+    font-weight: 500;
 }

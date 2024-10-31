@@ -119,6 +119,8 @@
 .rank__right-section__user-info--img img{
 	width: 30%;
 	border-radius: 50%;
+	height: auto;
+    aspect-ratio: 1 / 1;
 }
 
 .rank__right-section__user-info--text {
