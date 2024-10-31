@@ -139,6 +139,7 @@ export default class FriendPage {
 
     // 친구 요청 확인
     async updateFriendRequest(friendReq, image, sender) {
+        console.log("sender:" + sender);
         const token = localStorage.getItem('access_token');
 
         const requestContainer = document.createElement('div');
@@ -577,11 +578,11 @@ export default class FriendPage {
         });
     }
 
-    async showFriendRequest() {
-//         const friendReq = document.querySelector('.friend-request-box');
-//         const access_token = localStorage.getItem("access_token");
-//         const notificationSocket = connectNotificationWebSocket(access_token);
-      
+    // 1. 실시간 online, offline 상태 반영
+    // 2. 실시간 메시지 알림
+    // 3. 실시간 친구 요청 알림
+    async handleSocket() {
+
         const token = localStorage.getItem('access_token');
         notificationSocket = connectNotificationWebSocket(token);
 
@@ -609,47 +610,27 @@ export default class FriendPage {
                     messageStatusElement.style.display = 'inline';
                 }
             }
-            else {
-                const friendReq = document.querySelector('.friend-request-box');
-              
-                if (data.tag === 'request' && friendReq) {
-                    friendReq.innerHTML = '';
-                    friendReq.classList.remove('no-friend-requests');
-                    friendReq.classList.add('has-friend-requests');
-                    this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+            else if (data.type === 'request_fr') {
+                // 친구 요청 알림
+                if (data.tag === 'request') {
+                    const friendReq = document.querySelector('.friend-request-box');
+
+                    if (friendReq) {
+                        if (friendReq.innerHTML === '<p>새로운 친구 요청이 없습니다.</p>') {
+                            friendReq.innerHTML = '';
+                            friendReq.classList.remove('no-friend-requests');
+                            friendReq.classList.add('has-friend-requests');
+                        }
+                        this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                    }
                 }
+                // 친구 수락 알림
                 else if (data.tag === 'accept') {
                     const router = getRouter();
                     router.navigate('/friend');
                 }
             }
         };
-
-//         if (notificationSocket.readyState === WebSocket.CONNECTING) {
-//             notificationSocket.addEventListener('open', () => {
-//                 sendMessages(notificationSocket);
-//             });
-//         } else if (notificationSocket.readyState === WebSocket.OPEN) {
-//             sendMessages(notificationSocket);
-//         }
-
-//         function sendMessages(socket) {
-//             if (friendReq) {
-//                 const getNotificationsMessage = {
-//                     type: 'get_notifications'
-//                 };
-
-//                 const statusMessage = {
-//                     type: 'notify_status_message',
-//                     status: 'online'
-//                 };
-
-//                 socket.send(JSON.stringify(getNotificationsMessage));
-//                 socket.send(JSON.stringify(statusMessage));
-
-//                 console.log('알림 요청 및 상태 메시지가 전송되었습니다.');
-//             }
-//         }
     }
 
 
@@ -756,7 +737,7 @@ export default class FriendPage {
     }
 
     async afterRender() {
-        this.showFriendRequest();
+        this.handleSocket();
         this.handlePage();
     }
 }
