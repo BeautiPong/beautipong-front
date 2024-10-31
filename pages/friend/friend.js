@@ -398,25 +398,10 @@ export default class FriendPage {
             console.error('채팅 방을 불러오는 중 오류 발생:', error);
         }
 
-        // 친구 삭제
-        document.querySelector('#delete-friend-btn').addEventListener('click', async () => {
-            try {
-                const response = await fetch(`https://${SERVER_IP}/api/friend/delete/${friendNickname}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                this.showModal('친구 삭제가 완료되었습니다.', '확인');
-
-                const router = getRouter();
-                router.navigate('/friend');
-            } catch (error) {
-                console.error('친구 삭제 중 오류 발생:', error);
-            }
+        // 친구 게임 초대
+        document.querySelector('#game-request-btn').addEventListener('click', async () => {
+        
+            console.log("게임 초대 버튼 클릭")
         });
 
         // 친구 차단

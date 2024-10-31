@@ -38,7 +38,7 @@
     margin: 1vw 5vh;
 }
 
-#delete-friend-btn, #block-friend-btn {
+#game-request-btn, #block-friend-btn {
     background-color: rgba(171, 171, 171, 0.5);
     padding: 5px 10px;
     border-radius: 15px;
@@ -51,7 +51,11 @@
     width: 5vw;
 }
 
-#delete-friend-btn:hover, #block-friend-btn:hover {
+#game-request-btn:hover {
+    background-color: rgba(110,208,135, 0.7);
+}
+
+#block-friend-btn:hover {
     background-color: rgba(171, 171, 171, 0.8);
 }
 
