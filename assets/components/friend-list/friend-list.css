@@ -72,8 +72,9 @@
 }
 
 .message-status {
-    color: var(--main-color);
+    color: rgba(110,208,135, 0.7);
     margin-left: 1vw;
+    font-weight: bold;
 }
 
 .block-none {
