@@ -7,6 +7,7 @@ import {getRouter} from '../../../js/router.js';
 import {createModal} from '../../assets/components/modal/modal.js';
 import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+import WaitGamePage from '../waitgame/waitgame.js';
 
 let chatSocket = null;
 let notificationSocket = null;
@@ -400,6 +401,8 @@ export default class FriendPage {
         // 친구 게임 초대
         document.querySelector('#game-request-btn').addEventListener('click', async () => {
         
+            const waitGameInstance = new WaitGamePage();
+            await waitGameInstance.sendInvite(friendNickname, token);
             console.log("게임 초대 버튼 클릭")
         });
 
