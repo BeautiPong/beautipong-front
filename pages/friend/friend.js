@@ -98,6 +98,7 @@ export default class FriendPage {
 
         const accepBtn = document.querySelector('.accept-friend-list');
         const blockBtn = document.querySelector('.block-friend-text');
+        accepBtn.classList.add('click');
 
         // 친구함으로 이동 (버튼 클릭)
         if (accepBtn) {
@@ -175,7 +176,7 @@ export default class FriendPage {
         if (refuseButton) {
             refuseButton.addEventListener('click', async function () {
                 try {
-                    const response = await fetch(`https://${SERVER_IP}/api/friend/delete/${sender}/`, {
+                    const response = await fetch(`https://${SERVER_IP}/api/friend/refuse/${sender}/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
@@ -262,7 +263,8 @@ export default class FriendPage {
                     });
                 };
             } else {
-                friendListBox.innerHTML = '<p>친구가 없습니다.</p>';
+                friendListBox.classList.add('friend-list-box');
+                friendListBox.innerHTML = '<p>친구가 없습니다..</p>';
             }
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류 발생:', error);
@@ -709,10 +711,10 @@ export default class FriendPage {
 
                     const nickname = friend.nickname;
                     const image = friend.image || '../../assets/images/profile.svg';
-                    const is_active = friend.is_active;
+                    const is_online = friend.is_online;
 
                     // 친구 요소를 생성
-                    const friendComponent = createFriendList(image, nickname, true);
+                    const friendComponent = createFriendList(image, nickname, is_online ,true);
 
                     // 새 친구 요소를 DOM에 추가
                     const tempElement = document.createElement('div');
@@ -730,8 +732,8 @@ export default class FriendPage {
                 });
 
             } else {
-                // 차단된 친구가 없으면 다음 문구 표시
-                friendListBox.innerHTML = '<p>차단된 친구가 없습니다.</p>';
+                friendListBox.classList.add('friend-list-box');
+                friendListBox.innerHTML = '<p>차단된 친구가 없습니다</p>';
             }
         } catch (error) {
             console.error('친구 목록을 불러오는 중 오류 발생:', error);

@@ -4,6 +4,8 @@ export function createFriendList(image, nickname, is_active, isBlocked) {
     const activeClass = is_active ? 'true' : 'false';
 
     const blockText = isBlocked ? `<p class="block-none">차단해제</p>` : '';
+
+    console.log(`isBlocked: ${isBlocked}, blockedClass: ${blockedClass}`);
     return `
         <div class="list-container ${blockedClass}">
             <div class="list-box">
@@ -14,8 +16,7 @@ export function createFriendList(image, nickname, is_active, isBlocked) {
                     <p class="message-status" id="${nickname}_message" style="display: none;"> NEW✨</p>
                 </div>
                 ${blockText}
+            </div>
         </div>
     `;
 }
-
-{/* <img class="menu-icon" src="../../assets/icons/Menu.svg" alt="메뉴"></img> */}
