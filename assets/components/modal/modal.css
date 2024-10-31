@@ -25,6 +25,10 @@
     justify-content: center;
 }
 
+#tournament-box {
+    height: 45vh;
+}
+
 .signup-image {
     width: 5vw;
     margin-bottom: 3vh;
@@ -108,4 +112,92 @@
     height: 5vh;
     padding: 1vh 1vw;
     margin-top: 3vh;
+}
+
+#tournamentResult__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--main-text-color);
+}
+
+#tournamentResult {
+    width: 100%;
+    height: 55%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+
+    margin: 3% 0;
+    gap: 2%;
+}
+
+.tournamentResult__box {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 20px;
+    box-sizing: border-box;
+
+    padding: 5% 0;
+
+    color: var(--main-text-color);
+    background-color: rgba(171,171,171, 0.2);
+}
+
+#tournamentResult--1 {
+    height: 100%;
+    width: 30%;
+}
+
+#tournamentResult--1 img{
+    width: 60%;
+    margin-bottom: 25%;
+}
+
+#tournamentResult--1 div{
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#tournamentResult--2 {
+    height: 80%;
+    width: 25%;
+}
+
+#tournamentResult--2 img{
+    width: 55%;
+    margin-bottom: 20%;
+}
+
+#tournamentResult--2 div{
+    font-size: 20px;
+    font-weight: 550;
+    color: rgba(85, 85, 85, 0.8);
+}
+
+#tournamentResult--3 {
+    height: 65%;
+    width: 25%;
+}
+
+#tournamentResult--3 img{
+    width: 40%;
+    margin-bottom: 10%;
+}
+
+#tournamentResult--3 div{
+    font-size: 16px;
+    font-weight: 450;
+    color: rgba(85, 85, 85, 0.6);
+}
+
+#tournamentResult--3--first {
+    margin-bottom: 2%;
+}
+
+#tournamentResult-confirm-btn {
+    height: 12%;
 }

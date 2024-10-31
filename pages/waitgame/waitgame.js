@@ -1,6 +1,6 @@
-import { getRouter } from '../../js/router.js';
-import { setMatchingWebSocket } from './../../assets/components/nav/nav.js';
-import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+import {getRouter} from '../../js/router.js';
+import {setMatchingWebSocket} from './../../assets/components/nav/nav.js';
+import {connectNotificationWebSocket} from '../../assets/components/nav/nav.js';
 import {SERVER_IP} from "../../js/index.js";
 import {refreshAccessToken} from "../../js/token.js";
 
@@ -42,9 +42,12 @@ export default class WaitGamePage {
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- 게임 시작 버튼을 game-container 안에 추가 -->
                     <button class="start-game-btn hidden" id="startGameBtn">게임 시작</button>
+                    <div class="waiting-message hidden" id="waitingMessage">
+                      <p>방장이 들어올 때 까지 잠시만 기다려주세요!</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,7 +59,6 @@ export default class WaitGamePage {
             </p>
             <div id="gameStartLoader"></div>
         </div>
-
         `;
     }
 
@@ -99,16 +101,25 @@ export default class WaitGamePage {
         const playerNickname = document.getElementById('playerNickname');
         const playerScore = document.getElementById('playerScore');
 
-        if (!data.image) {
-            playerImage.src = 'assets/images/profile.svg';
-        } else {
-            playerImage.src = data.image;
+        if (playerImage) {
+            if (!data.image) {
+                playerImage.src = 'assets/images/profile.svg';
+            } else {
+                playerImage.src = data.image;
+            }
         }
-        playerNickname.textContent = data.nickname;
-        playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+
+        if (playerNickname) {
+            playerNickname.textContent = data.nickname;
+        }
+
+        if (playerScore) {
+            playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+        }
     }
 
-	showmatchLoader() {
+
+    showmatchLoader() {
         const matchingLoader = document.getElementById('matchingLoader');
         const inviteBtn = document.getElementById('inviteBtn');
         const randomBtn = document.getElementById('randomBtn');
@@ -183,23 +194,94 @@ export default class WaitGamePage {
         });
 
         this.loadUserInfo();
+
+        function cleanUp() {
+          if(localStorage.getItem('opponent') === null) return;
+    
+          console.log('클린업 함수 실행');
+          const access_token = localStorage.getItem('access_token');
+          const notificationWebSocket = connectNotificationWebSocket(access_token);
+          const myNickname = localStorage.getItem('nickname');
+          const opponentNickname = localStorage.getItem('opponent');
+          console.log("opponentNickname: ", opponentNickname);
+          notificationWebSocket.send(
+            JSON.stringify({
+              type: 'leaveWaitingRoom',
+              leaver: myNickname, // 내 닉네임
+              remainder: opponentNickname, // 친구의 닉네임
+            })
+          );
+          localStorage.removeItem('opponent');
+        }
+    
+        const nav__logout = document.getElementById('nav__logout');
+        nav__logout.addEventListener('click', cleanUp);
+        const nav__main = document.getElementById('nav__main');
+        nav__main.addEventListener('click', cleanUp);
+        const nav__mypage = document.getElementById('nav__mypage');
+        nav__mypage.addEventListener('click', cleanUp);
+        const nav__friend = document.getElementById('nav__friend');
+        nav__friend.addEventListener('click', cleanUp);
+        const nav__rank = document.getElementById('nav__rank');
+        nav__rank.addEventListener('click', cleanUp);
+
+        window.addEventListener('popstate', cleanUp);
+        window.addEventListener('beforeunload', cleanUp);
     }
 
-	async startMatch(friendNickname = null,host) {
-        if(!friendNickname)
+    async startRandomMatch() {
+        // this.showLoader(); // 로더를 표시하고 버튼을 숨김
+        this.showmatchLoader(); // 로더를 표시하고 버튼을 숨김
+
+        try {
+            const accessToken = localStorage.getItem("access_token");
+            const response = await fetch(`https://${SERVER_IP}/api/game/match/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
+                },
+                body: JSON.stringify({
+                    // 필요한 경우 추가 데이터 여기에 포함
+                })
+            });
+            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
+                // 새 액세스 토큰으로 다시 요청
+                response = await fetch(`https://${SERVER_IP}/api/game/match/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
+            }
+            if (!response.ok) {
+                throw new Error('랜덤 매칭에 실패했습니다.');
+            }
+            const data = await response.json();
+            // 매칭 성공: 웹소켓 연결을 시작
+            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name);
+        } catch (error) {
+            console.error('랜덤 매칭 중 오류가 발생했습니다:', error);
+        }
+    }
+
+    async startMatch(friendNickname = null, host) {
+        if (!friendNickname)
             this.showLoader(); // 로더를 표시하고 버튼을 숨김
 
         try {
             const accessToken = localStorage.getItem("access_token");
 
             let response;
-            if(friendNickname)
-            {
+            if (friendNickname) {
                 const myNickname = localStorage.getItem('nickname');
                 console.log("내 닉네임:", myNickname);
                 console.log("친구 닉네임:", friendNickname);
                 response = await fetch(`https://${SERVER_IP}/api/game/match/`, {
-                    
+
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -210,9 +292,7 @@ export default class WaitGamePage {
                         "friendNickname": friendNickname,
                     })
                 });
-            }
-            else
-            {
+            } else {
                 response = await fetch('http://localhost:8000/api/game/match/', {
                     method: 'POST',
                     headers: {
@@ -247,7 +327,7 @@ export default class WaitGamePage {
             console.log('매칭 응답:', data);
 
             // 매칭 성공: 웹소켓 연결을 시작
-            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name,host);
+            this.connectWebSocket(data.jwt_token, data.waiting_room, data.room_name, host);
             console.log("매칭 성공: 웹소켓 연결을 시작");
 
         } catch (error) {
@@ -266,7 +346,7 @@ export default class WaitGamePage {
             guest: data.guest, // 친구의 닉네임
             room_name: data.room_name, // 방 이름
         }));
-        
+
         this.showGameStartLoader();
 
         setTimeout(() => {
@@ -277,7 +357,7 @@ export default class WaitGamePage {
             }
         }, 5000);
     }
-    
+
     async fetchOpponentInfo(opponentNickname) {
         try {
             const accessToken = localStorage.getItem("access_token");
@@ -313,50 +393,50 @@ export default class WaitGamePage {
 
     // 게임 페이지로 이동하기 전에 API 요청
     async navigateToGamePage(roomName) {
-		// console.log('Room Name:', roomName);  // Debugging 추가
-		// console.log('JWT Token:', jwtToken);  // Debugging 추가
+        // console.log('Room Name:', roomName);  // Debugging 추가
+        // console.log('JWT Token:', jwtToken);  // Debugging 추가
 
-		try {
-			const accessToken = localStorage.getItem("access_token");
-			const response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
-				},
-			});
+        try {
+            const accessToken = localStorage.getItem("access_token");
+            const response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`, // JWT 토큰을 헤더에 추가
+                },
+            });
 
-			// 액세스 토큰이 만료되어 401 오류가 발생했을 때
-			if (response.status === 401) {
-				const newAccessToken = await refreshAccessToken();
+            // 액세스 토큰이 만료되어 401 오류가 발생했을 때
+            if (response.status === 401) {
+                const newAccessToken = await refreshAccessToken();
 
-				// 새 액세스 토큰으로 다시 요청
-				response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': `Bearer ${newAccessToken}`,
-					},
-				});
-			}
+                // 새 액세스 토큰으로 다시 요청
+                response = await fetch(`https://${SERVER_IP}/api/game/online/${roomName}/`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${newAccessToken}`,
+                    },
+                });
+            }
 
-			if (!response.ok) {
-				throw new Error('게임 페이지 요청에 실패했습니다.');
-			}
+            if (!response.ok) {
+                throw new Error('게임 페이지 요청에 실패했습니다.');
+            }
 
-			const data = await response.json();
-			console.log('게임 페이지 응답:', data);
+            const data = await response.json();
+            console.log('게임 페이지 응답:', data);
 
-			const router = getRouter();
-			router.navigate('/online-game', {
-				roomName: data.room_name,
-				jwtToken: data.jwt_token
-			});
+            const router = getRouter();
+            router.navigate('/online-game', {
+                roomName: data.room_name,
+                jwtToken: data.jwt_token
+            });
             document.querySelector('.nav-container').style.display = 'none';
-		} catch (error) {
-			console.error('게임 페이지 요청 중 오류가 발생했습니다:', error);
-		}
-	}
+        } catch (error) {
+            console.error('게임 페이지 요청 중 오류가 발생했습니다:', error);
+        }
+    }
 
     // 친구 목록 로드
     async loadFriends() {
@@ -446,16 +526,24 @@ export default class WaitGamePage {
         const data = JSON.parse(e.data);
         console.log("Received data:", data);
 
-        if (data.type === 'game_start' && data.room_name) {
+        if (data.type === 'game_start' && data.host && data.room_name) {
             const roomName = data.room_name;
             const myNickname = localStorage.getItem('nickname');
             const nicknames = roomName.split('_');
             const startGameBtn = document.getElementById('startGameBtn');
 
-            if(data.host == myNickname)
-            {
+            if (data.host == myNickname) {
                 startGameBtn.classList.remove('hidden');
                 startGameBtn.classList.add('show');
+
+            }
+            else
+            {
+              console.log("방장이 아닙니다.");
+            //   document.getElementById("waitingMessage").classList.remove("hidden");
+            const messageParagraph = document.querySelector('#waitingMessage p');
+
+            messageParagraph.textContent = "방장이 게임 시작을 누를 때까지 잠시만 기다려주세요!";
             }
 
             startGameBtn.addEventListener("click", (event) => {
@@ -472,14 +560,33 @@ export default class WaitGamePage {
 
             document.getElementById('opponentDetails').classList.remove('hidden');
             document.getElementById('opponentDetails').classList.add('active');
+        } else if (data.type === 'game_start' && data.room_name) {
+            const roomName = data.room_name;
+            const myNickname = localStorage.getItem('nickname');
+            const nicknames = roomName.split('_');
+            WaitGamePage.socket.close();
+            setMatchingWebSocket(null);
+            const opponentNickname = nicknames[1] === myNickname ? nicknames[2] : nicknames[1];
 
+            this.fetchOpponentInfo(opponentNickname);
 
-        }
-        else
+            this.hidematchLoader();
+
+            document.getElementById('opponentDetails').classList.remove('hidden');
+            document.getElementById('opponentDetails').classList.add('active');
+
+            this.showGameStartLoader();
+
+            setTimeout(() => {
+                if (data.room_name) {
+                    this.navigateToGamePage(data.room_name, data.jwtToken);
+                } else {
+                    console.error('room_name is undefined');
+                }
+            }, 5000);
+        } else
             console.error('room_name is undefined');
-		
     }
-
 
     async fetchOpponentInfo(opponentNickname) {
         try {
@@ -514,14 +621,14 @@ export default class WaitGamePage {
         opponentScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
     }
 
-    connectWebSocket(jwtToken, waitingRoom = null, roomName = null,host = null) {
-		let socketUrl;
+    connectWebSocket(jwtToken, waitingRoom = null, roomName = null, host = null) {
+        let socketUrl;
 
-		if (waitingRoom && roomName) {
-			socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
-		} else {
-			socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
-		}
+        if (waitingRoom && roomName) {
+            socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
+        } else {
+            socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
+        }
 
         WaitGamePage.socket = new WebSocket(socketUrl);
         setMatchingWebSocket(WaitGamePage.socket);

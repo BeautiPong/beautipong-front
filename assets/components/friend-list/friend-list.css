@@ -9,33 +9,35 @@
     border-radius: 20px;
 
     margin-bottom: 1vh;
-    transition: border 0.3s ease;
+    /* transition: border 0.3s ease; */
     box-sizing: border-box;
+    cursor: pointer;
 }
 
 .list-container:hover {
-    background-color: rgba(255,255,255, 0.7);
-    border: 5px solid var(--main-color);
+    background-color: rgba(255,255,255, 0.8);
+    border: 3px solid var(--accept-button-color);
 }
 
 .list-box {
     display: flex;
     flex-direction: row;
-    justify-content: center;
     align-items: center;
 
     width: 90%;
-    height: 70%;    margin-bottom: 1vh;
+    height: 70%;
 }
 
 .list-profile-image {
     border-radius: 50%;
 
     width: 55px;
-    height: 55px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
 
-    margin-right: 1vw;
+    margin-left: 1vw;
+    margin-right: 2vw;
 }
 
 .name-status {
