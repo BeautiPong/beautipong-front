@@ -206,7 +206,7 @@ export default class MyPage {
                 const updatedData = await response.json();
                 console.log(updatedData);
                 localStorage.setItem("img", updatedData.image_url);
-                loadProfile();
+                await loadProfile();
                 await this.myPageloadProfile();
                 await this.loadRecentGame();
                 this.showModal('프로필 이미지가 성공적으로 변경되었습니다.', '확인');
@@ -281,7 +281,7 @@ export default class MyPage {
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('refresh_token', data.refresh_token);
 
-                loadProfile();
+                await loadProfile();
                 await this.myPageloadProfile();
                 await this.loadRecentGame();
                 modalDiv.remove();
