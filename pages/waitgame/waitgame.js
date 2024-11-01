@@ -625,9 +625,9 @@ export default class WaitGamePage {
         let socketUrl;
 
         if (waitingRoom && roomName) {
-            socketUrl = `ws://localhost:8000/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
+            socketUrl = `wss://${SERVER_IP}/ws/match/${waitingRoom}/${roomName}/${host}/?token=${jwtToken}`;
         } else {
-            socketUrl = `ws://localhost:8000/ws/match/?token=${jwtToken}`;
+            socketUrl = `wss://${SERVER_IP}/ws/match/?token=${jwtToken}`;
         }
 
         WaitGamePage.socket = new WebSocket(socketUrl);
