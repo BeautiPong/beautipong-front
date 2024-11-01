@@ -72,16 +72,17 @@ export default class PlayerInfo {
 
     // 플레이어 티어 아이콘 경로를 반환하는 메서드
     getPlayerTierIcon(score) {
-        if (score <= 1000) {
-            return 'assets/icons/bronz.svg';
-        } else if (score <= 1200) {
-            return 'assets/icons/silver.svg';
-        } else if (score <= 1500) {
-            return 'assets/icons/gold.svg';
-        } else if (score <= 2000) {
-            return 'assets/icons/platinum.svg';
-        } else {
+
+        if (score > 2000) {
             return 'assets/icons/dia.svg';
+        } else if (score > 1500) {
+            return 'assets/icons/platinum.svg';
+        } else if (score > 1200) {
+            return 'assets/icons/gold.svg';
+        } else if (score > 1000) {
+            return 'assets/icons/silver.svg';
+        } else {
+            return 'assets/icons/bronz.svg';
         }
     }
 }
