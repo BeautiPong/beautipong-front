@@ -65,7 +65,7 @@
 }
 
 .request-accept-btn {
-    border: 3px solid var(--main-color);
+    /* border: 3px solid var(--main-color); */
     background-color: rgba(110, 208, 135, 0.6);
 
     width: 3.8vw;
@@ -87,7 +87,7 @@
 }
 
 .request-refuse-btn {
-    border: 3px solid var(--main-color);
+    /* border: 3px solid var(--main-color); */
     background-color: rgba(255, 137, 125, 0.7);
 
     width: 3.8vw;

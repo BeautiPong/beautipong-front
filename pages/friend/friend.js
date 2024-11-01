@@ -7,6 +7,7 @@ import {getRouter} from '../../../js/router.js';
 import {createModal} from '../../assets/components/modal/modal.js';
 import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
+import WaitGamePage from '../waitgame/waitgame.js';
 
 let chatSocket = null;
 let notificationSocket = null;
@@ -81,7 +82,6 @@ export default class FriendPage {
                     const nickname = friend.nickname;
 
                     this.updateFriendRequest(friendReq, image, nickname);
-
                 });
             } else {
                 friendReq.classList.remove('has-friend-requests');
@@ -132,7 +132,7 @@ export default class FriendPage {
             searchBtn.addEventListener('click', async () => {
                 closeChatSocket();
                 this.showUserSearchModal();
-                this.showFriendRequest();
+                // this.showFriendRequest();
             });
         } else {
             console.error('block-icon 요소를 찾을 수 없습니다.');
@@ -172,7 +172,7 @@ export default class FriendPage {
             });
         }
         // 거절 버튼에 이벤트 리스너 추가
-        const refuseButton = friendReq.querySelector('.request-refuse-btn');
+        const refuseButton = requestContainer.querySelector('.request-refuse-btn');
         if (refuseButton) {
             refuseButton.addEventListener('click', async function () {
                 try {
@@ -400,25 +400,12 @@ export default class FriendPage {
             console.error('채팅 방을 불러오는 중 오류 발생:', error);
         }
 
-        // 친구 삭제
-        document.querySelector('#delete-friend-btn').addEventListener('click', async () => {
-            try {
-                const response = await fetch(`https://${SERVER_IP}/api/friend/delete/${friendNickname}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                this.showModal('친구 삭제가 완료되었습니다.', '확인');
-
-                const router = getRouter();
-                router.navigate('/friend');
-            } catch (error) {
-                console.error('친구 삭제 중 오류 발생:', error);
-            }
+        // 친구 게임 초대
+        document.querySelector('#game-request-btn').addEventListener('click', async () => {
+        
+            const waitGameInstance = new WaitGamePage();
+            await waitGameInstance.sendInvite(friendNickname, token);
+            console.log("게임 초대 버튼 클릭")
         });
 
         // 친구 차단
@@ -595,11 +582,11 @@ export default class FriendPage {
         });
     }
 
-    async showFriendRequest() {
-//         const friendReq = document.querySelector('.friend-request-box');
-//         const access_token = localStorage.getItem("access_token");
-//         const notificationSocket = connectNotificationWebSocket(access_token);
-      
+    // 1. 실시간 online, offline 상태 반영
+    // 2. 실시간 메시지 알림
+    // 3. 실시간 친구 요청 알림
+    async handleSocket() {
+
         const token = localStorage.getItem('access_token');
         notificationSocket = connectNotificationWebSocket(token);
 
@@ -627,45 +614,27 @@ export default class FriendPage {
                     messageStatusElement.style.display = 'inline';
                 }
             }
-            else {
-                const friendReq = document.querySelector('.friend-request-box');
-              
-                if (data.tag === 'request' && friendReq) {
-                      friendReq.innerHTML = '';
-                      this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-                  }
-                  else if (data.tag === 'accept') {
-                      const router = getRouter();
-                      router.navigate('/friend');
-                  }
+            else if (data.type === 'request_fr') {
+                // 친구 요청 알림
+                if (data.tag === 'request') {
+                    const friendReq = document.querySelector('.friend-request-box');
+
+                    if (friendReq) {
+                        if (friendReq.innerHTML === '<p>새로운 친구 요청이 없습니다.</p>') {
+                            friendReq.innerHTML = '';
+                            friendReq.classList.remove('no-friend-requests');
+                            friendReq.classList.add('has-friend-requests');
+                        }
+                        this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+                    }
+                }
+                // 친구 수락 알림
+                else if (data.tag === 'accept') {
+                    const router = getRouter();
+                    router.navigate('/friend');
+                }
             }
         };
-
-//         if (notificationSocket.readyState === WebSocket.CONNECTING) {
-//             notificationSocket.addEventListener('open', () => {
-//                 sendMessages(notificationSocket);
-//             });
-//         } else if (notificationSocket.readyState === WebSocket.OPEN) {
-//             sendMessages(notificationSocket);
-//         }
-
-//         function sendMessages(socket) {
-//             if (friendReq) {
-//                 const getNotificationsMessage = {
-//                     type: 'get_notifications'
-//                 };
-
-//                 const statusMessage = {
-//                     type: 'notify_status_message',
-//                     status: 'online'
-//                 };
-
-//                 socket.send(JSON.stringify(getNotificationsMessage));
-//                 socket.send(JSON.stringify(statusMessage));
-
-//                 console.log('알림 요청 및 상태 메시지가 전송되었습니다.');
-//             }
-//         }
     }
 
 
@@ -772,7 +741,7 @@ export default class FriendPage {
     }
 
     async afterRender() {
-        this.showFriendRequest();
+        this.handleSocket();
         this.handlePage();
     }
 }

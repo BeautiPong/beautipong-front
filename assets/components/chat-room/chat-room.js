@@ -13,7 +13,7 @@ export function createChatRoom(image, nickname, win, score) {
             </div>
         </div>
         <div class="friend-button-list">
-            <button id="delete-friend-btn">삭제</button>
+            <button id="game-request-btn">게임초대</button>
             <button id="block-friend-btn">차단</button>
         </div>
     </div>

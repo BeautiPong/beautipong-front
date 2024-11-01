@@ -421,32 +421,32 @@ export function connectNotificationWebSocket(accessToken) {
                 friendStatusElement.className = `list-online-status ${activeClass}`;
             }
         }
-        else if (data.type === 'request_fr') {
-            if (window.location.pathname === '/friend') {
-                const friendReqBox = document.querySelector('.friend-request-box');
-                if (friendReqBox) {
-                    friendReqBox.innerHTML = '';
-                    const friendPageInstance = new FriendPage();
-                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
-                }
-            } else{
-                hasNotification = true;
-                updateNotificationDisplay();
-            }
+        // else if (data.type === 'request_fr') {
+        //     if (window.location.pathname === '/friend') {
+        //         const friendReqBox = document.querySelector('.friend-request-box');
+        //         if (friendReqBox) {
+        //             friendReqBox.innerHTML = '';
+        //             const friendPageInstance = new FriendPage();
+        //             friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+        //         }
+        //     } else{
+        //         hasNotification = true;
+        //         updateNotificationDisplay();
+        //     }
 
-            const friendReq = document.querySelector('.friend-request-box');
+        //     const friendReq = document.querySelector('.friend-request-box');
 
-            if (data.tag === 'request' && friendReq) {
-                friendReq.innerHTML = '';
+        //     if (data.tag === 'request' && friendReq) {
+        //         friendReq.innerHTML = '';
 
-                const friendPageInstance = new FriendPage();
-                friendPageInstance.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-            }
-            else if (data.tag === 'accept') {
-                const router = getRouter();
-                router.navigate('/friend');
-            }
-        }
+        //         const friendPageInstance = new FriendPage();
+        //         friendPageInstance.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+        //     }
+        //     else if (data.tag === 'accept') {
+        //         const router = getRouter();
+        //         router.navigate('/friend');
+        //     }
+        // }
     };
 
     notificationWebSocket.onclose = () => {
