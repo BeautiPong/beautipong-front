@@ -14,14 +14,14 @@ export function renderUserRankInfo(data, nickname) {
         Imgsrc = `assets/icons/bronz.svg`;
     }
 
-     const profileImgSrc = data.image_url ? data.image_url : 'assets/images/profile.svg';
+    const profileImgSrc = data.image_url ? data.image_url : 'assets/images/profile.svg';
 
-     return `
-         <div class="user-rank-info" id="${data.nickname === nickname ? "profile-user-rank-info-inAll" : ""}">
-             <span>${data.rank ? data.rank : '-'}</span>
-             <img src="${profileImgSrc}" alt="profile_img" class="user-rank-info-image"/>
-             <span class="user-rank-info__nickname">${data.nickname}</span>
-             <img src="${Imgsrc}" alt="tier"/>
-         </div>
-     `;
+    return `
+        <div class="user-rank-info" id="${data.nickname === nickname ? "profile-user-rank-info-inAll" : ""}">
+            <span>${data.rank ? data.rank : '-'}</span>
+            <img src="${profileImgSrc}" alt="profile_img" class="user-rank-info-image"/>
+            <span class="user-rank-info__nickname">${data.nickname}</span>
+            <img src="${Imgsrc}" alt="tier"/>
+        </div>
+    `;
 }
