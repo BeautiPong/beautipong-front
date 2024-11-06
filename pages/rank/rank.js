@@ -1,13 +1,13 @@
 import { refreshAccessToken } from '../../js/token.js';
 import { renderUserRankInfo } from '../../assets/components/rank-info/rank-info.js'
-import {SERVER_IP} from "../../js/index.js";
+import { SERVER_IP } from "../../js/index.js";
 
 const Utils = {
     CHART_COLORS: {
         custom: 'rgb(110,208,135)',
     },
-    
-    numbers: function(config) {
+
+    numbers: function (config) {
         const cfg = config || {};
         const min = cfg.min || 0;
         const max = cfg.max || 1;
@@ -24,14 +24,14 @@ const Utils = {
             if (Math.random() <= continuity) {
                 data.push(Math.round(dfactor * value) / dfactor);
             } else {
-            data.push(null);
+                data.push(null);
             }
         }
 
         return data;
     },
 
-    transparentize: function(color, opacity) {
+    transparentize: function (color, opacity) {
         const alpha = opacity === undefined ? 0.5 : 1 - opacity;
         return `rgba(${color.slice(4, color.length - 1)}, ${alpha})`;
     }
@@ -102,7 +102,7 @@ export default class RankPage {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-    
+
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
@@ -113,7 +113,7 @@ export default class RankPage {
                     },
                 });
             }
-    
+
             // 응답 처리
             if (response.ok) {
                 const rankData = await response.json();
@@ -130,7 +130,7 @@ export default class RankPage {
                 }
                 nicknameElement.textContent = profileNickname;
                 this.updateUserRankInfo(userRankData);
-    
+
                 //전체 랭킹 출력
                 totalRankContainer.innerHTML = rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
                 // totalRankContainer.innerHTML += rankData.map(data => renderUserRankInfo(data, profileNickname)).join('');
@@ -144,21 +144,21 @@ export default class RankPage {
                     userElement.addEventListener('click', () => {
                         // 모든 유저의 active 클래스 제거
                         allUsers.forEach(el => el.classList.remove('active'));
-                
+
                         // 클릭한 유저에 active 클래스 추가
                         userElement.classList.add('active');
-                
+
                         // 유저 닉네임에 해당하는 데이터 찾기
                         const clickedUserNickname = userElement.querySelector('.user-rank-info__nickname').textContent;
                         const clickedUserData = rankData.find(data => data.nickname === clickedUserNickname);
-                        
+
                         // 클릭한 유저 데이터 업데이트
                         if (clickedUserData) {
                             this.updateUserRankInfo(clickedUserData);
                         }
                     });
                 });
-    
+
             } else {
                 console.error('유저 랭킹 데이터를 가져오지 못했습니다:', response.statusText);
             }
@@ -168,9 +168,10 @@ export default class RankPage {
     }
 
     updateUserRankInfo(userData) {
+        console.log("USERDATE: ", userData);
         const rankNumberElement = document.querySelector('.rank-number');
         const nicknameElement = document.getElementById('rank-data--nickname');
-        nicknameElement.textContent = userData.nickname;
+        nicknameElement.textContent = `${userData.nickname} / ${userData.score}점`;
 
         if (!userData.rank)
             rankNumberElement.textContent = '-';
@@ -185,12 +186,12 @@ export default class RankPage {
 
     async loadStateRecords(nickname) {
         const ctx = document.getElementById('stateChart').getContext('2d');
-    
+
         // 기존 차트가 있다면 제거
         if (this.stateChartInstance) {
             this.stateChartInstance.destroy();
         }
-    
+
         try {
             // API 요청
             let response = await fetch(`https://${SERVER_IP}/api/user/info/${nickname}`, {
@@ -199,7 +200,7 @@ export default class RankPage {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-    
+
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
                 response = await fetch(`https://${SERVER_IP}/api/user/info/${nickname}`, {
@@ -209,7 +210,7 @@ export default class RankPage {
                     },
                 });
             }
-    
+
             if (response.ok) {
                 const data = await response.json();
                 const winRate = data.win_rate;
@@ -302,7 +303,7 @@ export default class RankPage {
         } catch (error) {
             console.error('Error loading state records:', error);
         }
-    }    
+    }
 
     async loadGameRecords(nickname) {
         try {
@@ -312,7 +313,7 @@ export default class RankPage {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-    
+
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
                 response = await fetch(`https://${SERVER_IP}/api/score/graph/${nickname}`, {
@@ -322,23 +323,23 @@ export default class RankPage {
                     },
                 });
             }
-    
+
             if (response.ok) {
                 const gameRecords = await response.json();
                 // 날짜 포맷 변환 (DD-MM-YY)
                 const dates = gameRecords.map(record => {
-                
-                const date = new Date(record.create_time);
-                if (date == 'Invalid Date')
-                    return '00-00-00';
 
-                const day = String(date.getDate()).padStart(2, '0'); // 일
-                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
-                const year = String(date.getFullYear()).slice(2); // 연도 마지막 두 자리
-                return `${year}-${month}-${day}`; // 24-09-03 형식으로 변환
+                    const date = new Date(record.create_time);
+                    if (date == 'Invalid Date')
+                        return '00-00-00';
+
+                    const day = String(date.getDate()).padStart(2, '0'); // 일
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // 월 (0부터 시작하므로 +1)
+                    const year = String(date.getFullYear()).slice(2); // 연도 마지막 두 자리
+                    return `${year}-${month}-${day}`; // 24-09-03 형식으로 변환
                 });
                 const scores = gameRecords.map(record => record.score);
-    
+
                 // 차트 렌더링
                 const ctx = document.getElementById('myChart').getContext('2d');
                 // 기존 차트가 있다면 제거
@@ -371,7 +372,7 @@ export default class RankPage {
                                 ticks: {
                                     stepSize: 200,  // 200포인트 간격으로 기준선 설정
                                     color: 'rgb(217, 217, 217)',  // Y축 글자 색상
-                                    callback: function(value) {
+                                    callback: function (value) {
                                         return value;
                                     }
                                 },
@@ -407,7 +408,7 @@ export default class RankPage {
                                     weight: 'bold'  // 툴팁 본문 글꼴 굵기
                                 },
                                 callbacks: {
-                                    label: function(tooltipItem) {
+                                    label: function (tooltipItem) {
                                         return `Score: ${tooltipItem.raw}`;
                                     }
                                 }
