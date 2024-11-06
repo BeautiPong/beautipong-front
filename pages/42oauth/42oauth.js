@@ -34,8 +34,8 @@ export default class OauthRedirectPage {
                         localStorage.setItem('access_token', data.access_token);
                         localStorage.setItem('refresh_token', data.refresh_token);
 
-						connectNotificationWebSocket(data.access_token);
-						
+                        connectNotificationWebSocket(data.access_token);
+
                         if (data.nickname) {
                             document.querySelector('.nav-container').style.display = 'block';
                             router.navigate('/');
@@ -44,7 +44,6 @@ export default class OauthRedirectPage {
                             document.querySelector('.nav-container').style.display = 'none';
                             this.showModal('닉네임을 설정해주세요.', '확인');
                             history.replaceState(null, '', '/nickname');
-                            router.navigate('/nickname')
                         }
                     }
                 } else {
@@ -67,16 +66,31 @@ export default class OauthRedirectPage {
         modalDiv.innerHTML = modalHTML;
         document.body.appendChild(modalDiv);
 
+        // 모달을 닫고 경로 이동하는 함수
+        const closeModalAndNavigate = () => {
+            modalDiv.remove();
+            document.removeEventListener('keydown', handleEnterKeyInModal); // 이벤트 리스너 제거
+            const router = getRouter();
+            router.navigate('/nickname');
+        };
+
         // 닫기 버튼에 이벤트 리스너 추가
         const closeBtn = modalDiv.querySelector('.close');
-        closeBtn.onclick = function() {
-            modalDiv.remove();
-        };
+        closeBtn.onclick = closeModalAndNavigate;
 
         // 확인 버튼에 이벤트 리스너 추가
         const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-        confirmBtn.onclick = function() {
-            modalDiv.remove();
+        confirmBtn.onclick = closeModalAndNavigate;
+
+        // 모달에서 Enter 키 입력 시 모달을 닫는 이벤트 리스너 추가
+        const handleEnterKeyInModal = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                closeModalAndNavigate();
+            }
         };
+
+        // 이벤트 리스너 추가
+        document.addEventListener('keydown', handleEnterKeyInModal);
     }
 }
