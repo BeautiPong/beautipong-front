@@ -1,4 +1,4 @@
-import {createModal} from '../../assets/components/modal/modal.js';
+import { createModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { SERVER_IP } from "../../js/index.js";
 
@@ -49,25 +49,41 @@ export default class SignupPage {
         modalDiv.innerHTML = modalHTML;
         document.body.appendChild(modalDiv);
 
+        // 모달을 닫고 경로 이동하는 함수
+        const closeModalAndNavigate = () => {
+            modalDiv.remove();
+            document.removeEventListener('keydown', handleEnterKeyInModal); // 이벤트 리스너 제거
+            const router = getRouter();
+            router.navigate('/login');
+        };
+
         // 닫기 버튼에 이벤트 리스너 추가
         const closeBtn = modalDiv.querySelector('.close');
-        closeBtn.onclick = function() {
-            modalDiv.remove();
-        };
+        closeBtn.onclick = closeModalAndNavigate;
 
         // 확인 버튼에 이벤트 리스너 추가
         const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-        confirmBtn.onclick = function() {
-            modalDiv.remove();
-        };
+        confirmBtn.onclick = closeModalAndNavigate;
 
         // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modalDiv.querySelector('.modal')) {
-                modalDiv.remove();
+                closeModalAndNavigate();
             }
         };
+
+        // 모달에서 Enter 키 입력 시 모달을 닫는 이벤트 리스너 추가
+        const handleEnterKeyInModal = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                closeModalAndNavigate();
+            }
+        };
+
+        // 이벤트 리스너 추가
+        document.addEventListener('keydown', handleEnterKeyInModal);
     }
+
 
     async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
@@ -133,8 +149,8 @@ export default class SignupPage {
                 const data = await response.json();
                 console.log('회원가입 성공!');
 
-                const router = getRouter();
-                router.navigate('/login');
+                // const router = getRouter();
+                // router.navigate('/login');
                 this.showModal('회원가입이 성공적으로 완료되었습니다!', '확인');
 
             } else {
