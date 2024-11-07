@@ -12,14 +12,14 @@
 	font-size: 22px;
 	font-weight: 500;
 	color: var(--main-text-color);
-	background-color: rgba(255,255,255, 0.7);
+	background-color: rgba(255, 255, 255, 0.7);
 }
 
 .user-rank-info:hover {
 	color: var(--accept-button-color) !important;
 	background-color: var(--main-color) !important;
 	border: solid 3px var(--accept-button-color) !important;
-	box-shadow: 5px 5px 4px rgba(110,208,135, 0.3) !important;
+	box-shadow: 5px 5px 4px rgba(110, 208, 135, 0.3) !important;
 	cursor: pointer;
 }
 
@@ -27,13 +27,13 @@
 	color: var(--accept-button-color) !important;
 	background-color: var(--main-color) !important;
 	border: solid 3px var(--accept-button-color) !important;
-	box-shadow: 5px 5px 4px rgba(110,208,135, 0.3) !important;
+	box-shadow: 5px 5px 4px rgba(110, 208, 135, 0.3) !important;
 	cursor: pointer;
 }
 
 #profile-user-rank-info-inAll {
 	color: var(--main-color);
-	background-color: rgba(110,208,135, 0.7);
+	background-color: rgba(110, 208, 135, 0.7);
 }
 
 .profile-user-rank-info {
@@ -64,7 +64,8 @@
 }
 
 .user-rank-info-image {
-    height: auto;
-    aspect-ratio: 1 / 1;
-    border-radius: 50%;
+	height: auto;
+	aspect-ratio: 1 / 1;
+	border-radius: 50%;
+	object-fit: cover;
 }
