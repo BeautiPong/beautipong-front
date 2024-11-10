@@ -382,12 +382,6 @@ export function connectNotificationWebSocket(accessToken) {
                 }
             }, 5000);
         }
-        else if (data.type === 'notify_message')
-        {
-            console.log(data);
-        }
-        // hasNotification = true;
-        // updateNotificationDisplay();
         else if (data.type === 'leaveWaitingRoom') {
             console.log('leaveWaitingRoom');
             const myNickname = localStorage.getItem('nickname');
@@ -415,38 +409,54 @@ export function connectNotificationWebSocket(accessToken) {
             }
         }
         else if (data.type === 'status_message') {
-            const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
-            if (friendStatusElement) {
-                const activeClass = data.status === 'online' ? 'true' : 'false';
-                friendStatusElement.className = `list-online-status ${activeClass}`;
+            if (window.location.pathname === '/friend') { // 친구 페이지인지 확인
+                const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
+                if (friendStatusElement) {
+                    const activeClass = data.status === 'online' ? 'true' : 'false';
+                    friendStatusElement.className = `list-online-status ${activeClass}`;
+                }
             }
         }
-        // else if (data.type === 'request_fr') {
-        //     if (window.location.pathname === '/friend') {
-        //         const friendReqBox = document.querySelector('.friend-request-box');
-        //         if (friendReqBox) {
-        //             friendReqBox.innerHTML = '';
-        //             const friendPageInstance = new FriendPage();
-        //             friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
-        //         }
-        //     } else{
-        //         hasNotification = true;
-        //         updateNotificationDisplay();
-        //     }
+        else if (data.type === 'notify_message') {
+            if (window.location.pathname === '/friend') { // 친구 페이지인지 확인
+                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
+                if (messageStatusElement) {
+                    messageStatusElement.style.display = 'inline'; // NEW 문구 표시
+                }
+            } else {
+                hasNotification = true;
+                updateNotificationDisplay();
+            }
+        }
+        else if (data.type === 'request_fr') {
+            if (window.location.pathname === '/friend') { // 친구 페이지인지 확인
+                const friendReqBox = document.querySelector('.friend-request-box');
+                if (friendReqBox) {
+                    friendReqBox.innerHTML = '';
+                    const friendPageInstance = new FriendPage();
+                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+                }
+            } else {
+                hasNotification = true;
+                updateNotificationDisplay();
+            }
 
-        //     const friendReq = document.querySelector('.friend-request-box');
+            const friendReq = document.querySelector('.friend-request-box');
+            if (data.tag === 'request' && friendReq) {
+                friendReq.innerHTML = '';
 
-        //     if (data.tag === 'request' && friendReq) {
-        //         friendReq.innerHTML = '';
-
-        //         const friendPageInstance = new FriendPage();
-        //         friendPageInstance.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-        //     }
-        //     else if (data.tag === 'accept') {
-        //         const router = getRouter();
-        //         router.navigate('/friend');
-        //     }
-        // }
+                const friendPageInstance = new FriendPage();
+                friendPageInstance.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
+            }
+            else if (data.tag === 'accept') {
+                const router = getRouter();
+                router.navigate('/friend');
+            }
+        }
+        else if (data.type === 'pend_messages') {
+            hasNotification = true;
+            updateNotificationDisplay();
+        }
     };
 
     notificationWebSocket.onclose = () => {
