@@ -454,8 +454,21 @@ export function connectNotificationWebSocket(accessToken) {
             }
         }
         else if (data.type === 'pend_messages') {
-            hasNotification = true;
-            updateNotificationDisplay();
+            if (window.location.pathname === '/friend') {
+                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
+                if (messageStatusElement) {
+                    messageStatusElement.style.display = 'inline';
+                }
+                const friendReqBox = document.querySelector('.friend-request-box');
+                if (friendReqBox) {
+                    friendReqBox.innerHTML = '';
+                    const friendPageInstance = new FriendPage();
+                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+                }
+            } else {
+                hasNotification = true;
+                updateNotificationDisplay();
+            }
         }
     };
 
