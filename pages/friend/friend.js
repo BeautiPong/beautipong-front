@@ -243,7 +243,7 @@ export default class FriendPage {
                         const unreadData = await unreadResponse.json();
 
                         console.log("읽지 않은 메시지가 있는지:", unreadData.has_unread);
-                        
+
                         // 읽지 않은 메시지가 있으면 NEW 문구 표시
                         if (unreadData.has_unread) {
                             const messageStatusElement = newFriendElement.querySelector(`#${nickname}_message`);
@@ -402,7 +402,7 @@ export default class FriendPage {
 
         // 친구 게임 초대
         document.querySelector('#game-request-btn').addEventListener('click', async () => {
-        
+
             const waitGameInstance = new WaitGamePage();
             await waitGameInstance.sendInvite(friendNickname, token);
             console.log("게임 초대 버튼 클릭")
@@ -590,51 +590,31 @@ export default class FriendPage {
         const token = localStorage.getItem('access_token');
         notificationSocket = connectNotificationWebSocket(token);
 
-        notificationSocket.onmessage = (e) => {
+        const friendReq = document.querySelector('.friend-request-box');
 
-            const data = JSON.parse(e.data);
+        if (notificationSocket.readyState === WebSocket.CONNECTING) {
+            notificationSocket.addEventListener('open', () => {
+                sendMessages(notificationSocket);
+            });
+        } else if (notificationSocket.readyState === WebSocket.OPEN) {
+            sendMessages(notificationSocket);
+        }
 
-            if (data.type === 'status_message') {
-                if (data.type === 'status_message') {
-                    const activeClass = data.status === 'online' ? 'true' : 'false'; // 상태에 따라 activeClass 설정
+        function sendMessages(socket) {
+            if (friendReq) {
+                const getNotificationsMessage = {
+                    type: 'get_notifications'
+                };
 
-                    // 친구 리스트에서 해당 친구의 상태 업데이트
-                    const friendStatusElement = document.querySelector(`.list-online-status[id="${data.sender}"]`);
-
-                    if (friendStatusElement) {
-                        // 현재 상태에 따라 클래스 변경
-                        friendStatusElement.className = `list-online-status ${activeClass}`; // activeClass 적용
-                    }
-                }
+                const statusMessage = {
+                    type: 'notify_status_message',
+                    status: 'online'
+                };
+                socket.send(JSON.stringify(getNotificationsMessage));
+                socket.send(JSON.stringify(statusMessage));
+                console.log('알림 요청 및 상태 메시지가 전송되었습니다.');
             }
-            else if (data.type === 'notify_message') {
-                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
-                // NEW 문구 표시
-                if (messageStatusElement) {
-                    messageStatusElement.style.display = 'inline';
-                }
-            }
-            else if (data.type === 'request_fr') {
-                // 친구 요청 알림
-                if (data.tag === 'request') {
-                    const friendReq = document.querySelector('.friend-request-box');
-
-                    if (friendReq) {
-                        if (friendReq.innerHTML === '<p>새로운 친구 요청이 없습니다.</p>') {
-                            friendReq.innerHTML = '';
-                            friendReq.classList.remove('no-friend-requests');
-                            friendReq.classList.add('has-friend-requests');
-                        }
-                        this.updateFriendRequest(friendReq, "../../assets/images/profile.svg", data.sender);
-                    }
-                }
-                // 친구 수락 알림
-                else if (data.tag === 'accept') {
-                    const router = getRouter();
-                    router.navigate('/friend');
-                }
-            }
-        };
+        }
     }
 
 

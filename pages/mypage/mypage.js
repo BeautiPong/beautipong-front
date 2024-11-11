@@ -3,8 +3,14 @@ import { renderGameRecord } from '../../assets/components/recent-game/recent-gam
 import { createNicknameModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
 import { SERVER_IP } from "../../js/index.js";
-import { loadProfile } from '../../assets/components/nav/nav.js';
+import {
+    connectNotificationWebSocket,
+    disconnectNotificationWebSocket,
+    loadProfile
+} from '../../assets/components/nav/nav.js';
 import {createModal} from '../../assets/components/modal/modal.js';
+
+let notificationSocket = null;
 
 export default class MyPage {
 
@@ -338,6 +344,30 @@ export default class MyPage {
                 await loadProfile();
                 await this.myPageloadProfile();
                 await this.loadRecentGame();
+
+                disconnectNotificationWebSocket(false);
+
+                notificationSocket = connectNotificationWebSocket(data.access_token);
+
+
+                if (notificationSocket.readyState === WebSocket.CONNECTING) {
+                    notificationSocket.addEventListener('open', () => {
+                        sendMessages(notificationSocket);
+                    });
+                } else if (notificationSocket.readyState === WebSocket.OPEN) {
+                    sendMessages(notificationSocket);
+                }
+
+                function sendMessages(socket) {
+                    const statusMessage = {
+                        type: 'notify_status_message',
+                        status: 'online'
+                    };
+                    socket.send(JSON.stringify(statusMessage));
+                    console.log('알림 요청 및 상태 메시지가 전송되었습니다.');
+                }
+
+
                 modalDiv.remove();
             } else {
                 console.error('닉네임 변경 실패:', response.status);
