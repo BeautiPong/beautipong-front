@@ -89,3 +89,16 @@ left: 10%;
 position: absolute;
 right: 10%;
 }
+
+.next-opponent-text {
+  position: absolute;
+  bottom: 20px; /* 화면 하단에서 20px 위 */
+  right: 20px; /* 화면 오른쪽에서 20px 왼쪽 */
+  font-size: 25px; /* 글씨 크기 */
+  font-weight: bold; /* 글씨 굵기 */
+  color: #000; /* 글씨 색상 */
+  /* background-color: rgba(255, 255, 255, 0.8); 텍스트 배경색 */
+  padding: 5px 10px; /* 텍스트 주변 여백 */
+  border-radius: 8px; /* 배경 모서리 둥글게 */
+  z-index: 10; 
+}

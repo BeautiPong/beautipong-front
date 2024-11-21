@@ -19,6 +19,7 @@ export default class offlineGamePage {
                             <span class="player_nickname" id="player2_nickname"></span>
                         </div>
                     </div>
+                    <div class="next-opponent-text">vs next-opponent</div>
                     <!-- 조작키 표시 영역 -->
                     <div class="controls">
                         <div class="left-controls">
@@ -52,13 +53,15 @@ export default class offlineGamePage {
         if(matchType === 'tournament') {
             user3 = urlParams.get('player3') || 'user3';
             user4 = urlParams.get('player4') || 'user4';
+            console.log("user3, user4", user3, user4);
+            const $nextOpponent = document.querySelector('.next-opponent-text');
+            $nextOpponent.textContent = `Next : ${user3} vs ${user4}`;
         }
 
         // WebSocket 연결이나 게임 로직에서 user1, user2 사용
 
         let socket = null
         await fetchUserInfo();
-
 
         async function fetchUserInfo() {
             console.log("in fetchUserInfo");
@@ -91,6 +94,7 @@ export default class offlineGamePage {
             console.error('POST 요청 중 오류 발생:', error);
         }
     }
+
         let socketUrl;
         if (matchType === '1vs1') {
             socketUrl = 'wss://' + `${SERVER_IP}` + '/ws/game/offline/' + user1 + '/' + user2 + '/?token=' + token;
@@ -241,6 +245,13 @@ export default class offlineGamePage {
                 // 경기가 끝났을 때 다음 경기 준비
                 if (currentMatch < totalMatches && matchType === 'tournament') {
                     currentMatch++;
+                    const $nextOpponent = document.querySelector('.next-opponent-text');
+                    if(currentMatch === 2){
+                        $nextOpponent.style.display = 'block';
+                        $nextOpponent.textContent = `Next : vs ${data.winner}`;
+                    }
+                    else 
+                        $nextOpponent.style.display = 'none';
                     console.log(`Starting match ${currentMatch}`);
                 } else {
                     if (matchType === '1vs1') {
