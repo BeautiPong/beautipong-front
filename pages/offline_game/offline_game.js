@@ -248,7 +248,7 @@ export default class offlineGamePage {
                     const $nextOpponent = document.querySelector('.next-opponent-text');
                     if(currentMatch === 2){
                         $nextOpponent.style.display = 'block';
-                        $nextOpponent.textContent = `Next : vs ${data.winner}`;
+                        $nextOpponent.textContent = `Next : Winner vs ${data.winner}`;
                     }
                     else 
                         $nextOpponent.style.display = 'none';
