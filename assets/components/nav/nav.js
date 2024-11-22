@@ -12,6 +12,7 @@ const profileNickname = document.getElementById('nav-profile__info__nickname');
 let notificationWebSocket = null;
 let hasNotification = false;
 let waitGamePage = null;
+
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
     try {
@@ -107,12 +108,20 @@ export function disconnectSpecificWebSocket() {
     }
 }
 
-export function disconnectNotificationWebSocket() {
+export function disconnectNotificationWebSocket(StorageClearFlag = true) {
     if (notificationWebSocket) {
         if (notificationWebSocket.readyState === WebSocket.OPEN) {
+            notificationWebSocket.onclose = () => {
+                notificationWebSocket = null;
+                console.log('알림 WebSocket 연결 종료');
+                if (StorageClearFlag) {
+                    localStorage.clear();
+                }
+            };
             notificationWebSocket.close();
+        } else {
+            notificationWebSocket = null;
         }
-        notificationWebSocket = null;  // 웹소켓 객체 초기화
     }
 }
 
@@ -238,7 +247,9 @@ function showModal(message, buttonMsg, icon) {
                 console.log('로그아웃 성공:', data.message);
                 modalDiv.remove();
 
+
                 disconnectNotificationWebSocket();
+                localStorage.clear();
 
                 // 로그인 페이지로 리다이렉트
                 const router = getRouter();
@@ -288,7 +299,6 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        console.log('nav에서 서버로부터 받은 메시지:', message);
         const data = JSON.parse(event.data);
         if (data.type === 'invite_game') {
             const sender = data.sender;
@@ -296,7 +306,7 @@ export function connectNotificationWebSocket(accessToken) {
             console.log("myNickname: ", myNickname);
 
             const modalId = 'game-invite-modal'; // 모달에 고유 id를 부여
-            if (document.getElementById(modalId)) 
+            if (document.getElementById(modalId))
                 return;
             // showModal(sender+'님으로 부터 게임 초대가 왔어요!', '수락');
             const modalHTML = createModal(`${sender}님으로 부터 게임 초대가 왔어요!`, '수락');
@@ -318,22 +328,46 @@ export function connectNotificationWebSocket(accessToken) {
 
             confirmBtn.onclick = async function() {
                 waitGamePage = new WaitGamePage();
-                waitGamePage.startMatch(sender,sender);
+                waitGamePage.startMatch(sender, sender);
                 modalDiv.remove();
+
                 const router = getRouter();
                 router.navigate('/waitgame');
                 document.getElementById("waitingMessage").classList.remove("hidden");
                 localStorage.setItem('opponent', sender);
+
                 console.log("sender: ", myNickname);
                 console.log("receiver: ", sender);
+
                 const message = `${myNickname}님이 초대를 수락했습니다.`;
-                notificationWebSocket.send(JSON.stringify({
-                    type: 'access_invitation',
-                    sender: myNickname,
-                    receiver: sender, // 초대를 보낸 사람
-                    message: message
-                }));
-            }
+
+                // WebSocket 재연결 확인 후 메시지 전송
+                if (!notificationWebSocket || notificationWebSocket.readyState !== WebSocket.OPEN) {
+                    console.warn("notificationWebSocket이 열려 있지 않음. 재연결 시도 중...");
+
+                    // WebSocket을 재연결
+                    notificationWebSocket = connectNotificationWebSocket(localStorage.getItem('access_token'));
+
+                    // 재연결 후 onopen 이벤트가 발생할 때 메시지 전송
+                    notificationWebSocket.onopen = () => {
+                        notificationWebSocket.send(JSON.stringify({
+                            type: 'access_invitation',
+                            sender: myNickname,
+                            receiver: sender,
+                            message: message
+                        }));
+                        console.log("재연결 후 메시지 전송 완료.");
+                    };
+                } else {
+                    notificationWebSocket.send(JSON.stringify({
+                        type: 'access_invitation',
+                        sender: myNickname,
+                        receiver: sender,
+                        message: message
+                    }));
+                    console.log("메시지 전송 완료.");
+                }
+            };
 
         }
         else if (data.type === 'access_invitation') {
@@ -386,14 +420,14 @@ export function connectNotificationWebSocket(accessToken) {
             console.log('leaveWaitingRoom');
             const myNickname = localStorage.getItem('nickname');
             const opponentNickname = localStorage.getItem('opponent');
-    
+
             if(myNickname === data.remainder && opponentNickname!=null && opponentNickname === data.leaver){
                 const opponentDetails = document.getElementById('opponentDetails');
                 const inviteBtn = document.getElementById('inviteBtn');
                 const randomBtn = document.getElementById('randomBtn');
                 const startGameBtn = document.getElementById('startGameBtn');
                 const waitingMessage =  document.getElementById("waitingMessage");
-                
+
                 if(inviteBtn !== null && randomBtn !== null){
                     // matchingLoader.classList.remove('hidden');
                     // matchingLoader.classList.add('hidden');
@@ -405,7 +439,7 @@ export function connectNotificationWebSocket(accessToken) {
                     waitingMessage.classList.remove('show');
                     waitingMessage.classList.add('hidden');
                     localStorage.removeItem('opponent');
-                 }
+                }
             }
         }
         else if (data.type === 'status_message') {
@@ -474,9 +508,8 @@ export function connectNotificationWebSocket(accessToken) {
 
     notificationWebSocket.onclose = () => {
         notificationWebSocket = null;
-        localStorage.clear();
-        router.navigate('/');
         console.log('알림 WebSocket 연결 종료');
+        localStorage.clear();
     };
 
     notificationWebSocket.onerror = (error) => {

@@ -243,7 +243,7 @@ export default class FriendPage {
                         const unreadData = await unreadResponse.json();
 
                         console.log("읽지 않은 메시지가 있는지:", unreadData.has_unread);
-                        
+
                         // 읽지 않은 메시지가 있으면 NEW 문구 표시
                         if (unreadData.has_unread) {
                             const messageStatusElement = newFriendElement.querySelector(`#${nickname}_message`);
@@ -402,7 +402,7 @@ export default class FriendPage {
 
         // 친구 게임 초대
         document.querySelector('#game-request-btn').addEventListener('click', async () => {
-        
+
             const waitGameInstance = new WaitGamePage();
             await waitGameInstance.sendInvite(friendNickname, token);
             console.log("게임 초대 버튼 클릭")
