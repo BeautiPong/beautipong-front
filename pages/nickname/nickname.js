@@ -22,7 +22,15 @@ export default class NicknamePage {
 
     afterRender() {
         const nicknameButton = document.getElementById('nickname_setBtn');
+        const nicknameInput = document.getElementById('nickname_set_input');
+
         nicknameButton.addEventListener('click', (event) => this.handleNicknameBtn(event));
+        nicknameInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                this.handleNicknameBtn(event);
+            }
+        });
     }
 
     async handleNicknameBtn(event) {
@@ -38,17 +46,41 @@ export default class NicknamePage {
             modalDiv.innerHTML = modalHTML;
             document.body.appendChild(modalDiv);
 
+            // 모달을 닫고 경로 이동하는 함수
+            const closeModalAndNavigate = () => {
+                modalDiv.remove();
+                document.removeEventListener('keydown', handleEnterKeyInModal); // 이벤트 리스너 제거
+                const router = getRouter();
+                router.navigate('/');
+                loadProfile();
+                document.querySelector('.nav-container').style.display = 'block';
+            };
+
             // 닫기 버튼에 이벤트 리스너 추가
             const closeBtn = modalDiv.querySelector('.close');
-            closeBtn.onclick = function() {
-                modalDiv.remove();
-            };
+            closeBtn.onclick = closeModalAndNavigate;
 
             // 확인 버튼에 이벤트 리스너 추가
             const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-            confirmBtn.onclick = function() {
-                modalDiv.remove();
+            confirmBtn.onclick = closeModalAndNavigate;
+
+            // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+            window.onclick = function (event) {
+                if (event.target == modalDiv.querySelector('.modal')) {
+                    closeModalAndNavigate();
+                }
             };
+
+            // 모달에서 Enter 키 입력 시 모달을 닫는 이벤트 리스너 추가
+            const handleEnterKeyInModal = (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    closeModalAndNavigate();
+                }
+            };
+
+            // 이벤트 리스너 추가
+            document.addEventListener('keydown', handleEnterKeyInModal);
         }
 
         // 폼 데이터를 수집합니다.
@@ -81,10 +113,6 @@ export default class NicknamePage {
                 localStorage.setItem('access_token', data.access_token);
                 localStorage.setItem('refresh_token', data.refresh_token);
 
-                const router = getRouter();
-                router.navigate('/');
-                loadProfile();
-                document.querySelector('.nav-container').style.display = 'block';
                 showModal('회원가입이 완료되었습니다!', '확인');
             } else {
                 console.error('회원가입 실패:', response.status);
@@ -106,7 +134,7 @@ export default class NicknamePage {
 
         // 에러 메시지에 따른 처리
         switch (errorData.message) {
-            case "닉네임을 입력해주세요." :
+            case "닉네임을 입력해주세요.":
                 if (!document.querySelector('#nickname_set_input').value) {
                     nicknameErrorDiv.innerText = `${errorData.message}`;
                     nicknameErrorDiv.classList.add('show');
@@ -114,13 +142,14 @@ export default class NicknamePage {
 
                     // 사용자 입력 시 에러 상태 리셋
                     nicknameInput.addEventListener('input', function () {
-                    nicknameErrorDiv.innerText = '';
-                    nicknameErrorDiv.classList.remove('show');
-                    nicknameInput.classList.remove('set-nickname__error');});
+                        nicknameErrorDiv.innerText = '';
+                        nicknameErrorDiv.classList.remove('show');
+                        nicknameInput.classList.remove('set-nickname__error');
+                    });
                 }
-                break ;
+                break;
 
-            case "이미 사용 중인 닉네임입니다." :
+            case "이미 사용 중인 닉네임입니다.":
                 nicknameErrorDiv.innerText = `${errorData.message}`;
                 nicknameErrorDiv.classList.add('show');
                 nicknameInput.classList.add('set-nickname__error');

@@ -65,10 +65,16 @@ export default class LoginPage {
     async handleFormBtn(event) {
         event.preventDefault(); // 기본 폼 제출 이벤트를 막습니다.
 
-        // 폼 데이터를 수집합니다.
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('pw');
+
+        if (!userIdInput || !passwordInput) {
+            return;
+        }
+
         const formData = {
-            userID: document.getElementById('userId').value,
-            password: document.getElementById('pw').value,
+            userID: userIdInput.value,
+            password: passwordInput.value,
         };
 
         if (!formData.userID || !formData.password) {
@@ -115,7 +121,7 @@ export default class LoginPage {
 
         // 에러 메시지에 따른 처리
         switch (errorData.message) {
-            case "모든 필드를 입력해주세요." :
+            case "모든 필드를 입력해주세요.":
                 if (!document.getElementById('userId').value) {
                     idErrorDiv.innerText = "id를 입력해주세요.";
                     idErrorDiv.classList.add('show');
@@ -125,7 +131,8 @@ export default class LoginPage {
                     idInput.addEventListener('input', function () {
                         idErrorDiv.innerText = 'default';
                         idErrorDiv.classList.remove('show');
-                        idInput.classList.remove('input-error');});
+                        idInput.classList.remove('input-error');
+                    });
                 }
                 if (!document.getElementById('pw').value) {
                     pwErrorDiv.innerText = "비밀번호를 입력해주세요.";
@@ -136,11 +143,12 @@ export default class LoginPage {
                     pwInput.addEventListener('input', function () {
                         pwErrorDiv.innerText = 'default';
                         pwErrorDiv.classList.remove('show');
-                        pwInput.classList.remove('input-error');});
+                        pwInput.classList.remove('input-error');
+                    });
                 }
-                break ;
+                break;
 
-            case "존재하지 않는 아이디입니다." :
+            case "존재하지 않는 아이디입니다.":
                 idErrorDiv.innerText = `${errorData.message}`;
                 idErrorDiv.classList.add('show');
 
@@ -153,7 +161,7 @@ export default class LoginPage {
                 });
 
                 break;
-            case "비밀번호가 틀렸습니다." :
+            case "비밀번호가 틀렸습니다.":
                 pwErrorDiv.innerText = `${errorData.message}`;
                 pwErrorDiv.classList.add('show');
 
