@@ -12,6 +12,12 @@ const profileNickname = document.getElementById('nav-profile__info__nickname');
 let notificationWebSocket = null;
 let hasNotification = false;
 let waitGamePage = null;
+import { chatSocket, closeChatSocket } from "../../../pages/friend/friend.js";
+
+// chatSocket 상태 확인
+if (chatSocket) {
+    console.log('ChatSocket is active:', chatSocket);
+}
 
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
@@ -105,6 +111,10 @@ export function disconnectSpecificWebSocket() {
 
     if (matchingWebSocket && matchingWebSocket.readyState === WebSocket.OPEN) {
         matchingWebSocket.close();
+    }
+
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        closeChatSocket();
     }
 }
 
@@ -300,6 +310,7 @@ export function connectNotificationWebSocket(accessToken) {
     notificationWebSocket.onmessage = (event) => {
         const message = JSON.parse(event.data);
         const data = JSON.parse(event.data);
+        console.log(data);
         if (data.type === 'invite_game') {
             const sender = data.sender;
             const myNickname = data.receiver;
@@ -493,12 +504,12 @@ export function connectNotificationWebSocket(accessToken) {
                 if (messageStatusElement) {
                     messageStatusElement.style.display = 'inline';
                 }
-                const friendReqBox = document.querySelector('.friend-request-box');
-                if (friendReqBox) {
-                    friendReqBox.innerHTML = '';
-                    const friendPageInstance = new FriendPage();
-                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
-                }
+                // const friendReqBox = document.querySelector('.friend-request-box');
+                // if (friendReqBox) {
+                //     friendReqBox.innerHTML = '';
+                //     const friendPageInstance = new FriendPage();
+                //     friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+                // }
             } else {
                 hasNotification = true;
                 updateNotificationDisplay();
