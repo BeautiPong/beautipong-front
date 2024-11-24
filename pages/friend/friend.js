@@ -9,14 +9,14 @@ import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 import WaitGamePage from '../waitgame/waitgame.js';
 
-let chatSocket = null;
 let notificationSocket = null;
 
-// chatSocket 연결 종료 함수
-function closeChatSocket() {
+export let chatSocket = null;
+
+export function closeChatSocket() {
     if (chatSocket) {
         chatSocket.close();
-        chatSocket = null;  // 소켓을 닫은 후 변수 초기화
+        chatSocket = null; // 소켓 초기화
         console.log("Chat socket closed by user action.");
     }
 }
@@ -56,6 +56,7 @@ export default class FriendPage {
                 </div>
             </div>
         `;
+
     }
 
     async handlePage() {
@@ -342,7 +343,6 @@ export default class FriendPage {
 
             chatSocket.onclose = function (e) {
                 chatSocket = null;
-                console.error('Chat socket closed unexpectedly');
             };
 
 
@@ -722,6 +722,5 @@ export default class FriendPage {
 
     async afterRender() {
         this.handleSocket();
-        this.handlePage();
-    }
+        this.handlePage();}
 }
