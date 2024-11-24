@@ -12,13 +12,21 @@ import WaitGamePage from '../waitgame/waitgame.js';
 let notificationSocket = null;
 
 export let chatSocket = null;
+export let currentChattingFriend = null;
 
+export function setCurrentChattingFriend(nickname) {
+    currentChattingFriend = nickname;
+}
+
+export function clearCurrentChattingFriend() {
+    currentChattingFriend = null;
+}
 export function closeChatSocket() {
     if (chatSocket) {
         chatSocket.close();
-        chatSocket = null; // 소켓 초기화
-        console.log("Chat socket closed by user action.");
+        chatSocket = null;
     }
+    clearCurrentChattingFriend();
 }
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
@@ -277,6 +285,7 @@ export default class FriendPage {
     // 채팅방 만들기
     async showChatBox(image, friendNickname, match_cnt, win_cnt, score) {
         try {
+            setCurrentChattingFriend(friendNickname);
             const token = localStorage.getItem('access_token');
             fetch(`https://${SERVER_IP}/api/chat/create/`, {
                 method: 'POST',
@@ -292,6 +301,7 @@ export default class FriendPage {
                 });
         } catch (error) {
             console.error('채팅 내용을 불러오는 중 오류 발생:', error);
+            clearCurrentChattingFriend();
         }
     }
 
