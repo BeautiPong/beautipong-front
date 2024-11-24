@@ -12,6 +12,17 @@ const profileNickname = document.getElementById('nav-profile__info__nickname');
 let notificationWebSocket = null;
 let hasNotification = false;
 let waitGamePage = null;
+import { chatSocket, closeChatSocket } from "../../../pages/friend/friend.js";
+import {
+    currentChattingFriend,
+    setCurrentChattingFriend,
+    clearCurrentChattingFriend
+} from '../../../pages/friend/friend.js';
+
+// chatSocket 상태 확인
+if (chatSocket) {
+    console.log('ChatSocket is active:', chatSocket);
+}
 
 // 프로필 정보 가져오기 함수
 export async function loadProfile() {
@@ -105,6 +116,10 @@ export function disconnectSpecificWebSocket() {
 
     if (matchingWebSocket && matchingWebSocket.readyState === WebSocket.OPEN) {
         matchingWebSocket.close();
+    }
+
+    if (chatSocket && chatSocket.readyState === WebSocket.OPEN) {
+        closeChatSocket();
     }
 }
 
@@ -453,9 +468,13 @@ export function connectNotificationWebSocket(accessToken) {
         }
         else if (data.type === 'notify_message') {
             if (window.location.pathname === '/friend') { // 친구 페이지인지 확인
-                const messageStatusElement = document.querySelector(`#${data.sender}_message`);
-                if (messageStatusElement) {
-                    messageStatusElement.style.display = 'inline'; // NEW 문구 표시
+                if (currentChattingFriend === data.sender) {
+                    console.log('현재 열려 있는 채팅방에서 메시지가 왔습니다. NEW 문구를 표시하지 않습니다.');
+                } else {
+                    const messageStatusElement = document.querySelector(`#${data.sender}_message`);
+                    if (messageStatusElement) {
+                        messageStatusElement.style.display = 'inline'; // NEW 문구 표시
+                    }
                 }
             } else {
                 hasNotification = true;
@@ -493,12 +512,12 @@ export function connectNotificationWebSocket(accessToken) {
                 if (messageStatusElement) {
                     messageStatusElement.style.display = 'inline';
                 }
-                const friendReqBox = document.querySelector('.friend-request-box');
-                if (friendReqBox) {
-                    friendReqBox.innerHTML = '';
-                    const friendPageInstance = new FriendPage();
-                    friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
-                }
+                // const friendReqBox = document.querySelector('.friend-request-box');
+                // if (friendReqBox) {
+                //     friendReqBox.innerHTML = '';
+                //     const friendPageInstance = new FriendPage();
+                //     friendPageInstance.updateFriendRequest(friendReqBox, "../../assets/images/profile.svg", data.sender);
+                // }
             } else {
                 hasNotification = true;
                 updateNotificationDisplay();
