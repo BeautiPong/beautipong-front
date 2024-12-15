@@ -9,16 +9,24 @@ import {SERVER_IP} from "../../js/index.js";
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
 import WaitGamePage from '../waitgame/waitgame.js';
 
-let chatSocket = null;
 let notificationSocket = null;
 
-// chatSocket 연결 종료 함수
-function closeChatSocket() {
+export let chatSocket = null;
+export let currentChattingFriend = null;
+
+export function setCurrentChattingFriend(nickname) {
+    currentChattingFriend = nickname;
+}
+
+export function clearCurrentChattingFriend() {
+    currentChattingFriend = null;
+}
+export function closeChatSocket() {
     if (chatSocket) {
         chatSocket.close();
-        chatSocket = null;  // 소켓을 닫은 후 변수 초기화
-        console.log("Chat socket closed by user action.");
+        chatSocket = null;
     }
+    clearCurrentChattingFriend();
 }
 
 // MainPage 클래스를 상속하는 새로운 클래스 정의
@@ -56,6 +64,7 @@ export default class FriendPage {
                 </div>
             </div>
         `;
+
     }
 
     async handlePage() {
@@ -276,6 +285,7 @@ export default class FriendPage {
     // 채팅방 만들기
     async showChatBox(image, friendNickname, match_cnt, win_cnt, score) {
         try {
+            setCurrentChattingFriend(friendNickname);
             const token = localStorage.getItem('access_token');
             fetch(`https://${SERVER_IP}/api/chat/create/`, {
                 method: 'POST',
@@ -291,6 +301,7 @@ export default class FriendPage {
                 });
         } catch (error) {
             console.error('채팅 내용을 불러오는 중 오류 발생:', error);
+            clearCurrentChattingFriend();
         }
     }
 
@@ -342,7 +353,6 @@ export default class FriendPage {
 
             chatSocket.onclose = function (e) {
                 chatSocket = null;
-                console.error('Chat socket closed unexpectedly');
             };
 
 
@@ -722,6 +732,5 @@ export default class FriendPage {
 
     async afterRender() {
         this.handleSocket();
-        this.handlePage();
-    }
+        this.handlePage();}
 }
