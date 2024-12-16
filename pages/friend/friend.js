@@ -185,7 +185,7 @@ export default class FriendPage {
         if (refuseButton) {
             refuseButton.addEventListener('click', async function () {
                 try {
-                    const response = await fetch(`https://${SERVER_IP}/api/friend/refuse/${sender}/`, {
+                    const response = await fetch(`https://${SERVER_IP}/api/friend/delete/${sender}/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`
