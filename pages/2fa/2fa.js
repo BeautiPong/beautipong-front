@@ -1,8 +1,8 @@
-import {createModal} from '../../assets/components/modal/modal.js';
+import { createModal } from '../../assets/components/modal/modal.js';
 import { getRouter } from '../../js/router.js';
-import {loadProfile} from '../../assets/components/nav/nav.js';
+import { loadProfile } from '../../assets/components/nav/nav.js';
 import { connectNotificationWebSocket } from '../../assets/components/nav/nav.js';
-import {SERVER_IP} from "../../js/index.js";
+import { SERVER_IP } from "../../js/index.js";
 
 export default class TwoFactorPage {
     constructor() {
@@ -205,5 +205,41 @@ export default class TwoFactorPage {
                 });
             });
         });
+    }
+
+    // 모달 창 생성 및 표시 함수
+    showModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createModal(message, buttonMsg);
+
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
+
+        // 모달을 닫고 경로 이동하는 함수
+        const closeModalAndNavigate = () => {
+            modalDiv.remove();
+            document.removeEventListener('keydown', handleEnterKeyInModal); // 이벤트 리스너 제거
+        };
+
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = closeModalAndNavigate;
+
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = closeModalAndNavigate;
+
+        // 모달에서 Enter 키 입력 시 모달을 닫는 이벤트 리스너 추가
+        const handleEnterKeyInModal = (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                closeModalAndNavigate();
+            }
+        };
+
+        // 이벤트 리스너 추가
+        document.addEventListener('keydown', handleEnterKeyInModal);
     }
 }

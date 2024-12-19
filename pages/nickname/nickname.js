@@ -93,6 +93,13 @@ export default class NicknamePage {
             return;
         }
 
+        // 한글 입력 방지
+        const koreanPattern = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+        if (koreanPattern.test(formData.nickname)) {
+            this.handleNicknameError({ message: "닉네임에 한글을 사용할 수 없습니다." });
+            return;
+        }
+
         try {
             // 백엔드로 POST 요청을 보냅니다.
             const response = await fetch(`https://${SERVER_IP}/api/user/account/nickname/`, {
@@ -150,6 +157,12 @@ export default class NicknamePage {
                 break;
 
             case "이미 사용 중인 닉네임입니다.":
+                nicknameErrorDiv.innerText = `${errorData.message}`;
+                nicknameErrorDiv.classList.add('show');
+                nicknameInput.classList.add('set-nickname__error');
+                break;
+
+            case "닉네임에 한글을 사용할 수 없습니다.":
                 nicknameErrorDiv.innerText = `${errorData.message}`;
                 nicknameErrorDiv.classList.add('show');
                 nicknameInput.classList.add('set-nickname__error');

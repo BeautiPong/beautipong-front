@@ -1,4 +1,4 @@
-.chat-message-box{
+.chat-message-box {
     display: flex;
     display: block;
     flex-direction: column;
@@ -28,7 +28,7 @@
     margin-bottom: 0.5vh;
 }
 
-.message-nickname.my-message{
+.message-nickname.my-message {
     display: none;
 }
 
@@ -38,7 +38,7 @@
 
     font-size: 1vw;
     padding: 0.5vw 1vw 0.5vw 1vw;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.1);
 
     /* border: 3px solid var(--main-text-color); */
 }
