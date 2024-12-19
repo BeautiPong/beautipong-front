@@ -3,7 +3,9 @@ export function createChatRoom(image, nickname, win, score) {
     return `
     <div class="chat-box-up">
         <div class="up-left">
-            <img class="friend-image" src="../../assets/images/profile.svg" alt="친구이미지">
+            <div class="friend-image">
+                <img class="friend-image__img" src=${image} alt="친구이미지">
+            </div>
             <div class="friend-profile">
                 <p class="friend-name-text">${nickname}</p>
                 <div class="info">
