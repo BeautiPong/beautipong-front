@@ -8,7 +8,7 @@ import {
     disconnectNotificationWebSocket,
     loadProfile
 } from '../../assets/components/nav/nav.js';
-import {createModal} from '../../assets/components/modal/modal.js';
+import { createModal } from '../../assets/components/modal/modal.js';
 
 let notificationSocket = null;
 
@@ -89,7 +89,7 @@ export default class MyPage {
         document.body.appendChild(modalDiv);
 
         const closeBtn = modalDiv.querySelector('.close');
-        closeBtn.onclick = function() {
+        closeBtn.onclick = function () {
             modalDiv.remove();
         };
 
@@ -100,7 +100,7 @@ export default class MyPage {
             modalDiv.remove();
         };
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target === modalDiv.querySelector('.modal')) {
                 modalDiv.remove();
             }
@@ -146,11 +146,11 @@ export default class MyPage {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-            
+
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
-                
+
                 // 새 액세스 토큰으로 다시 요청
                 response = await fetch(`https://${SERVER_IP}/api/user/profile/`, {
                     method: 'GET',
@@ -160,7 +160,7 @@ export default class MyPage {
                     },
                 });
             }
-            
+
             // 응답 처리
             if (response.ok) {
                 const profileData = await response.json();
@@ -170,7 +170,7 @@ export default class MyPage {
                 } else {
                     profileImg.src = "assets/images/profile.svg";  // 기본 이미지
                 }
-    
+
                 if (profileData.score > 2000) {
                     profileTier.src = `assets/icons/dia.svg`;
                 }
@@ -199,20 +199,20 @@ export default class MyPage {
         } catch (error) {
             console.error('프로필 정보 로딩 중 오류 발생:', error);
         }
-    }    
+    }
 
     async loadRecentGame() {
         try {
             const profileNickname = localStorage.getItem('nickname');
             const recentGameDataContainer = document.getElementById('mypage__bottom__content');
-    
+
             let response = await fetch(`https://${SERVER_IP}/api/game/info/${profileNickname}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-    
+
             // 액세스 토큰이 만료되어 401 오류가 발생했을 때
             if (response.status === 401) {
                 const newAccessToken = await refreshAccessToken();
@@ -223,19 +223,19 @@ export default class MyPage {
                     },
                 });
             }
-    
+
             // 응답 처리
             if (response.ok) {
                 const recentGameData = await response.json();
-    
+
                 // 최근 경기 기록이 없을 경우
                 if (recentGameData.length === 0) {
                     recentGameDataContainer.innerHTML = `<p id="mypage__bottom__nogame">출전한 경기가 없습니다.</p>`;
                     return;
                 }
-    
+
                 recentGameDataContainer.innerHTML = recentGameData.map(game => renderGameRecord(game)).join('');
-    
+
             } else {
                 console.error('최근 경기 기록을 가져오지 못했습니다:', response.statusText);
             }
@@ -247,11 +247,11 @@ export default class MyPage {
     async handleImgEditBtn(e) {
         console.log(e.target.files);
         const router = getRouter();
-    
+
         var newProfileImg = e.target.files[0]; // 선택된 파일
         var formData = new FormData();
         formData.append('image', newProfileImg);
-    
+
         try {
             const response = await fetch(`https://${SERVER_IP}/api/user/profile/update/`, {
                 method: 'PATCH',
@@ -261,7 +261,7 @@ export default class MyPage {
                 },
                 body: formData
             });
-    
+
             if (response.ok) {
                 const updatedData = await response.json();
                 console.log(updatedData);
@@ -292,24 +292,24 @@ export default class MyPage {
 
         // 닫기 버튼에 이벤트 리스너 추가
         const closeBtn = modalDiv.querySelector('.close');
-        closeBtn.onclick = function() {
+        closeBtn.onclick = function () {
             modalDiv.remove();
         };
 
         // 확인 버튼에 이벤트 리스너 추가
         const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-        confirmBtn.onclick = function() {
+        confirmBtn.onclick = function () {
             modalDiv.remove();
         };
 
         // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == modalDiv.querySelector('.modal')) {
                 modalDiv.remove();
             }
         };
     }
-    
+
     async handleNicknameImgEditBtn(modalDiv) {
 
         // 폼 데이터를 수집합니다.
@@ -319,6 +319,12 @@ export default class MyPage {
 
         if (!formData.nickname) {
             this.handleNicknameError({ message: "닉네임을 입력해주세요." });
+            return;
+        }
+
+        const pattern = /[a-zA-Z0-9]/g;
+        if (!pattern.test(formData.nickname)) {
+            this.handleNicknameError({ message: "닉네임에는 영어와 숫자만 가능합니다." });
             return;
         }
 
@@ -381,34 +387,34 @@ export default class MyPage {
     }
 
     // 모달 창 생성 및 표시 함수
-	showNickNameModal(message, buttonMsg) {
-		// 모달 컴포넌트 불러오기
-		const modalHTML = createNicknameModal(message, buttonMsg);
+    showNickNameModal(message, buttonMsg) {
+        // 모달 컴포넌트 불러오기
+        const modalHTML = createNicknameModal(message, buttonMsg);
 
-		// 새 div 요소를 생성하여 모달을 페이지에 추가
-		const modalDiv = document.createElement('div');
-		modalDiv.innerHTML = modalHTML;
-		document.body.appendChild(modalDiv);
+        // 새 div 요소를 생성하여 모달을 페이지에 추가
+        const modalDiv = document.createElement('div');
+        modalDiv.innerHTML = modalHTML;
+        document.body.appendChild(modalDiv);
 
-		// 닫기 버튼에 이벤트 리스너 추가
-		const closeBtn = modalDiv.querySelector('.close');
-		closeBtn.onclick = function() {
-			modalDiv.remove();
-		};
+        // 닫기 버튼에 이벤트 리스너 추가
+        const closeBtn = modalDiv.querySelector('.close');
+        closeBtn.onclick = function () {
+            modalDiv.remove();
+        };
 
-		// 확인 버튼에 이벤트 리스너 추가
-		const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
-		confirmBtn.onclick = () => {
-			this.handleNicknameImgEditBtn(modalDiv);
-		};
+        // 확인 버튼에 이벤트 리스너 추가
+        const confirmBtn = modalDiv.querySelector('.modal-confirm-btn');
+        confirmBtn.onclick = () => {
+            this.handleNicknameImgEditBtn(modalDiv);
+        };
 
-		// 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
-		window.onclick = function(event) {
-			if (event.target == modalDiv.querySelector('.modal')) {
-				modalDiv.remove();
-			}
-		};
-	}
+        // 모달 밖을 클릭했을 때 모달을 닫는 이벤트 리스너 추가
+        window.onclick = function (event) {
+            if (event.target == modalDiv.querySelector('.modal')) {
+                modalDiv.remove();
+            }
+        };
+    }
 
     handleNicknameError(errorData) {
         const nicknameInput = document.querySelector('#new_nickname');
@@ -419,7 +425,7 @@ export default class MyPage {
 
         // 에러 메시지에 따른 처리
         switch (errorData.message) {
-            case "닉네임을 입력해주세요." :
+            case "닉네임을 입력해주세요.":
                 if (!document.querySelector('#new_nickname').value) {
                     nicknameErrorDiv.innerText = `${errorData.message}`;
                     nicknameErrorDiv.classList.add('show');
@@ -427,13 +433,20 @@ export default class MyPage {
 
                     // 사용자 입력 시 에러 상태 리셋
                     nicknameInput.addEventListener('input', function () {
-                    nicknameErrorDiv.innerText = '';
-                    nicknameErrorDiv.classList.remove('show');
-                    nicknameInput.classList.remove('set-nickname__error');});
+                        nicknameErrorDiv.innerText = '';
+                        nicknameErrorDiv.classList.remove('show');
+                        nicknameInput.classList.remove('set-nickname__error');
+                    });
                 }
-                break ;
+                break;
 
-            case "이미 사용 중인 닉네임입니다." :
+            case "이미 사용 중인 닉네임입니다.":
+                nicknameErrorDiv.innerText = `${errorData.message}`;
+                nicknameErrorDiv.classList.add('show');
+                nicknameInput.classList.add('set-nickname__error');
+                break;
+
+            case "닉네임에는 영어와 숫자만 가능합니다.":
                 nicknameErrorDiv.innerText = `${errorData.message}`;
                 nicknameErrorDiv.classList.add('show');
                 nicknameInput.classList.add('set-nickname__error');

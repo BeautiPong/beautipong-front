@@ -315,6 +315,9 @@ export function connectNotificationWebSocket(accessToken) {
     notificationWebSocket.onmessage = (event) => {
         const message = JSON.parse(event.data);
         const data = JSON.parse(event.data);
+
+        console.log(data);
+        
         if (data.type === 'invite_game') {
             const sender = data.sender;
             const myNickname = data.receiver;

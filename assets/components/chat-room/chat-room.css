@@ -15,6 +15,11 @@
 }
 
 .friend-image {
+    display: flex;
+    align-items: center;
+}
+
+.friend-image__img {
     border-radius: 50%;
     width: 5vw;
     height: 5vw;
@@ -38,7 +43,8 @@
     margin: 1vw 5vh;
 }
 
-#game-request-btn, #block-friend-btn {
+#game-request-btn,
+#block-friend-btn {
     background-color: rgba(171, 171, 171, 0.5);
     padding: 5px 10px;
     border-radius: 15px;
@@ -52,7 +58,7 @@
 }
 
 #game-request-btn:hover {
-    background-color: rgba(110,208,135, 0.7);
+    background-color: rgba(110, 208, 135, 0.7);
 }
 
 #block-friend-btn:hover {
@@ -101,9 +107,9 @@
     align-items: flex-start;
 
     /* border: 3px solid var(--accept-button-color); */
-    background-color: rgba(255,255,255, 0);
+    background-color: rgba(255, 255, 255, 0);
     height: 90%;
-    margin: 1vw 1vh;
+    margin: 1.5vw 2.5vh;
     overflow-y: auto;
 }
 
