@@ -37,7 +37,6 @@ export default class offlineGamePage {
     }
 
     async afterRender() {
-
         console.log("offline_game.js");
         // Django 템플릿에서 전달된 정보를 JavaScript로 가져오기
         const token = localStorage.getItem("access_token");
@@ -180,7 +179,7 @@ export default class offlineGamePage {
 
         // 패들 생성
         const paddleHeight = 0.2; // 패들의 높이
-        const paddleDepth = 8;  // 패들의 깊이 
+        const paddleDepth = 8;  // 패들의 깊이
         const paddleGeometry = new THREE.BoxGeometry(paddleWidth, paddleHeight, paddleDepth);  // 패들의 크기 설정
         const paddleMaterial = new THREE.MeshPhongMaterial({ color: 0xFF897D });  // 패들 색상: 파란색
 
@@ -241,7 +240,7 @@ export default class offlineGamePage {
             else if (data.type === 'game_end') {
                 socket.send(JSON.stringify({ type: 'game_end_ack' }));
                 localStorage.setItem(`${currentMatch}_loser`, data.loser);
-                
+
                 // 경기가 끝났을 때 다음 경기 준비
                 if (currentMatch < totalMatches && matchType === 'tournament') {
                     currentMatch++;
@@ -250,7 +249,7 @@ export default class offlineGamePage {
                         $nextOpponent.style.display = 'block';
                         $nextOpponent.textContent = `Next : Winner vs ${data.winner}`;
                     }
-                    else 
+                    else
                         $nextOpponent.style.display = 'none';
                     console.log(`Starting match ${currentMatch}`);
                 } else {
@@ -333,37 +332,53 @@ export default class offlineGamePage {
             };
         }
 
-        function cleanUp()
-        {
-            // WebSocket 연결 닫기
+        function cleanUp() {
+			console.log("Cleaning up resources...");
+
+			// WebSocket 연결 닫기
+			if (socket) {
+				try {
+					socket.close();
+					console.log("WebSocket connection closed.");
+				} catch (error) {
+					console.error("Error closing WebSocket:", error);
+				}
+			}
+
+			// Three.js 렌더러 제거
+			const rendererDom = document.querySelector('canvas');
+			if (rendererDom) {
+				rendererDom.remove();
+			}
+
+			// 메인 페이지로 이동
+			const router = getRouter();
+			if (router) {
+				document.querySelector('.nav-container').style.display = 'block';
+				router.navigate('/'); // 메인 페이지로 이동
+			}
+		}
+
+        function redirectBack() {
             if (socket) {
-                socket.close();
-                console.log("WebSocket 연결 닫힘");
-            }
+				try {
+					socket.close();
+					console.log("WebSocket connection closed.");
+				} catch (error) {
+					console.error("Error closing WebSocket:", error);
+				}
+			}
 
-            // Three.js 렌더러를 DOM에서 제거
-            const rendererDom = document.querySelector('canvas');
-            if (rendererDom) {
-                rendererDom.remove();
-                console.log("Three.js 캔버스 제거");
-            }
-
-            const router = getRouter();
-            if (router) {
-                document.querySelector('.nav-container').style.display = 'block';
-                router.navigate('/');
-            }
+			// Three.js 렌더러 제거
+			const rendererDom = document.querySelector('canvas');
+			if (rendererDom) {
+				rendererDom.remove();
+			}
         }
-
-        // 페이지를 떠날 때 정리 작업 추가
-        window.addEventListener('beforeunload', () =>
-        {
-            console.log("in before");
-        });
 
 
         // 뒤로가기 및 페이지 이동을 위한 링크 클릭 감지
-        window.addEventListener('popstate', cleanUp);
+        window.addEventListener('popstate', redirectBack, {once:true});
 
 
         socket.onclose = function(event) {

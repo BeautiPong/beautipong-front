@@ -15,7 +15,7 @@ export default class WaitGamePage {
                         <div class="player-info">
                             <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="playerImage">
                             <div class="icon-nickname">
-                                <img src="assets/icons/bronz.svg" class="player-icon"></img>
+                                <img class="player-icon" id="player-tier></img>
                                 <p id="playerNickname">nickname</p>
                             </div>
                             <p class="score" id="playerScore">10전 10승 0패</p>
@@ -35,7 +35,7 @@ export default class WaitGamePage {
                             <div class="opponent-details hidden" id="opponentDetails">
                                 <img src="assets/images/profile.svg" alt="프로필 사진" class="profile-img" id="opponentImage">
                                 <div class="icon-nickname">
-                                    <img src="assets/icons/bronz.svg" class="player-icon" id="opponentIcon"></img>
+                                    <img class="player-icon" id="opponentIcon"></img>
                                     <p class="nickname" id="opponentNickname">nickname</p>
                                 </div>
                                 <p class="score" id="opponentScore">0전 0승 0패</p>
@@ -97,10 +97,11 @@ export default class WaitGamePage {
     }
 
     updatePlayerInfo(data) {
+        console.log(data);
         const playerImage = document.getElementById('playerImage');
         const playerNickname = document.getElementById('playerNickname');
         const playerScore = document.getElementById('playerScore');
-
+        const profileTier = document.getElementById('player-tier');
         if (playerImage) {
             if (!data.image) {
                 playerImage.src = 'assets/images/profile.svg';
@@ -115,6 +116,22 @@ export default class WaitGamePage {
 
         if (playerScore) {
             playerScore.textContent = `${data.match_cnt}전 ${data.win_cnt}승 ${(data.match_cnt - data.win_cnt)}패`;
+        }
+
+        if (data.score > 2000) {
+            profileTier.src = `assets/icons/dia.svg`;
+        }
+        else if (data.score > 1500) {
+            profileTier.src = `assets/icons/platinum.svg`;
+        }
+        else if (data.score > 1200) {
+            profileTier.src = `assets/icons/gold.svg`;
+        }
+        else if (data.score > 1000) {
+            profileTier.src = `assets/icons/silver.svg`;
+        }
+        else {
+            profileTier.src = `assets/icons/bronz.svg`;
         }
     }
 
@@ -197,7 +214,7 @@ export default class WaitGamePage {
 
         function cleanUp() {
           if(localStorage.getItem('opponent') === null) return;
-    
+
           console.log('클린업 함수 실행');
           const access_token = localStorage.getItem('access_token');
           const notificationWebSocket = connectNotificationWebSocket(access_token);
@@ -213,7 +230,7 @@ export default class WaitGamePage {
           );
           localStorage.removeItem('opponent');
         }
-    
+
         const nav__logout = document.getElementById('nav__logout');
         nav__logout.addEventListener('click', cleanUp);
         const nav__main = document.getElementById('nav__main');
