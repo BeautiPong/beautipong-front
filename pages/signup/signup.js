@@ -217,7 +217,7 @@ export default class SignupPage {
             case "비밀번호는 대문자를 하나 이상 포함해야 합니다.":
             case "비밀번호는 소문자를 하나 이상 포함해야 합니다.":
             case "비밀번호는 숫자를 하나 이상 포함해야 합니다.":
-            case "비밀번호는 특수 문자를 하나 이상 포함해야 합니다.":
+            case "비밀번호는 특수 문자(@$!%*?&)를 하나 이상 포함해야 합니다.":
             case "비밀번호 필드를 입력해주세요.":
                 password_label.innerText = `${errorData.message}`;
                 password_label.classList.add("form-error-label");

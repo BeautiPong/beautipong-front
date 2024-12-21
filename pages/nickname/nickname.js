@@ -93,10 +93,16 @@ export default class NicknamePage {
             return;
         }
 
-        // 한글 입력 방지
-        const koreanPattern = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
-        if (koreanPattern.test(formData.nickname)) {
-            this.handleNicknameError({ message: "닉네임에 한글을 사용할 수 없습니다." });
+        // // 한글 입력 방지
+        // const koreanPattern = /[ㄱ-ㅎㅏ-ㅣ가-힣]/g;
+        // if (koreanPattern.test(formData.nickname)) {
+        //     this.handleNicknameError({ message: "닉네임에 한글을 사용할 수 없습니다." });
+        //     return;
+        // }
+
+        const pattern = /[a-zA-Z0-9]/g;
+        if (!pattern.test(formData.nickname)) {
+            this.handleNicknameError({ message: "닉네임에는 영어와 숫자만 가능합니다." });
             return;
         }
 
@@ -162,7 +168,7 @@ export default class NicknamePage {
                 nicknameInput.classList.add('set-nickname__error');
                 break;
 
-            case "닉네임에 한글을 사용할 수 없습니다.":
+            case "닉네임에는 영어와 숫자만 가능합니다.":
                 nicknameErrorDiv.innerText = `${errorData.message}`;
                 nicknameErrorDiv.classList.add('show');
                 nicknameInput.classList.add('set-nickname__error');

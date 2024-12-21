@@ -1,7 +1,7 @@
 import { createRouter } from './router.js';
 import createPages from './pages.js'
 
-export const SERVER_IP = 'localhost';
+export const SERVER_IP = '10.11.1.3';
 
 // 로그인 상태 확인 함수
 function checkLoginStatus() {
